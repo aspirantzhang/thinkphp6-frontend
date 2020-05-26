@@ -1,0 +1,38 @@
+@import '~antd/es/style/themes/default.less';
+
+.textAlignRight {
+  text-align: right;
+}
+.textAlignLeft {
+  text-align-last: left;
+}
+.padding15 {
+  padding: 15px 0 !important;
+}
+.toolBarLeft {
+  // .textAlignLeft();
+  .padding15();
+}
+.toolBarRight {
+  .textAlignRight();
+  .padding15();
+}
+@media screen and (max-width: @screen-xs) {
+  :global(.ant-pagination-total-text) {
+    display: block;
+  }
+}
+.searchCard {
+  border: 1px dashed #d9d9d9;
+
+  :global(.ant-form-inline .ant-form-item) {
+    margin-bottom: 8px;
+  }
+}
+.listPagination {
+  padding-top: 15px !important;
+}
+
+:global(.ant-pro-table-alert) {
+  display: none;
+}

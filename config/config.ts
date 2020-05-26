@@ -70,6 +70,12 @@ export default defineConfig({
       component: './ListTableList',
     },
     {
+      name: 'search-list',
+      icon: 'table',
+      path: '/search-list',
+      component: './searchList',
+    },
+    {
       path: '/',
       redirect: '/welcome',
     },
