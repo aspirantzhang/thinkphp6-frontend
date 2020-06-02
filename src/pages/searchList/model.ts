@@ -1,11 +1,12 @@
 import { Effect, Reducer, Subscription } from 'umi';
-import { queryRule } from './service';
+import { queryRule, searchExpand } from './service';
 
 export interface UserModelState {
   page: {
     title: string;
     type: string;
     searchBar: boolean;
+    searchExpand: boolean;
   };
   layout: {
     tableColumn: [];
@@ -24,6 +25,9 @@ export interface UserModelState {
   };
 }
 
+/**
+ * TODO: fix namespace
+ */
 export interface UserModelType {
   namespace: 'users';
   state: UserModelState;
@@ -32,6 +36,7 @@ export interface UserModelType {
   };
   effects: {
     getRemote: Effect;
+    searchExpand: Effect;
   };
   subscriptions: {
     setup: Subscription;
@@ -45,6 +50,7 @@ const UserModel: UserModelType = {
       title: '',
       type: '',
       searchBar: false,
+      searchExpand: false,
     },
     layout: {
       tableColumn: [],
@@ -71,6 +77,13 @@ const UserModel: UserModelType = {
     *getRemote(action, { call, put }) {
       const result = yield call(queryRule);
 
+      yield put({
+        type: 'getList',
+        payload: result,
+      });
+    },
+    *searchExpand({ payload: { expand } }, { call, put }) {
+      const result = yield call(searchExpand, expand);
       yield put({
         type: 'getList',
         payload: result,

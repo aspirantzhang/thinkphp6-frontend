@@ -33,7 +33,7 @@ interface basicListProps {
   users: UserModelState;
 }
 
-const BasicList: FC<basicListProps> = ({ users }) => {
+const BasicList: FC<basicListProps> = ({ dispatch, users }) => {
   const [selectedKeys, setSelectedKeys] = useState([]);
   const [searchFormInitialValues, setSearchFormInitialValues] = useState({});
   const [searchForm] = Form.useForm();
@@ -99,43 +99,6 @@ const BasicList: FC<basicListProps> = ({ users }) => {
 
   // const columns = [
   //   {
-  //     title: 'ID',
-  //     dataIndex: 'id',
-  //     key: 'id',
-  //     sorter: true,
-  //     fixed: 'left',
-  //   },
-  //   {
-  //     title: 'Name',
-  //     dataIndex: 'name',
-  //     key: 'name',
-  //     render: (text: any) => <a>{text}</a>,
-  //   },
-  //   {
-  //     title: 'Status',
-  //     dataIndex: 'status',
-  //     key: 'status',
-  //     filters: [
-  //       {
-  //         text: 'Enabled',
-  //         value: 1,
-  //       },
-  //       {
-  //         text: 'Disabled',
-  //         value: 0,
-  //       },
-  //     ],
-  //     filterMultiple: false,
-  //     render: (text: any) => {
-  //       if (text === 0) {
-  //         return <Tag color="red">Disabled</Tag>;
-  //       }
-  //       if (text === 1) {
-  //         return <Tag color="blue">Enabled</Tag>;
-  //       }
-  //     },
-  //   },
-  //   {
   //     title: 'Create Time',
   //     dataIndex: 'create_time',
   //     key: 'create_time',
@@ -175,6 +138,15 @@ const BasicList: FC<basicListProps> = ({ users }) => {
     });
   };
 
+  const searchExpandHandler = () => {
+    dispatch({
+      type: 'users/searchExpand',
+      payload: {
+        expand: !users.page.searchExpand,
+      },
+    });
+  };
+
   const tableChangeHandler = (pagination: any, filters: any, sorter: any) => {
     const queryString = helper.sorter_build(sorter);
 
@@ -204,7 +176,11 @@ const BasicList: FC<basicListProps> = ({ users }) => {
   const tableToolBar = () => {
     return (
       <Space>
-        <Button type="dashed" icon={<SearchOutlined />} />
+        <Button
+          type={users.page.searchExpand ? 'primary' : 'dashed'}
+          icon={<SearchOutlined />}
+          onClick={searchExpandHandler}
+        />
         <Button type="primary">
           <PlusOutlined />
           Add
@@ -290,7 +266,12 @@ const BasicList: FC<basicListProps> = ({ users }) => {
 
   const searchLayout = () => {
     return (
-      <Card bordered={false} className={styles.searchCard} title="Search">
+      <Card
+        bordered={false}
+        className={styles.searchCard}
+        title="Search"
+        style={{ display: users.page.searchExpand ? 'block' : 'none' }}
+      >
         <Form
           layout="inline"
           form={searchForm}
