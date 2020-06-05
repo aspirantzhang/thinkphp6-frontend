@@ -142,7 +142,7 @@ const BasicList: FC<basicListProps> = ({ dispatch, users }) => {
     dispatch({
       type: 'users/searchExpand',
       payload: {
-        expand: !users.page.searchExpand,
+        expand: !users.searchExpand,
       },
     });
   };
@@ -177,7 +177,7 @@ const BasicList: FC<basicListProps> = ({ dispatch, users }) => {
     return (
       <Space>
         <Button
-          type={users.page.searchExpand ? 'primary' : 'dashed'}
+          type={users.searchExpand ? 'primary' : 'dashed'}
           icon={<SearchOutlined />}
           onClick={searchExpandHandler}
         />
@@ -270,7 +270,7 @@ const BasicList: FC<basicListProps> = ({ dispatch, users }) => {
         bordered={false}
         className={styles.searchCard}
         title="Search"
-        style={{ display: users.page.searchExpand ? 'block' : 'none' }}
+        style={{ display: users.searchExpand ? 'block' : 'none' }}
       >
         <Form
           layout="inline"

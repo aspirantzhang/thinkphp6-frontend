@@ -1,5 +1,5 @@
 import { Effect, Reducer, Subscription } from 'umi';
-import { queryRule, searchExpand } from './service';
+import { queryRule } from './service';
 
 export interface UserModelState {
   page: {
@@ -23,6 +23,7 @@ export interface UserModelState {
       page: number;
     };
   };
+  searchExpand?: boolean;
 }
 
 /**
@@ -67,10 +68,14 @@ const UserModel: UserModelType = {
         page: 1,
       },
     },
+    searchExpand: false,
   },
   reducers: {
     getList(state, { payload }) {
-      return payload;
+      return {
+        ...state,
+        ...payload,
+      };
     },
   },
   effects: {
@@ -82,11 +87,12 @@ const UserModel: UserModelType = {
         payload: result,
       });
     },
-    *searchExpand({ payload: { expand } }, { call, put }) {
-      const result = yield call(searchExpand, expand);
+    *searchExpand({ payload: { expand } }, { put }) {
       yield put({
         type: 'getList',
-        payload: result,
+        payload: {
+          searchExpand: expand,
+        },
       });
     },
   },
