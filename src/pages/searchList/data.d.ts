@@ -1,36 +1,39 @@
-export interface TableListItem {
-  key: number;
-  disabled?: boolean;
-  href: string;
-  avatar: string;
-  name: string;
+export interface BasicListState {
+  success: boolean;
+  message: string;
+  data: DataState;
+}
+
+export interface DataState {
+  page: PageState;
+  layout: LayoutState;
+  dataSource: [];
+  meta: MetaState;
+}
+export interface PageState {
   title: string;
-  owner: string;
-  desc: string;
-  callNo: number;
-  status: number;
-  updatedAt: Date;
-  createdAt: Date;
-  progress: number;
+  type: string;
+  searchBar: boolean;
+  searchExpand: boolean;
 }
 
-export interface TableListPagination {
+export interface LayoutState {
+  tableColumn: [];
+  tableToolBar: [];
+  batchToolBar: [];
+}
+
+export interface MetaState {
   total: number;
-  pageSize: number;
-  current: number;
+  per_page: number;
+  page: number;
 }
 
-export interface TableListData {
-  list: TableListItem[];
-  pagination: Partial<TableListPagination>;
-}
-
-export interface TableListParams {
-  sorter?: string;
-  status?: string;
-  name?: string;
-  desc?: string;
-  key?: number;
-  pageSize?: number;
-  currentPage?: number;
+export interface SingleColumnType {
+  title: string;
+  dataIndex: string;
+  key: string;
+  sorter?: boolean;
+  fixed?: string;
+  render?: () => void;
 }

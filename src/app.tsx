@@ -88,4 +88,14 @@ const errorHandler = (error: { response: Response }) => {
 
 export const request: RequestConfig = {
   errorHandler,
+  errorConfig: {
+    adaptor: (resData) => {
+      // console.log(resData);
+      return {
+        ...resData,
+        success: resData.success,
+        errorMessage: resData.message,
+      };
+    },
+  },
 };

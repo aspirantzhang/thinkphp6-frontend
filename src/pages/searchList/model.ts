@@ -1,21 +1,21 @@
-import { Effect, Reducer, Subscription } from 'umi';
+import { Effect, Reducer } from 'umi';
 import { queryRule } from './service';
 
 export interface UserModelState {
-  page: {
-    title: string;
-    type: string;
-    searchBar: boolean;
-    searchExpand: boolean;
-  };
-  layout: {
-    tableColumn: [];
-    tableToolBar: [];
-    batchToolBar: [];
-  };
   success: boolean;
   message: string;
   data: {
+    page: {
+      title: string;
+      type: string;
+      searchBar: boolean;
+      searchExpand: boolean;
+    };
+    layout: {
+      tableColumn: [];
+      tableToolBar: [];
+      batchToolBar: [];
+    };
     dataSource: [];
     meta: {
       total: number;
@@ -23,7 +23,6 @@ export interface UserModelState {
       page: number;
     };
   };
-  searchExpand?: boolean;
 }
 
 /**
@@ -39,25 +38,11 @@ export interface UserModelType {
     getRemote: Effect;
     searchExpand: Effect;
   };
-  subscriptions: {
-    setup: Subscription;
-  };
 }
 
 const UserModel: UserModelType = {
   namespace: 'users',
   state: {
-    page: {
-      title: '',
-      type: '',
-      searchBar: false,
-      searchExpand: false,
-    },
-    layout: {
-      tableColumn: [],
-      tableToolBar: [],
-      batchToolBar: [],
-    },
     success: false,
     message: '',
     data: {
@@ -67,8 +52,18 @@ const UserModel: UserModelType = {
         per_page: 10,
         page: 1,
       },
+      page: {
+        title: '',
+        type: '',
+        searchBar: false,
+        searchExpand: false,
+      },
+      layout: {
+        tableColumn: [],
+        tableToolBar: [],
+        batchToolBar: [],
+      },
     },
-    searchExpand: false,
   },
   reducers: {
     getList(state, { payload }) {
@@ -93,17 +88,6 @@ const UserModel: UserModelType = {
         payload: {
           searchExpand: expand,
         },
-      });
-    },
-  },
-  subscriptions: {
-    setup({ dispatch, history }) {
-      return history.listen(({ pathname }) => {
-        if (pathname === '/search-list') {
-          dispatch({
-            type: 'getRemote',
-          });
-        }
       });
     },
   },

@@ -1,5 +1,5 @@
 import React, { useEffect, useState, FC } from 'react';
-import { connect, UserModelState } from 'umi';
+import { useRequest } from 'umi';
 import { ColumnsType } from 'antd/es/table';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import moment from 'moment';
@@ -26,30 +26,50 @@ import {
   Tag,
   Select,
 } from 'antd';
+import { NormalModal } from './NormalModal';
+import { DataState, SingleColumnType } from './data.d';
 import * as helper from './helper';
 import styles from './style.less';
 
-interface basicListProps {
-  users: UserModelState;
-}
+interface basicListProps {}
 
-const BasicList: FC<basicListProps> = ({ dispatch, users }) => {
+const BasicList: FC<basicListProps> = () => {
   const [selectedKeys, setSelectedKeys] = useState([]);
   const [searchFormInitialValues, setSearchFormInitialValues] = useState({});
+  const [searchExpand, setSearchExpand] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalUri, setModalUri] = useState('');
+  const [modalID, setModalID] = useState('');
+  const [listData, setListData] = useState<DataState>();
   const [searchForm] = Form.useForm();
   const { confirm } = Modal;
   const { RangePicker } = DatePicker;
 
-  interface SingleColumn {
-    title: string;
-    dataIndex: string;
-    key: string;
-    sorter?: boolean;
-    fixed?: string;
-    render?: () => void;
-  }
+  const { data, loading } = useRequest('http://www.test.com/backend/admins');
 
-  const columns: ColumnsType<SingleColumn> = [
+  useEffect(() => {
+    setListData(data);
+  }, [data]);
+
+  const showModal = (uri: any, id: any) => {
+    setModalVisible(true);
+    setModalUri(uri);
+    setModalID(id);
+  };
+
+  /**
+   *
+   * @param type Action Type: modal/link
+   * @param action Real Action: url/action
+   * @param value Record
+   */
+  const doAction = (type: string, action: any, value: any) => {
+    if (type === 'modal') {
+      showModal(action, value);
+    }
+  };
+
+  const columns: ColumnsType<SingleColumnType> = [
     {
       title: 'ID',
       dataIndex: 'id',
@@ -59,8 +79,8 @@ const BasicList: FC<basicListProps> = ({ dispatch, users }) => {
     },
   ];
   // Build Column
-  if (users.layout) {
-    users.layout.tableColumn.forEach((column: any) => {
+  if (listData && listData.layout) {
+    listData.layout.tableColumn.forEach((column: any) => {
       const thisColumn = column;
       // tag
       if (thisColumn.type === 'tag') {
@@ -70,7 +90,11 @@ const BasicList: FC<basicListProps> = ({ dispatch, users }) => {
               {thisColumn.values
                 .filter((item: any, index: number) => index === text)
                 .map((item: any) => {
-                  return <Tag color={text === 0 ? 'red' : 'blue'}>{item}</Tag>;
+                  return (
+                    <Tag color={text === 0 ? 'red' : 'blue'} key={text}>
+                      {item}
+                    </Tag>
+                  );
                 })}
             </Space>
           );
@@ -79,12 +103,22 @@ const BasicList: FC<basicListProps> = ({ dispatch, users }) => {
 
       // action
       if (thisColumn.type === 'action') {
-        thisColumn.render = () => {
+        thisColumn.render = (text: any, record: any) => {
           return (
             <Space>
               {thisColumn.action.map((action: any) => {
                 if (action.component === 'button') {
-                  return <Button type={action.type}>{action.text}</Button>;
+                  return (
+                    <Button
+                      type={action.type}
+                      onClick={() => {
+                        doAction(action.onClick, action.action, record.id);
+                      }}
+                      key={action.action}
+                    >
+                      {action.text}
+                    </Button>
+                  );
                 }
                 return null;
               })}
@@ -138,15 +172,6 @@ const BasicList: FC<basicListProps> = ({ dispatch, users }) => {
     });
   };
 
-  const searchExpandHandler = () => {
-    dispatch({
-      type: 'users/searchExpand',
-      payload: {
-        expand: !users.searchExpand,
-      },
-    });
-  };
-
   const tableChangeHandler = (pagination: any, filters: any, sorter: any) => {
     const queryString = helper.sorter_build(sorter);
 
@@ -177,9 +202,11 @@ const BasicList: FC<basicListProps> = ({ dispatch, users }) => {
     return (
       <Space>
         <Button
-          type={users.searchExpand ? 'primary' : 'dashed'}
+          type={searchExpand ? 'primary' : 'dashed'}
           icon={<SearchOutlined />}
-          onClick={searchExpandHandler}
+          onClick={() => {
+            setSearchExpand(!searchExpand);
+          }}
         />
         <Button type="primary">
           <PlusOutlined />
@@ -270,7 +297,7 @@ const BasicList: FC<basicListProps> = ({ dispatch, users }) => {
         bordered={false}
         className={styles.searchCard}
         title="Search"
-        style={{ display: users.searchExpand ? 'block' : 'none' }}
+        style={{ display: searchExpand ? 'block' : 'none' }}
       >
         <Form
           layout="inline"
@@ -281,46 +308,54 @@ const BasicList: FC<basicListProps> = ({ dispatch, users }) => {
           <Form.Item name="id" label="ID">
             <InputNumber />
           </Form.Item>
-          {users.layout.tableColumn.map((column: any) => {
-            switch (column.type) {
-              case 'datetime':
-                return (
-                  <Form.Item name={column.key} label={column.title}>
-                    <RangePicker
-                      ranges={{
-                        Today: [moment(), moment()],
-                        'Last 7 Days': [moment().subtract(7, 'd'), moment()],
-                        'Last 30 Days': [moment().subtract(30, 'days'), moment()],
-                        'Last Month': [
-                          moment().subtract(1, 'months').startOf('month'),
-                          moment().subtract(1, 'months').endOf('month'),
-                        ],
-                      }}
-                      showTime
-                      format="YYYY/MM/DD HH:mm:ss"
-                    />
-                  </Form.Item>
-                );
-              case 'tag':
-                return (
-                  <Form.Item name={column.key} label={column.title}>
-                    <Select mode="multiple" placeholder="Please select" style={{ width: '100px' }}>
-                      {column.values.map((item: any, key: number) => (
-                        <Select.Option value={key}>{item}</Select.Option>
-                      ))}
-                    </Select>
-                  </Form.Item>
-                );
-              case 'action':
-                return null;
-              default:
-                return (
-                  <Form.Item name={column.key} label={column.title}>
-                    <Input />
-                  </Form.Item>
-                );
-            }
-          })}
+          {listData &&
+            listData.layout &&
+            listData.layout.tableColumn.map((column: any) => {
+              switch (column.type) {
+                case 'datetime':
+                  return (
+                    <Form.Item name={column.key} label={column.title} key={column.key}>
+                      <RangePicker
+                        ranges={{
+                          Today: [moment(), moment()],
+                          'Last 7 Days': [moment().subtract(7, 'd'), moment()],
+                          'Last 30 Days': [moment().subtract(30, 'days'), moment()],
+                          'Last Month': [
+                            moment().subtract(1, 'months').startOf('month'),
+                            moment().subtract(1, 'months').endOf('month'),
+                          ],
+                        }}
+                        showTime
+                        format="YYYY/MM/DD HH:mm:ss"
+                      />
+                    </Form.Item>
+                  );
+                case 'tag':
+                  return (
+                    <Form.Item name={column.key} label={column.title} key={column.key}>
+                      <Select
+                        mode="multiple"
+                        placeholder="Please select"
+                        style={{ width: '100px' }}
+                      >
+                        {column.values.map((item: any, key: number) => (
+                          <Select.Option value={key} key={item}>
+                            {item}
+                          </Select.Option>
+                        ))}
+                      </Select>
+                    </Form.Item>
+                  );
+                case 'action':
+                  return null;
+                default:
+                  return (
+                    <Form.Item name={column.key} label={column.title} key={column.key}>
+                      <Input />
+                    </Form.Item>
+                  );
+              }
+            })}
 
           <Form.Item>
             <Button type="primary" htmlType="submit">
@@ -348,22 +383,23 @@ const BasicList: FC<basicListProps> = ({ dispatch, users }) => {
               columns={columns}
               pagination={false}
               rowKey="id"
-              dataSource={users.data.dataSource}
+              dataSource={listData && listData.dataSource}
               rowSelection={rowSelection}
               onChange={tableChangeHandler}
+              loading={loading}
             />
             {afterTableLayout()}
           </Card>
         </Space>
+        <NormalModal
+          modalVisible={modalVisible}
+          modalUri={modalUri}
+          modalID={modalID}
+          modalClose={() => setModalVisible(false)}
+        />
       </PageHeaderWrapper>
     </>
   );
 };
 
-const mapStateToProps = ({ users }: { users: UserModelState }) => {
-  return {
-    users,
-  };
-};
-
-export default connect(mapStateToProps)(BasicList);
+export default BasicList;
