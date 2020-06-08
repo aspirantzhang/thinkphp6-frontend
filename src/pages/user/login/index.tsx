@@ -8,7 +8,7 @@ import { LoginParamsType, fakeAccountLogin } from '@/services/login';
 import LoginFrom from './components/Login';
 import styles from './style.less';
 
-const { Tab, UserName, Password, Mobile, Captcha, Submit } = LoginFrom;
+const { Tab, Username, Password, Mobile, Captcha, Submit } = LoginFrom;
 
 const LoginMessage: React.FC<{
   content: string;
@@ -59,7 +59,7 @@ const Login: React.FC<{}> = () => {
       // 登录
       const msg = await fakeAccountLogin({ ...values, type });
       if (msg.status === 'ok') {
-        message.success('登陆成功！');
+        message.success('登录成功！');
         replaceGoto();
         setTimeout(() => {
           refresh();
@@ -69,7 +69,7 @@ const Login: React.FC<{}> = () => {
       // 如果失败去设置用户错误信息
       setUserLoginState(msg);
     } catch (error) {
-      message.error('登陆失败，请重试！');
+      message.error('登录失败，请重试！');
     }
     setSubmitting(false);
   };
@@ -99,8 +99,8 @@ const Login: React.FC<{}> = () => {
                 <LoginMessage content="账户或密码错误（admin/ant.design）" />
               )}
 
-              <UserName
-                name="userName"
+              <Username
+                name="username"
                 placeholder="用户名: admin or user"
                 rules={[
                   {
