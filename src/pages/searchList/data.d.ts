@@ -10,6 +10,12 @@ export interface DataState {
   dataSource: [];
   meta: MetaState;
 }
+export interface PageDataState {
+  page: PageState;
+  layout: [];
+  dataSource: [];
+  meta: MetaState;
+}
 export interface PageState {
   title: string;
   type: string;

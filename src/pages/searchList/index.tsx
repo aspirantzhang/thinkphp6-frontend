@@ -25,6 +25,7 @@ import {
   DatePicker,
   Tag,
   Select,
+  Spin,
 } from 'antd';
 import { NormalModal } from './NormalModal';
 import { DataState, SingleColumnType } from './data.d';
@@ -38,8 +39,8 @@ const BasicList: FC<basicListProps> = () => {
   const [searchFormInitialValues, setSearchFormInitialValues] = useState({});
   const [searchExpand, setSearchExpand] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
-  const [modalUri, setModalUri] = useState('');
-  const [modalID, setModalID] = useState('');
+  const [modalUri, setModalUri] = useState<string>();
+  const [modalLoading, setModalLoading] = useState(false);
   const [listData, setListData] = useState<DataState>();
   const [searchForm] = Form.useForm();
   const { confirm } = Modal;
@@ -52,9 +53,10 @@ const BasicList: FC<basicListProps> = () => {
   }, [data]);
 
   const showModal = (uri: any, id: any) => {
+    // console.log(`${uri}/${id}`);
+    setModalLoading(true);
+    setModalUri(`${uri}/${id}`);
     setModalVisible(true);
-    setModalUri(uri);
-    setModalID(id);
   };
 
   /**
@@ -291,6 +293,15 @@ const BasicList: FC<basicListProps> = () => {
     message.success(JSON.stringify(values));
   };
 
+  const stopLoadingHandler = () => {
+    setModalLoading(false);
+  };
+  const modalCancelHandler = () => {
+    setModalUri('');
+    setModalVisible(false);
+    stopLoadingHandler();
+  };
+
   const searchLayout = () => {
     return (
       <Card
@@ -391,12 +402,10 @@ const BasicList: FC<basicListProps> = () => {
             {afterTableLayout()}
           </Card>
         </Space>
-        <NormalModal
-          modalVisible={modalVisible}
-          modalUri={modalUri}
-          modalID={modalID}
-          modalClose={() => setModalVisible(false)}
-        />
+        <Modal visible={modalVisible} onCancel={modalCancelHandler}>
+          <Spin spinning={modalLoading} />
+          <NormalModal modalUri={modalUri} stopLoading={stopLoadingHandler} />
+        </Modal>
       </PageHeaderWrapper>
     </>
   );
