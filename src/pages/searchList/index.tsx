@@ -1,5 +1,5 @@
 import React, { useEffect, useState, FC } from 'react';
-import { useRequest } from 'umi';
+import { useRequest, request } from 'umi';
 import { ColumnsType } from 'antd/es/table';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import moment from 'moment';
@@ -27,8 +27,8 @@ import {
   Select,
   Spin,
 } from 'antd';
-import { NormalModal } from './NormalModal';
-import { DataState, SingleColumnType } from './data.d';
+import { ModalForm } from './ModalForm';
+import { DataState, SingleColumnType, FormValues } from './data.d';
 import * as helper from './helper';
 import styles from './style.less';
 
@@ -108,7 +108,7 @@ const BasicList: FC<basicListProps> = () => {
         thisColumn.render = (text: any, record: any) => {
           return (
             <Space>
-              {thisColumn.action.map((action: any) => {
+              {thisColumn.actions.map((action: any) => {
                 if (action.component === 'button') {
                   return (
                     <Button
@@ -301,7 +301,27 @@ const BasicList: FC<basicListProps> = () => {
     setModalVisible(false);
     stopLoadingHandler();
   };
+  const modalFinishHandler = async (values: FormValues) => {
+    const submitValues = {};
 
+    Object.keys(values).forEach((key) => {
+      submitValues[key] = values[key];
+      if (moment.isMoment(values[key])) {
+        submitValues[key] = values[key].format();
+      }
+    });
+
+    try {
+      await request(modalUri, {
+        method: 'put',
+        data: submitValues,
+      });
+      message.success('Update successfully.');
+      setModalVisible(false);
+    } catch (error) {
+      message.error('Update failed.');
+    }
+  };
   const searchLayout = () => {
     return (
       <Card
@@ -402,9 +422,25 @@ const BasicList: FC<basicListProps> = () => {
             {afterTableLayout()}
           </Card>
         </Space>
-        <Modal visible={modalVisible} onCancel={modalCancelHandler}>
-          <Spin spinning={modalLoading} />
-          <NormalModal modalUri={modalUri} stopLoading={stopLoadingHandler} />
+        <Modal
+          visible={modalVisible}
+          onCancel={modalCancelHandler}
+          footer={null}
+          maskClosable={false}
+          title="edit"
+        >
+          <Spin
+            spinning={modalLoading}
+            tip="Loading, please wait..."
+            className={styles.modalSpin}
+          />
+          <ModalForm
+            visible={modalVisible}
+            modalUri={modalUri}
+            stopLoading={stopLoadingHandler}
+            cancelHandler={modalCancelHandler}
+            onFinish={modalFinishHandler}
+          />
         </Modal>
       </PageHeaderWrapper>
     </>

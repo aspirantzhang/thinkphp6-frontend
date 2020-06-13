@@ -12,7 +12,7 @@ export interface DataState {
 }
 export interface PageDataState {
   page: PageState;
-  layout: [];
+  layout: any;
   dataSource: [];
   meta: MetaState;
 }
@@ -42,4 +42,8 @@ export interface SingleColumnType {
   sorter?: boolean;
   fixed?: string;
   render?: () => void;
+}
+
+export interface FormValues {
+  [name: string]: any;
 }
