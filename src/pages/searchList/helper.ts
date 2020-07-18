@@ -1,12 +1,12 @@
 /**
- * Build Sort String
+ * Build Sort Query
  * @param sorter Table Sorter
  */
 export const sorter_build = (sorter: any) => {
-  let sorterString = null;
+  let sorterQuery = null;
   if (sorter.order !== undefined || sorter.order !== null) {
-    sorterString = `&sort=${sorter.field}&order=${sorter.order === 'ascend' ? 'asc' : 'desc'}`;
+    sorterQuery = `&sort=${sorter.field}&order=${sorter.order === 'ascend' ? 'asc' : 'desc'}`;
   }
 
-  return `${sorterString}`;
+  return `${sorterQuery}`;
 };

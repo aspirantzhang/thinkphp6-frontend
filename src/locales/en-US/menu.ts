@@ -22,6 +22,7 @@ export default {
   'menu.form.step-form.result': 'Step Form(finished)',
   'menu.form.advanced-form': 'Advanced Form',
   'menu.list': 'List',
+  'menu.search-list': 'Search List',
   'menu.list.table-list': 'Search Table',
   'menu.list.basic-list': 'Basic List',
   'menu.list.card-list': 'Card List',

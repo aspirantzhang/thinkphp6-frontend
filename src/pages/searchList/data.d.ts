@@ -7,13 +7,13 @@ export interface BasicListState {
 export interface DataState {
   page: PageState;
   layout: LayoutState;
-  dataSource: [];
+  dataSource: Array;
   meta: MetaState;
 }
 export interface PageDataState {
   page: PageState;
   layout: any;
-  dataSource: [];
+  dataSource: Array;
   meta: MetaState;
 }
 export interface PageState {
@@ -24,9 +24,9 @@ export interface PageState {
 }
 
 export interface LayoutState {
-  tableColumn: [];
-  tableToolBar: [];
-  batchToolBar: [];
+  tableColumn: Array;
+  tableToolBar: Array;
+  batchToolBar: Array;
 }
 
 export interface MetaState {

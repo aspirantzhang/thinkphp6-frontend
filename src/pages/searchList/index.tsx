@@ -3,12 +3,7 @@ import { useRequest, request } from 'umi';
 import { ColumnsType } from 'antd/es/table';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import moment from 'moment';
-import {
-  PlusOutlined,
-  SearchOutlined,
-  DeleteOutlined,
-  ExclamationCircleOutlined,
-} from '@ant-design/icons';
+import { SearchOutlined, DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import {
   Card,
   Row,
@@ -25,10 +20,11 @@ import {
   DatePicker,
   Tag,
   Select,
-  Spin,
+  Popconfirm,
 } from 'antd';
+import { join } from 'lodash';
 import { ModalForm } from './ModalForm';
-import { DataState, SingleColumnType, FormValues } from './data.d';
+import { DataState, SingleColumnType } from './data.d';
 import * as helper from './helper';
 import styles from './style.less';
 
@@ -36,38 +32,78 @@ interface basicListProps {}
 
 const BasicList: FC<basicListProps> = () => {
   const [selectedKeys, setSelectedKeys] = useState([]);
-  const [searchFormInitialValues, setSearchFormInitialValues] = useState({});
   const [searchExpand, setSearchExpand] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
-  const [modalUri, setModalUri] = useState<string>();
-  const [modalLoading, setModalLoading] = useState(false);
+  const [formUri, setFormUri] = useState<string>();
+  const [formUriMethod, setFormUriMethod] = useState<string>();
   const [listData, setListData] = useState<DataState>();
+  const [paginationQuery, setPaginationQuery] = useState('');
+  const [sortQuery, setSortQuery] = useState('&sort=id&order=desc');
+  const [searchQuery, setSearchQuery] = useState('');
   const [searchForm] = Form.useForm();
   const { confirm } = Modal;
   const { RangePicker } = DatePicker;
 
-  const { data, loading } = useRequest('http://www.test.com/backend/admins');
+  const { data, loading, run } = useRequest((requestQuery) => {
+    const queryString = requestQuery || '';
+    return {
+      url: `http://www.test.com/backend/admins?${queryString}`,
+    };
+  });
 
   useEffect(() => {
     setListData(data);
   }, [data]);
 
-  const showModal = (uri: any, id: any) => {
+  const reloadHandler = () => {
+    run(`${searchQuery}${sortQuery}${paginationQuery}`);
+  };
+
+  const showModal = (uri: string, method: string, id?: number) => {
     // console.log(`${uri}/${id}`);
-    setModalLoading(true);
-    setModalUri(`${uri}/${id}`);
+    setFormUriMethod(method);
+    if (id) {
+      setFormUri(`${uri}/${id}`);
+    } else {
+      setFormUri(`${uri}`);
+    }
+
     setModalVisible(true);
   };
 
   /**
    *
-   * @param type Action Type: modal/link
-   * @param action Real Action: url/action
-   * @param value Record
+   * @param type action type: modal / delete etc...
+   * @param uri handle uri
+   * @param method http method of uri
+   * @param record current record
    */
-  const doAction = (type: string, action: any, value: any) => {
-    if (type === 'modal') {
-      showModal(action, value);
+  const actionHandler = (type: string, uri: string, method: string, record?: any) => {
+    switch (type) {
+      case 'modal':
+        if (record) {
+          showModal(uri, method, record.id);
+        } else {
+          showModal(uri, method);
+        }
+        break;
+      case 'reload':
+        reloadHandler();
+        break;
+      case 'delete':
+        request(`${uri}/${record.id}`, {
+          method,
+          data: record,
+        })
+          .then((response) => {
+            message.success(response.message);
+            reloadHandler();
+          })
+          .catch(() => {});
+        break;
+
+      default:
+        break;
     }
   };
 
@@ -81,7 +117,7 @@ const BasicList: FC<basicListProps> = () => {
     },
   ];
   // Build Column
-  if (listData && listData.layout) {
+  if (listData?.layout) {
     listData.layout.tableColumn.forEach((column: any) => {
       const thisColumn = column;
       // tag
@@ -103,18 +139,41 @@ const BasicList: FC<basicListProps> = () => {
         };
       }
 
+      if (thisColumn.type === 'datetime') {
+        thisColumn.render = (text: any) => {
+          return moment(text).format('YYYY-MM-DD HH:mm:ss');
+        };
+      }
+
       // action
-      if (thisColumn.type === 'action') {
+      if (thisColumn.type === 'actions') {
         thisColumn.render = (text: any, record: any) => {
           return (
             <Space>
               {thisColumn.actions.map((action: any) => {
                 if (action.component === 'button') {
+                  // Popconfirm
+                  if (action.action === 'delete') {
+                    return (
+                      <Popconfirm
+                        title={`${record[Object.keys(record)[1]]} - (ID:${record.id})`}
+                        onConfirm={() => {
+                          actionHandler(action.action, action.uri, action.method, record);
+                        }}
+                        okText="Delete"
+                        okType="danger"
+                        key={action.action}
+                      >
+                        <Button type={action.type}>{action.text}</Button>
+                      </Popconfirm>
+                    );
+                  }
+
                   return (
                     <Button
                       type={action.type}
                       onClick={() => {
-                        doAction(action.onClick, action.action, record.id);
+                        actionHandler(action.action, action.uri, action.method, record);
                       }}
                       key={action.action}
                     >
@@ -132,30 +191,6 @@ const BasicList: FC<basicListProps> = () => {
       columns.push(thisColumn);
     });
   }
-
-  // const columns = [
-  //   {
-  //     title: 'Create Time',
-  //     dataIndex: 'create_time',
-  //     key: 'create_time',
-  //     sorter: true,
-  //     render: (text: any) => {
-  //       return moment(text).format('YYYY-MM-DD HH:mm:ss');
-  //     },
-  //   },
-  //   {
-  //     title: 'Action',
-  //     key: 'action',
-  //     render: (text: any, record: any) => {
-  //       return (
-  //         <Space>
-  //           <Button type="dashed">Edit</Button>
-  //           <Button type="dashed">Delete</Button>
-  //         </Space>
-  //       );
-  //     },
-  //   },
-  // ];
 
   const batchDeleteHandler = () => {
     confirm({
@@ -175,10 +210,11 @@ const BasicList: FC<basicListProps> = () => {
   };
 
   const tableChangeHandler = (pagination: any, filters: any, sorter: any) => {
-    const queryString = helper.sorter_build(sorter);
+    const sortQueryString = helper.sorter_build(sorter);
 
-    if (queryString) {
-      message.success(queryString);
+    if (sortQueryString) {
+      run(`${searchQuery}${sortQueryString}`);
+      setSortQuery(sortQueryString);
     }
   };
 
@@ -210,10 +246,26 @@ const BasicList: FC<basicListProps> = () => {
             setSearchExpand(!searchExpand);
           }}
         />
-        <Button type="primary">
+        {listData?.layout.tableToolBar.map((element: any) => {
+          if (element.component === 'button') {
+            return (
+              <Button
+                type={element.type}
+                onClick={() => {
+                  actionHandler(element.action, element.uri, element.method);
+                }}
+                key={element.action}
+              >
+                {element.text}
+              </Button>
+            );
+          }
+          return null;
+        })}
+        {/* <Button type="primary">
           <PlusOutlined />
           Add
-        </Button>
+        </Button> */}
       </Space>
     );
   };
@@ -240,25 +292,23 @@ const BasicList: FC<basicListProps> = () => {
     );
   };
 
-  const pageChangeHandler = (page: number, pageSize?: number) => {
-    message.success(`&page=${page}&per_page=${pageSize}`);
-  };
-
-  const pageSizeHandler = (current: number, size: number) => {
-    message.success(`&page=${current}&per_page=${size}`);
+  const paginationChangeHandler = (page: number, pageSize?: number) => {
+    const pageQuery = `&page=${page}&per_page=${pageSize}`;
+    run(`${searchQuery}${sortQuery}${pageQuery}`);
+    setPaginationQuery(pageQuery);
   };
 
   const paginationLayout = () => {
     return (
       <Pagination
-        total={85}
+        total={listData?.meta.total}
         showSizeChanger
         showQuickJumper
         showTotal={(total) => `Total ${total} items`}
-        onChange={pageChangeHandler}
-        onShowSizeChange={pageSizeHandler}
-        current={1}
-        pageSize={1}
+        onChange={paginationChangeHandler}
+        onShowSizeChange={paginationChangeHandler}
+        current={listData?.meta.page}
+        pageSize={listData ? listData.meta.per_page : 10}
       />
     );
   };
@@ -276,117 +326,111 @@ const BasicList: FC<basicListProps> = () => {
     );
   };
 
-  useEffect(() => {
-    setSearchFormInitialValues({
-      name: 'zhang',
-      create_time: [moment('2020/05/11 14:22:30'), moment('2020/05/18 14:22:30')],
-      projects: [2],
-    });
-  }, [1]);
-
-  const searchFormReset = () => {
-    setSearchFormInitialValues({});
+  const searchFormClear = () => {
     searchForm.resetFields();
+    searchForm.submit();
   };
 
-  const searchFormHandler = (values: any) => {
-    message.success(JSON.stringify(values));
-  };
-
-  const stopLoadingHandler = () => {
-    setModalLoading(false);
-  };
-  const modalCancelHandler = () => {
-    setModalUri('');
-    setModalVisible(false);
-    stopLoadingHandler();
-  };
-  const modalFinishHandler = async (values: FormValues) => {
-    const submitValues = {};
+  const searchFormHandler = async (values: any) => {
+    let searchQueryString = '';
 
     Object.keys(values).forEach((key) => {
-      submitValues[key] = values[key];
-      if (moment.isMoment(values[key])) {
-        submitValues[key] = values[key].format();
+      const thisValue = values[key];
+      const multiValueArray: string[] = [];
+      if (thisValue) {
+        if (typeof thisValue === 'object') {
+          Object.keys(thisValue).forEach((innerKey) => {
+            if (moment.isMoment(thisValue[innerKey])) {
+              multiValueArray.push(thisValue[innerKey].utc().format());
+            } else {
+              multiValueArray.push(thisValue[innerKey]);
+            }
+          });
+
+          searchQueryString = `${searchQueryString}&${key}=${encodeURIComponent(
+            join(multiValueArray, ','),
+          )}`;
+        } else {
+          searchQueryString = `${searchQueryString}&${key}=${encodeURIComponent(thisValue)}`;
+        }
       }
     });
-
-    try {
-      await request(modalUri, {
-        method: 'put',
-        data: submitValues,
-      });
-      message.success('Update successfully.');
-      setModalVisible(false);
-    } catch (error) {
-      message.error('Update failed.');
-    }
+    run(`${searchQueryString}${sortQuery}`);
+    setSearchQuery(searchQueryString);
   };
+
+  const resetFormValues = () => {};
+
+  const modalCancelHandler = () => {
+    setFormUri('');
+    resetFormValues();
+    setModalVisible(false);
+  };
+
+  const preFinishHandler = (uri: string, method: string) => {
+    setFormUri(uri);
+    setFormUriMethod(method);
+  };
+
   const searchLayout = () => {
     return (
       <Card
         bordered={false}
         className={styles.searchCard}
-        title="Search"
+        title={false}
         style={{ display: searchExpand ? 'block' : 'none' }}
       >
         <Form
           layout="inline"
           form={searchForm}
-          initialValues={searchFormInitialValues}
+          // initialValues={searchFormInitialValues}
           onFinish={searchFormHandler}
         >
           <Form.Item name="id" label="ID">
             <InputNumber />
           </Form.Item>
-          {listData &&
-            listData.layout &&
-            listData.layout.tableColumn.map((column: any) => {
-              switch (column.type) {
-                case 'datetime':
-                  return (
-                    <Form.Item name={column.key} label={column.title} key={column.key}>
-                      <RangePicker
-                        ranges={{
-                          Today: [moment(), moment()],
-                          'Last 7 Days': [moment().subtract(7, 'd'), moment()],
-                          'Last 30 Days': [moment().subtract(30, 'days'), moment()],
-                          'Last Month': [
-                            moment().subtract(1, 'months').startOf('month'),
-                            moment().subtract(1, 'months').endOf('month'),
-                          ],
-                        }}
-                        showTime
-                        format="YYYY/MM/DD HH:mm:ss"
-                      />
-                    </Form.Item>
-                  );
-                case 'tag':
-                  return (
-                    <Form.Item name={column.key} label={column.title} key={column.key}>
-                      <Select
-                        mode="multiple"
-                        placeholder="Please select"
-                        style={{ width: '100px' }}
-                      >
-                        {column.values.map((item: any, key: number) => (
-                          <Select.Option value={key} key={item}>
-                            {item}
-                          </Select.Option>
-                        ))}
-                      </Select>
-                    </Form.Item>
-                  );
-                case 'action':
-                  return null;
-                default:
-                  return (
-                    <Form.Item name={column.key} label={column.title} key={column.key}>
-                      <Input />
-                    </Form.Item>
-                  );
-              }
-            })}
+          {listData?.layout.tableColumn.map((column: any) => {
+            switch (column.type) {
+              case 'datetime':
+                return (
+                  <Form.Item name={column.key} label={column.title} key={column.key}>
+                    <RangePicker
+                      ranges={{
+                        Today: [moment(), moment()],
+                        'Last 7 Days': [moment().subtract(7, 'd'), moment()],
+                        'Last 30 Days': [moment().subtract(30, 'days'), moment()],
+                        'Last Month': [
+                          moment().subtract(1, 'months').startOf('month'),
+                          moment().subtract(1, 'months').endOf('month'),
+                        ],
+                      }}
+                      showTime
+                      format="YYYY-MM-DD HH:mm:ss"
+                    />
+                  </Form.Item>
+                );
+              case 'tag':
+                return (
+                  <Form.Item name={column.key} label={column.title} key={column.key}>
+                    <Select mode="multiple" placeholder="Please select" style={{ width: '100px' }}>
+                      {column.values.map((item: any, key: number) => (
+                        <Select.Option value={key} key={item}>
+                          {item}
+                        </Select.Option>
+                      ))}
+                    </Select>
+                  </Form.Item>
+                );
+              case 'actions':
+                return null;
+              default:
+                return (
+                  <Form.Item name={column.key} label={column.title} key={column.key}>
+                    <Input />
+                  </Form.Item>
+                );
+            }
+          })}
 
           <Form.Item>
             <Button type="primary" htmlType="submit">
@@ -394,7 +438,7 @@ const BasicList: FC<basicListProps> = () => {
             </Button>
           </Form.Item>
           <Form.Item>
-            <Button htmlType="button" onClick={searchFormReset}>
+            <Button htmlType="button" onClick={searchFormClear}>
               Clear Search
             </Button>
           </Form.Item>
@@ -427,19 +471,14 @@ const BasicList: FC<basicListProps> = () => {
           onCancel={modalCancelHandler}
           footer={null}
           maskClosable={false}
-          title="edit"
+          title={false}
         >
-          <Spin
-            spinning={modalLoading}
-            tip="Loading, please wait..."
-            className={styles.modalSpin}
-          />
           <ModalForm
-            visible={modalVisible}
-            modalUri={modalUri}
-            stopLoading={stopLoadingHandler}
+            formUri={formUri}
+            formUriMethod={formUriMethod}
             cancelHandler={modalCancelHandler}
-            onFinish={modalFinishHandler}
+            preFinish={preFinishHandler}
+            reloadHandler={reloadHandler}
           />
         </Modal>
       </PageHeaderWrapper>
