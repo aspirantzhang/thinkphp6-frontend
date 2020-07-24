@@ -9,10 +9,9 @@ import styles from './style.less';
 export const ModalForm = (props: any) => {
   const { formUri, cancelHandler, reloadHandler } = props;
   const [mainData, setMainData] = useState<PageDataState>();
+  const [buttonLoading, setButtonLoading] = useState<boolean>(false);
   const [spinLoading, setSpinLoading] = useState<boolean>(true);
   const [form] = Form.useForm();
-
-  // setSpinLoading(true);
 
   useEffect(() => {
     if (formUri) {
@@ -24,10 +23,14 @@ export const ModalForm = (props: any) => {
   }, [formUri]);
 
   async function getData(uri: string) {
-    const rawData = await request(uri);
-
-    setSpinLoading(false);
-    setMainData(rawData.data);
+    try {
+      const rawData = await request(uri);
+      setSpinLoading(false);
+      setMainData(rawData.data);
+    } catch (error) {
+      setSpinLoading(false);
+      cancelHandler();
+    }
   }
 
   const layout = {
@@ -62,10 +65,6 @@ export const ModalForm = (props: any) => {
     form.setFieldsValue(formData);
   }
 
-  const onFinishFailed = (errorInfo: any) => {
-    message.error(errorInfo.errorFields[0].errors[0]);
-  };
-
   const actionHandler = (type: string, uri: string, method: string) => {
     switch (type) {
       case 'submit':
@@ -84,6 +83,8 @@ export const ModalForm = (props: any) => {
   };
 
   const onFinish = async (values: FormValues) => {
+    setButtonLoading(true);
+    const processingHide = message.loading('Processing...');
     const submitValues = {};
     let uri = '';
     let method = '';
@@ -108,13 +109,22 @@ export const ModalForm = (props: any) => {
       data: submitValues,
     })
       .then((response) => {
+        processingHide();
         message.success(response.message);
         cancelHandler();
         reloadHandler();
+        setButtonLoading(false);
       })
-      .catch(() => {});
+      .catch(() => {
+        processingHide();
+        setButtonLoading(false);
+      });
 
     // console.log(result);
+  };
+
+  const onFinishFailed = (errorInfo: any) => {
+    message.error(errorInfo.errorFields[0].errors[0]);
   };
 
   return (
@@ -194,6 +204,7 @@ export const ModalForm = (props: any) => {
                                   <Button
                                     type={action.type}
                                     key={action.action}
+                                    loading={buttonLoading}
                                     onClick={() => {
                                       actionHandler(action.action, action.uri, action.method);
                                     }}

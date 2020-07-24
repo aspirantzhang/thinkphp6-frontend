@@ -373,11 +373,6 @@ const BasicList: FC<basicListProps> = () => {
     setModalVisible(false);
   };
 
-  // const preFinishHandler = (uri: string, method: string) => {
-  //   setFormUri(uri);
-  //   setFormUriMethod(method);
-  // };
-
   const searchLayout = () => {
     return (
       <Card
@@ -386,12 +381,7 @@ const BasicList: FC<basicListProps> = () => {
         title={false}
         style={{ display: searchExpand ? 'block' : 'none' }}
       >
-        <Form
-          layout="inline"
-          form={searchForm}
-          // initialValues={searchFormInitialValues}
-          onFinish={searchFormHandler}
-        >
+        <Form layout="inline" form={searchForm} onFinish={searchFormHandler}>
           <Form.Item name="id" label="ID">
             <InputNumber />
           </Form.Item>
@@ -483,7 +473,6 @@ const BasicList: FC<basicListProps> = () => {
             formUri={formUri}
             formUriMethod={formUriMethod}
             cancelHandler={modalCancelHandler}
-            // preFinish={preFinishHandler}
             reloadHandler={reloadHandler}
           />
         </Modal>
