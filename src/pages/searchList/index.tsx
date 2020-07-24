@@ -28,9 +28,9 @@ import { DataState, SingleColumnType } from './data.d';
 import * as helper from './helper';
 import styles from './style.less';
 
-interface basicListProps {}
+interface BasicListProps {}
 
-const BasicList: FC<basicListProps> = () => {
+const BasicList: FC<BasicListProps> = () => {
   const [selectedKeys, setSelectedKeys] = useState([]);
   const [searchExpand, setSearchExpand] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
@@ -216,7 +216,7 @@ const BasicList: FC<basicListProps> = () => {
   };
 
   const tableChangeHandler = (pagination: any, filters: any, sorter: any) => {
-    const sortQueryString = helper.sorter_build(sorter);
+    const sortQueryString = helper.buildSorter(sorter);
 
     if (sortQueryString) {
       run(`${searchQuery}${sortQueryString}`);
