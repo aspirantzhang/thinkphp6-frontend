@@ -1,5 +1,5 @@
 import React, { useEffect, useState, FC } from 'react';
-import { useRequest, request } from 'umi';
+import { useRequest, request, history } from 'umi';
 import { ColumnsType } from 'antd/es/table';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import moment from 'moment';
@@ -60,7 +60,6 @@ const BasicList: FC<basicListProps> = () => {
   };
 
   const showModal = (uri: string, method: string, id?: number) => {
-    // console.log(`${uri}/${id}`);
     setFormUriMethod(method);
     if (id) {
       setFormUri(`${uri}/${id}`);
@@ -85,6 +84,13 @@ const BasicList: FC<basicListProps> = () => {
           showModal(uri, method, record.id);
         } else {
           showModal(uri, method);
+        }
+        break;
+      case 'page':
+        if (record) {
+          history.push(`/search-list/page?uri=${uri}/${record.id}`);
+        } else {
+          history.push(`/search-list/page?uri=${uri}`);
         }
         break;
       case 'reload':
@@ -367,10 +373,10 @@ const BasicList: FC<basicListProps> = () => {
     setModalVisible(false);
   };
 
-  const preFinishHandler = (uri: string, method: string) => {
-    setFormUri(uri);
-    setFormUriMethod(method);
-  };
+  // const preFinishHandler = (uri: string, method: string) => {
+  //   setFormUri(uri);
+  //   setFormUriMethod(method);
+  // };
 
   const searchLayout = () => {
     return (
@@ -477,7 +483,7 @@ const BasicList: FC<basicListProps> = () => {
             formUri={formUri}
             formUriMethod={formUriMethod}
             cancelHandler={modalCancelHandler}
-            preFinish={preFinishHandler}
+            // preFinish={preFinishHandler}
             reloadHandler={reloadHandler}
           />
         </Modal>

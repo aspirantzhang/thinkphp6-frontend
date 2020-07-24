@@ -42,7 +42,6 @@ export default defineConfig({
         },
       ],
     },
-
     {
       path: '/welcome',
       name: 'welcome',
@@ -75,6 +74,11 @@ export default defineConfig({
       icon: 'table',
       path: '/search-list',
       component: './searchList',
+    },
+    {
+      path: '/search-list/page',
+      // layout: false,
+      component: './searchList/page',
     },
     {
       path: '/',
