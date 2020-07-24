@@ -29,8 +29,8 @@ const Page: FC<PageProps> = () => {
   const params = getPageQuery();
   const pageUri = params.uri as string;
 
-  // const { formUri, cancelHandler, reloadHandler } = props;
   const [mainData, setMainData] = useState<PageDataState>();
+  const [buttonLoading, setButtonLoading] = useState<boolean>(false);
   const [spinLoading, setSpinLoading] = useState<boolean>(true);
   const [form] = Form.useForm();
 
@@ -104,6 +104,8 @@ const Page: FC<PageProps> = () => {
   };
 
   const onFinish = async (values: FormValues) => {
+    setButtonLoading(true);
+    const processingHide = message.loading('Processing...');
     const submitValues = {};
     let uri = '';
     let method = '';
@@ -128,13 +130,15 @@ const Page: FC<PageProps> = () => {
       data: submitValues,
     })
       .then((response) => {
+        processingHide();
         message.success(response.message);
         cancelHandler();
-        // reloadHandler();
+        setButtonLoading(false);
       })
-      .catch(() => {});
-
-    // console.log(result);
+      .catch(() => {
+        processingHide();
+        setButtonLoading(false);
+      });
   };
 
   const onFinishFailed = (errorInfo: any) => {
@@ -149,6 +153,7 @@ const Page: FC<PageProps> = () => {
             <Button
               type={action.type}
               key={action.action}
+              loading={buttonLoading}
               onClick={() => {
                 actionHandler(action.action, action.uri, action.method);
               }}
