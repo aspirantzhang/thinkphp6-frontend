@@ -1,6 +1,7 @@
 import React, { useEffect, useState, FC } from 'react';
 import { useRequest, request, history } from 'umi';
 import { ColumnsType } from 'antd/es/table';
+import { getPageParam } from '@/utils/utils';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import moment from 'moment';
 import { SearchOutlined, DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
@@ -44,12 +45,21 @@ const BasicList: FC<BasicListProps> = () => {
   const { confirm } = Modal;
   const { RangePicker } = DatePicker;
 
-  const { data, loading, run } = useRequest((requestQuery) => {
+  // console.log(history.location);
+
+  const initPageUri = getPageParam();
+  const pageUri = `/api/${initPageUri}`;
+
+  const { data, loading, run } = useRequest((requestQuery?) => {
     const queryString = requestQuery || '';
     return {
-      url: `http://www.test.com/backend/admins?${queryString}`,
+      url: `${pageUri}?${queryString}`,
     };
   });
+
+  useEffect(() => {
+    run();
+  }, [1]);
 
   useEffect(() => {
     setListData(data);

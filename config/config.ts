@@ -18,7 +18,7 @@ export default defineConfig({
   },
   locale: {
     // default zh-CN
-    default: 'zh-CN',
+    default: 'en-US',
     // default true, when it is true, will use `navigator.language` overwrite default
     antd: true,
     baseNavigator: true,
@@ -69,10 +69,22 @@ export default defineConfig({
       path: '/list',
       component: './ListTableList',
     },
+    // {
+    //   path: '/search-list/:uri',
+    //   name: 'search-list2',
+    //   hideInMenu: false,
+    //   component: './searchList',
+    // },
     {
-      name: 'search-list',
+      name: 'admin-list',
       icon: 'table',
-      path: '/search-list',
+      path: '/search-list/backend/admins',
+      component: './searchList',
+    },
+    {
+      name: 'group-list',
+      icon: 'table',
+      path: '/search-list/backend/groups',
       component: './searchList',
     },
     {
