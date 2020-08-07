@@ -12,6 +12,7 @@ import {
   message,
   Tag,
   Tabs,
+  TreeSelect,
 } from 'antd';
 import moment from 'moment';
 import { request, history } from 'umi';
@@ -223,6 +224,28 @@ const Page: FC<PageProps> = () => {
                                   valuePropName="checked"
                                 >
                                   <Switch />
+                                </Form.Item>
+                              );
+                            case 'tree':
+                              return (
+                                <Form.Item
+                                  name={column.key}
+                                  label={column.title}
+                                  key={column.key}
+                                  // valuePropName="checked"
+                                >
+                                  <TreeSelect
+                                    showSearch
+                                    style={{ width: '100%' }}
+                                    dropdownStyle={{ maxHeight: 600, overflow: 'auto' }}
+                                    treeData={column.data}
+                                    placeholder="Please select"
+                                    multiple
+                                    treeDefaultExpandAll
+                                    treeCheckable
+                                    showCheckedStrategy="SHOW_PARENT"
+                                    allowClear
+                                  />
                                 </Form.Item>
                               );
                             case 'actions':

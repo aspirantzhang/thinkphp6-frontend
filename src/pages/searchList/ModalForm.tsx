@@ -1,5 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { Form, Input, DatePicker, Switch, Button, Space, message, Tag, Spin } from 'antd';
+import {
+  Form,
+  Input,
+  DatePicker,
+  Switch,
+  Button,
+  Space,
+  message,
+  Tag,
+  Spin,
+  TreeSelect,
+} from 'antd';
 import moment from 'moment';
 import { request } from 'umi';
 import { unset } from 'lodash';
@@ -184,6 +195,28 @@ export const ModalForm = (props: any) => {
                       valuePropName="checked"
                     >
                       <Switch />
+                    </Form.Item>
+                  );
+                case 'tree':
+                  return (
+                    <Form.Item
+                      name={column.key}
+                      label={column.title}
+                      key={column.key}
+                      // valuePropName="checked"
+                    >
+                      <TreeSelect
+                        showSearch
+                        style={{ width: '100%' }}
+                        dropdownStyle={{ maxHeight: 600, overflow: 'auto' }}
+                        treeData={column.data}
+                        placeholder="Please select"
+                        multiple
+                        treeDefaultExpandAll
+                        treeCheckable
+                        showCheckedStrategy="SHOW_PARENT"
+                        allowClear
+                      />
                     </Form.Item>
                   );
                 case 'actions':
