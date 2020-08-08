@@ -22,6 +22,7 @@ import {
   Tag,
   Select,
   Popconfirm,
+  TreeSelect,
 } from 'antd';
 import { join } from 'lodash';
 import { ModalForm } from './ModalForm';
@@ -136,8 +137,9 @@ const BasicList: FC<BasicListProps> = () => {
   if (listData?.layout) {
     listData.layout.tableColumn.forEach((column: any) => {
       const thisColumn = column;
+
       // tag
-      if (thisColumn.type === 'tag') {
+      if (thisColumn.type === 'tag' || thisColumn.type === 'tree') {
         thisColumn.render = (text: any) => {
           return (
             <Space>
@@ -204,7 +206,9 @@ const BasicList: FC<BasicListProps> = () => {
         };
       }
 
-      columns.push(thisColumn);
+      if (thisColumn.hideInColumn !== true) {
+        columns.push(thisColumn);
+      }
     });
   }
 
@@ -425,6 +429,23 @@ const BasicList: FC<BasicListProps> = () => {
                         </Select.Option>
                       ))}
                     </Select>
+                  </Form.Item>
+                );
+              case 'tree':
+                return (
+                  <Form.Item name={column.key} label={column.title} key={column.key}>
+                    <TreeSelect
+                      showSearch
+                      style={{ width: '250px' }}
+                      dropdownStyle={{ maxHeight: 600, overflow: 'auto' }}
+                      treeData={column.data}
+                      placeholder="Please select"
+                      multiple
+                      treeDefaultExpandAll
+                      treeCheckable
+                      showCheckedStrategy="SHOW_PARENT"
+                      allowClear
+                    />
                   </Form.Item>
                 );
               case 'actions':
