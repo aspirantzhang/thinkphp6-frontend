@@ -4,7 +4,7 @@ import { ColumnsType } from 'antd/es/table';
 import { getPageParam } from '@/utils/utils';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import moment from 'moment';
-import { SearchOutlined, DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
+import { SearchOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import {
   Card,
   Row,
@@ -33,7 +33,8 @@ import styles from './style.less';
 interface BasicListProps {}
 
 const BasicList: FC<BasicListProps> = () => {
-  const [selectedKeys, setSelectedKeys] = useState([]);
+  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+  const [selectedRowData, setSelectedRowData] = useState([]);
   const [searchExpand, setSearchExpand] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [formUri, setFormUri] = useState<string>();
@@ -42,6 +43,7 @@ const BasicList: FC<BasicListProps> = () => {
   const [paginationQuery, setPaginationQuery] = useState('');
   const [sortQuery, setSortQuery] = useState('&sort=id&order=desc');
   const [searchQuery, setSearchQuery] = useState('');
+
   const [searchForm] = Form.useForm();
   const { confirm } = Modal;
   const { RangePicker } = DatePicker;
@@ -81,6 +83,31 @@ const BasicList: FC<BasicListProps> = () => {
     setModalVisible(true);
   };
 
+  const buildBatchOverview = () => {
+    const columns: ColumnsType<SingleColumnType> = [
+      {
+        title: 'ID',
+        dataIndex: 'id',
+        key: 'id',
+      },
+      {
+        title: listData?.layout.tableColumn[0].title,
+        dataIndex: listData?.layout.tableColumn[0].dataIndex,
+        key: listData?.layout.tableColumn[0].key,
+      },
+    ];
+
+    return (
+      <Table
+        dataSource={selectedRowData}
+        columns={columns}
+        pagination={false}
+        bordered
+        size="small"
+      />
+    );
+  };
+
   /**
    *
    * @param type action type: modal / delete etc...
@@ -117,6 +144,38 @@ const BasicList: FC<BasicListProps> = () => {
             reloadHandler();
           })
           .catch(() => {});
+        break;
+      case 'batchDelete':
+        confirm({
+          title: `Overview of Batch ${record.text} Operation`,
+          icon: <ExclamationCircleOutlined />,
+          content: buildBatchOverview(),
+          okText: `Sure to ${record.text}`,
+          okType: 'danger',
+          cancelText: 'Cancel',
+          onOk() {
+            const processingHide = message.loading('Processing...');
+            request(`${uri}`, {
+              method,
+              data: {
+                idArray: selectedRowKeys,
+              },
+            })
+              .then((response) => {
+                message.success(response.message);
+                reloadHandler();
+                processingHide();
+                setSelectedRowData([]);
+                setSelectedRowKeys([]);
+              })
+              .catch(() => {
+                processingHide();
+              });
+          },
+          onCancel() {
+            message.error(`${record.text} Operation Cancelled.`);
+          },
+        });
         break;
 
       default:
@@ -212,23 +271,6 @@ const BasicList: FC<BasicListProps> = () => {
     });
   }
 
-  const batchDeleteHandler = () => {
-    confirm({
-      title: 'Delete Overview',
-      icon: <ExclamationCircleOutlined />,
-      content: JSON.stringify(selectedKeys),
-      okText: 'Sure to Delete',
-      okType: 'danger',
-      cancelText: 'Cancel',
-      onOk() {
-        message.success(JSON.stringify(selectedKeys));
-      },
-      onCancel() {
-        message.error('Operation Cancelled.');
-      },
-    });
-  };
-
   const tableChangeHandler = (pagination: any, filters: any, sorter: any) => {
     const sortQueryString = helper.buildSorter(sorter);
 
@@ -239,18 +281,28 @@ const BasicList: FC<BasicListProps> = () => {
   };
 
   const batchToolBar = () => {
-    const hasSelected = selectedKeys.length > 0;
+    const hasSelected = selectedRowKeys.length > 0;
     return (
       <div style={{ display: hasSelected ? 'block' : 'none' }}>
         <Space>
-          <Button type="dashed">Selected: {selectedKeys.length}</Button>
-          <Button
-            type="primary"
-            shape="circle"
-            icon={<DeleteOutlined />}
-            onClick={batchDeleteHandler}
-            danger
-          />
+          <Button type="dashed">Selected: {selectedRowKeys.length}</Button>
+          {listData?.layout.batchToolBar.map((element: any) => {
+            if (element.component === 'button') {
+              return (
+                <Button
+                  type={element.type}
+                  shape="round"
+                  onClick={() => {
+                    actionHandler(element.action, element.uri, element.method, element);
+                  }}
+                  key={element.action}
+                >
+                  {element.text}
+                </Button>
+              );
+            }
+            return null;
+          })}
         </Space>
       </div>
     );
@@ -290,12 +342,13 @@ const BasicList: FC<BasicListProps> = () => {
     );
   };
 
-  const onSelectChange = (selectedRowKeys: any) => {
-    setSelectedKeys(selectedRowKeys);
+  const onSelectChange = (rowKeys: any, selectedRows: any) => {
+    setSelectedRowKeys(rowKeys);
+    setSelectedRowData(selectedRows);
   };
 
-  const rowSelection = {
-    selectedKeys,
+  const tableRowSelection = {
+    selectedRowKeys,
     onChange: onSelectChange,
   };
 
@@ -486,7 +539,7 @@ const BasicList: FC<BasicListProps> = () => {
               pagination={false}
               rowKey="id"
               dataSource={listData && listData.dataSource}
-              rowSelection={rowSelection}
+              rowSelection={tableRowSelection}
               onChange={tableChangeHandler}
               loading={loading}
             />

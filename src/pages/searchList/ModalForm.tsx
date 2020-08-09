@@ -166,6 +166,7 @@ export const ModalForm = (props: any) => {
           initialValues={{
             status: true,
           }}
+          preserve={false}
         >
           {mainData &&
             mainData.layout &&
