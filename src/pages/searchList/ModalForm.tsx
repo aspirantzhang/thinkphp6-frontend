@@ -165,8 +165,8 @@ export const ModalForm = (props: any) => {
           onFinishFailed={onFinishFailed}
           initialValues={{
             status: true,
+            create_time: moment(),
           }}
-          preserve={false}
         >
           {mainData &&
             mainData.layout &&

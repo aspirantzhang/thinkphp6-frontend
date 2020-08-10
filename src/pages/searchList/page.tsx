@@ -190,6 +190,7 @@ const Page: FC<PageProps> = () => {
                       onFinishFailed={onFinishFailed}
                       initialValues={{
                         status: true,
+                        create_time: moment(),
                       }}
                     >
                       {mainData &&
