@@ -258,7 +258,7 @@ export const ModalForm = (props: any) => {
                 default:
                   return (
                     <Form.Item name={column.key} label={column.title} key={column.key}>
-                      <Input />
+                      <Input disabled={column.disabled} />
                     </Form.Item>
                   );
               }
