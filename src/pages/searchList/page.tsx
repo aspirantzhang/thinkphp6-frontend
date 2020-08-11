@@ -227,6 +227,20 @@ const Page: FC<PageProps> = () => {
                                   <Switch />
                                 </Form.Item>
                               );
+                            case 'parent':
+                              return (
+                                <Form.Item name={column.key} label={column.title} key={column.key}>
+                                  <TreeSelect
+                                    showSearch
+                                    style={{ width: '100%' }}
+                                    dropdownStyle={{ maxHeight: 600, overflow: 'auto' }}
+                                    treeData={column.data}
+                                    placeholder="Please select"
+                                    treeDefaultExpandAll
+                                    allowClear
+                                  />
+                                </Form.Item>
+                              );
                             case 'tree':
                               return (
                                 <Form.Item
