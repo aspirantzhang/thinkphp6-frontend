@@ -10,13 +10,13 @@
   padding: 15px 0 !important;
 }
 .toolBarLeft {
-  // .textAlignLeft();
   .padding15();
 }
 .toolBarRight {
   .textAlignRight();
   .padding15();
 }
+
 @media screen and (max-width: @screen-xs) {
   :global(.ant-pagination-total-text) {
     display: block;
@@ -73,4 +73,16 @@
 .mainCard {
   padding-top: 25px;
   border: none;
+}
+:global(.ant-table-row-level-1) {
+  color: rgba(0, 154, 253, 0.9);
+}
+:global(.ant-table-row-level-2) {
+  color: rgba(253, 99, 0, 0.9);
+}
+:global(.ant-table-row-level-3) {
+  color: rgba(44, 145, 51, 0.9);
+}
+:global(.ant-table-row-level-4) {
+  color: rgba(145, 44, 138, 0.9);
 }
