@@ -3,8 +3,7 @@ import { Row, Col, Card, Form, Input, Space, message, Tag, Tabs, Spin } from 'an
 import moment from 'moment';
 import { request, history } from 'umi';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import { buildFields, buildActions } from '@/components/Form';
-import { unset } from 'lodash';
+import { buildFields, buildActions, preFinish, preSetFields } from '@/components/Form';
 import { getPageQuery } from '@/utils/utils';
 import { PageDataState, FormValues } from './data';
 import styles from './style.less';
@@ -47,34 +46,6 @@ const SinglePage: FC<PageProps> = () => {
     };
   }, [pageUri]);
 
-  const layout = {
-    labelCol: { span: 4 },
-    wrapperCol: { span: 20 },
-  };
-
-  // Set form fields values
-  if (mainData?.dataSource && mainData.layout) {
-    const formData: any[] = [];
-    mainData.layout.map((column: any) => {
-      switch (column.type) {
-        case 'datetime':
-          formData[column.key] = moment(mainData.dataSource[column.key], moment.ISO_8601);
-          break;
-        case 'tag':
-          formData[column.key] = Boolean(mainData.dataSource[column.key]);
-          break;
-        case 'action':
-          break;
-        default:
-          // type equals 'text' or others
-          formData[column.key] = mainData.dataSource[column.key];
-          break;
-      }
-      return null;
-    });
-    form.setFieldsValue(formData);
-  }
-
   const actionHandler = (type: string, uri: string, method: string) => {
     switch (type) {
       case 'submit':
@@ -95,24 +66,7 @@ const SinglePage: FC<PageProps> = () => {
   const onFinish = async (values: FormValues) => {
     setActionsLoading(true);
     const processingHide = message.loading('Processing...');
-    const submitValues = {};
-    let uri = '';
-    let method = '';
-
-    Object.keys(values).forEach((key) => {
-      submitValues[key] = values[key];
-      if (moment.isMoment(values[key])) {
-        submitValues[key] = values[key].format();
-      }
-      if (key === 'uri') {
-        uri = values[key];
-        unset(submitValues, key);
-      }
-      if (key === 'method') {
-        method = values[key];
-        unset(submitValues, key);
-      }
-    });
+    const { submitValues, uri, method } = preFinish(values);
 
     request(uri, {
       method,
@@ -133,6 +87,15 @@ const SinglePage: FC<PageProps> = () => {
   const onFinishFailed = (errorInfo: any) => {
     message.error(errorInfo.errorFields[0].errors[0]);
   };
+
+  const layout = {
+    labelCol: { span: 4 },
+    wrapperCol: { span: 20 },
+  };
+
+  if (mainData?.layout && mainData.dataSource) {
+    form.setFieldsValue(preSetFields(mainData));
+  }
 
   return (
     <>
@@ -178,10 +141,10 @@ const SinglePage: FC<PageProps> = () => {
                         }
                         return null;
                       })}
-                      <Form.Item name="uri" key="uri" hidden style={{ display: 'none' }}>
+                      <Form.Item name="uri" key="uri" hidden>
                         <Input />
                       </Form.Item>
-                      <Form.Item name="method" key="method" hidden style={{ display: 'none' }}>
+                      <Form.Item name="method" key="method" hidden>
                         <Input />
                       </Form.Item>
                     </Form>
