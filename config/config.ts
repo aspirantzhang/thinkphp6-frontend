@@ -90,7 +90,7 @@ export default defineConfig({
     {
       path: '/search-list/page',
       // layout: false,
-      component: './searchList/page',
+      component: './searchList/SinglePage',
     },
     {
       path: '/',

@@ -1,48 +1,43 @@
 import React, { useEffect, useState } from 'react';
-import {
-  Form,
-  Input,
-  DatePicker,
-  Switch,
-  Button,
-  Space,
-  message,
-  Tag,
-  Spin,
-  TreeSelect,
-} from 'antd';
+import { Form, Input, Space, message, Tag, Spin } from 'antd';
 import moment from 'moment';
 import { request } from 'umi';
 import { unset } from 'lodash';
+import { buildFields, buildActions } from '@/components/Form';
 import { PageDataState, FormValues } from './data';
 import styles from './style.less';
 
 export const ModalForm = (props: any) => {
   const { formUri, cancelHandler, reloadHandler } = props;
   const [mainData, setMainData] = useState<PageDataState>();
-  const [buttonLoading, setButtonLoading] = useState<boolean>(false);
+  const [actionsLoading, setActionsLoading] = useState<boolean>(false);
   const [spinLoading, setSpinLoading] = useState<boolean>(true);
   const [form] = Form.useForm();
 
   useEffect(() => {
-    if (formUri) {
+    let stopMark = false;
+
+    async function initMainData(uri: string) {
+      try {
+        const rawData = await request(uri);
+        setSpinLoading(false);
+        setMainData(rawData.data);
+      } catch (error) {
+        setSpinLoading(false);
+        cancelHandler();
+      }
+    }
+
+    if (formUri && !stopMark) {
       setMainData(undefined);
       form.resetFields();
       setSpinLoading(true);
-      getData(formUri);
+      initMainData(formUri);
     }
+    return () => {
+      stopMark = true;
+    };
   }, [formUri]);
-
-  async function getData(uri: string) {
-    try {
-      const rawData = await request(uri);
-      setSpinLoading(false);
-      setMainData(rawData.data);
-    } catch (error) {
-      setSpinLoading(false);
-      cancelHandler();
-    }
-  }
 
   const layout = {
     labelCol: { span: 6 },
@@ -94,7 +89,7 @@ export const ModalForm = (props: any) => {
   };
 
   const onFinish = async (values: FormValues) => {
-    setButtonLoading(true);
+    setActionsLoading(true);
     const processingHide = message.loading('Processing...');
     const submitValues = {};
     let uri = '';
@@ -124,11 +119,11 @@ export const ModalForm = (props: any) => {
         message.success(response.message);
         cancelHandler();
         reloadHandler();
-        setButtonLoading(false);
+        setActionsLoading(false);
       })
       .catch(() => {
         processingHide();
-        setButtonLoading(false);
+        setActionsLoading(false);
       });
 
     // console.log(result);
@@ -168,110 +163,27 @@ export const ModalForm = (props: any) => {
             create_time: moment(),
           }}
         >
-          {mainData &&
-            mainData.layout &&
-            mainData.layout.map((column: any) => {
-              switch (column.type) {
-                case 'datetime':
-                  if (column.key !== 'update_time') {
-                    return (
-                      <Form.Item name={column.key} label={column.title} key={column.key}>
-                        <DatePicker showTime />
-                      </Form.Item>
-                    );
-                  }
-                  return null;
-                case 'password':
-                  return (
-                    <Form.Item name={column.key} label={column.title} key={column.key}>
-                      <Input type="password" />
-                    </Form.Item>
-                  );
-                case 'tag':
-                  return (
-                    <Form.Item
-                      name={column.key}
-                      label={column.title}
-                      key={column.key}
-                      valuePropName="checked"
-                    >
-                      <Switch />
-                    </Form.Item>
-                  );
-                case 'parent':
-                  return (
-                    <Form.Item name={column.key} label={column.title} key={column.key}>
-                      <TreeSelect
-                        showSearch
-                        style={{ width: '100%' }}
-                        dropdownStyle={{ maxHeight: 600, overflow: 'auto' }}
-                        treeData={column.data}
-                        placeholder="Please select"
-                        treeDefaultExpandAll
-                        allowClear
-                      />
-                    </Form.Item>
-                  );
-                case 'tree':
-                  return (
-                    <Form.Item name={column.key} label={column.title} key={column.key}>
-                      <TreeSelect
-                        showSearch
-                        style={{ width: '100%' }}
-                        dropdownStyle={{ maxHeight: 600, overflow: 'auto' }}
-                        treeData={column.data}
-                        placeholder="Please select"
-                        multiple
-                        treeDefaultExpandAll
-                        treeCheckable
-                        showCheckedStrategy="SHOW_PARENT"
-                        allowClear
-                      />
-                    </Form.Item>
-                  );
-                case 'actions':
-                  return (
-                    <div className={styles.actionRow}>
-                      {mainData.dataSource && form.getFieldValue('update_time') && (
-                        <Tag className={styles.modalBottomTip} key="update_time">
-                          Update Time:&nbsp;
-                          {form.getFieldValue('update_time').format('YYYY-MM-DD HH:mm:ss')}
-                        </Tag>
-                      )}
-                      <div key="actions">
-                        <Space>
-                          {column.actions.map((action: any) => {
-                            if (action.component === 'button') {
-                              return (
-                                <>
-                                  <Button
-                                    type={action.type}
-                                    key={action.action}
-                                    loading={buttonLoading}
-                                    onClick={() => {
-                                      actionHandler(action.action, action.uri, action.method);
-                                    }}
-                                  >
-                                    {action.text}
-                                  </Button>
-                                </>
-                              );
-                            }
-                            return null;
-                          })}
-                        </Space>
-                      </div>
+          {buildFields(mainData)}
+          {mainData?.layout.map((column: any) => {
+            switch (column.type) {
+              case 'actions':
+                return (
+                  <div className={styles.actionRow}>
+                    {mainData.dataSource && form.getFieldValue('update_time') && (
+                      <Tag className={styles.modalBottomTip} key="update_time">
+                        Update Time:&nbsp;
+                        {form.getFieldValue('update_time').format('YYYY-MM-DD HH:mm:ss')}
+                      </Tag>
+                    )}
+                    <div key="actions">
+                      <Space>{buildActions(column, actionsLoading, actionHandler)}</Space>
                     </div>
-                  );
-
-                default:
-                  return (
-                    <Form.Item name={column.key} label={column.title} key={column.key}>
-                      <Input disabled={column.disabled} />
-                    </Form.Item>
-                  );
-              }
-            })}
+                  </div>
+                );
+              default:
+                return null;
+            }
+          })}
           <Form.Item name="uri" key="uri" hidden style={{ display: 'none' }}>
             <Input />
           </Form.Item>
