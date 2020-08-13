@@ -1,5 +1,5 @@
 import React, { useEffect, useState, FC } from 'react';
-import { Row, Col, Card, Form, Input, Space, message, Tag, Tabs } from 'antd';
+import { Row, Col, Card, Form, Input, Space, message, Tag, Tabs, Spin } from 'antd';
 import moment from 'moment';
 import { request, history } from 'umi';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
@@ -137,18 +137,18 @@ const SinglePage: FC<PageProps> = () => {
   return (
     <>
       <PageHeaderWrapper>
-        {/* <Spin
+        <Spin
           spinning={spinLoading}
           tip="Loading, please wait..."
           className={styles.modalSpin}
           key="spin"
-        /> */}
-        <Tabs defaultActiveKey="1" type="card">
+        />
+        <Tabs defaultActiveKey="1" type="card" style={{ display: spinLoading ? 'none' : 'block' }}>
           <TabPane tab="Card Tab 1" key="1">
             <Row gutter={24}>
               <Col lg={16} md={24} sm={24} xs={24}>
                 <Card className={styles.mainCard}>
-                  <form style={{ display: spinLoading ? 'none' : 'block' }} key="form">
+                  <form key="form">
                     <Form
                       {...layout}
                       form={form}
