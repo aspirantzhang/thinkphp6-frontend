@@ -7,13 +7,13 @@ import { PageDataState, FormValues } from './data';
 import styles from './style.less';
 
 interface ModalFormProps {
-  formUri: string;
+  initUri: string;
   cancelHandler: () => void;
   reloadHandler: () => void;
 }
 
 export const ModalForm: FC<ModalFormProps> = (props) => {
-  const { formUri: initUri, cancelHandler, reloadHandler } = props;
+  const { initUri, cancelHandler, reloadHandler } = props;
   const [mainData, setMainData] = useState<PageDataState | undefined>(undefined);
   const [actionsLoading, setActionsLoading] = useState<boolean>(false);
   const [spinLoading, setSpinLoading] = useState<boolean>(true);

@@ -9,7 +9,7 @@ export const preFinish = (values: any) => {
     submitValues[key] = values[key];
     // preprocessing datetime value
     if (moment.isMoment(values[key])) {
-      submitValues[key] = values[key].format();
+      submitValues[key] = values[key].utc().format();
     }
 
     switch (key) {
