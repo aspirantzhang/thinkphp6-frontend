@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { Form, Input, Space, message, Tag, Spin } from 'antd';
 import moment from 'moment';
 import { request } from 'umi';
@@ -6,9 +6,15 @@ import { buildFields, buildActions, preFinish, preSetFields } from '@/components
 import { PageDataState, FormValues } from './data';
 import styles from './style.less';
 
-export const ModalForm = (props: any) => {
-  const { formUri, cancelHandler, reloadHandler } = props;
-  const [mainData, setMainData] = useState<PageDataState>();
+interface ModalFormProps {
+  formUri: string;
+  cancelHandler: () => void;
+  reloadHandler: () => void;
+}
+
+export const ModalForm: FC<ModalFormProps> = (props) => {
+  const { formUri: initUri, cancelHandler, reloadHandler } = props;
+  const [mainData, setMainData] = useState<PageDataState | undefined>(undefined);
   const [actionsLoading, setActionsLoading] = useState<boolean>(false);
   const [spinLoading, setSpinLoading] = useState<boolean>(true);
   const [form] = Form.useForm();
@@ -16,27 +22,27 @@ export const ModalForm = (props: any) => {
   useEffect(() => {
     let stopMark = false;
 
-    async function initMainData(uri: string) {
+    async function fetchMainData(uri: string) {
       try {
         const rawData = await request(uri);
         setSpinLoading(false);
-        setMainData(rawData.data);
+        if (!stopMark) setMainData(rawData.data);
       } catch (error) {
         setSpinLoading(false);
         cancelHandler();
       }
     }
 
-    if (formUri && !stopMark) {
+    if (initUri) {
       setMainData(undefined);
       form.resetFields();
       setSpinLoading(true);
-      initMainData(formUri);
+      fetchMainData(initUri);
     }
     return () => {
       stopMark = true;
     };
-  }, [formUri]);
+  }, [initUri]);
 
   const actionHandler = (type: string, uri: string, method: string) => {
     switch (type) {

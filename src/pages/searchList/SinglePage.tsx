@@ -1,4 +1,4 @@
-import React, { useEffect, useState, FC } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { Row, Col, Card, Form, Input, Space, message, Tag, Tabs, Spin } from 'antd';
 import moment from 'moment';
 import { request, history } from 'umi';
@@ -8,43 +8,42 @@ import { getPageQuery } from '@/utils/utils';
 import { PageDataState, FormValues } from './data';
 import styles from './style.less';
 
-const { TabPane } = Tabs;
+interface SinglePageProps {}
 
-interface PageProps {}
-
-const SinglePage: FC<PageProps> = () => {
+const SinglePage: FC<SinglePageProps> = () => {
   const params = getPageQuery();
-  const pageUri = params.uri as string;
+  const initUri = params.uri as string;
 
-  const [mainData, setMainData] = useState<PageDataState>();
+  const [mainData, setMainData] = useState<PageDataState | undefined>(undefined);
   const [actionsLoading, setActionsLoading] = useState<boolean>(false);
   const [spinLoading, setSpinLoading] = useState<boolean>(true);
+  const { TabPane } = Tabs;
   const [form] = Form.useForm();
 
   useEffect(() => {
     let stopMark = false;
 
-    async function initMainData(uri: string) {
+    async function fetchMainData(uri: string) {
       try {
         const rawData = await request(uri);
         setSpinLoading(false);
-        setMainData(rawData.data);
+        if (!stopMark) setMainData(rawData.data);
       } catch (error) {
         setSpinLoading(false);
         history.goBack();
       }
     }
 
-    if (pageUri && !stopMark) {
+    if (initUri) {
       setMainData(undefined);
       form.resetFields();
       setSpinLoading(true);
-      initMainData(pageUri);
+      fetchMainData(initUri);
     }
     return () => {
       stopMark = true;
     };
-  }, [pageUri]);
+  }, [initUri]);
 
   const actionHandler = (type: string, uri: string, method: string) => {
     switch (type) {
