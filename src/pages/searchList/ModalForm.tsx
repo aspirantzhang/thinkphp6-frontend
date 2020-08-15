@@ -1,7 +1,7 @@
 import React, { FC, useEffect, useState } from 'react';
 import { Form, Input, Space, message, Tag, Spin } from 'antd';
 import moment from 'moment';
-import { request } from 'umi';
+import { request, useRequest } from 'umi';
 import { buildFields, buildActions, preFinish, preSetFields } from '@/components/Form';
 import { PageDataState, FormValues } from './data';
 import styles from './style.less';
@@ -15,9 +15,33 @@ interface ModalFormProps {
 export const ModalForm: FC<ModalFormProps> = (props) => {
   const { initUri, cancelHandler, reloadHandler } = props;
   const [mainData, setMainData] = useState<PageDataState | undefined>(undefined);
-  const [actionsLoading, setActionsLoading] = useState<boolean>(false);
   const [spinLoading, setSpinLoading] = useState<boolean>(true);
   const [form] = Form.useForm();
+
+  const { loading, run } = useRequest(
+    (url: string, method: string, requestData: any) => {
+      return {
+        url,
+        method,
+        data: requestData,
+      };
+    },
+    {
+      manual: true,
+      debounceInterval: 1000,
+      onSuccess: (response) => {
+        message.success({ content: response.message, key: 'msg' });
+        cancelHandler();
+        reloadHandler();
+      },
+      onError: (error) => {
+        message.error({ content: error.message, key: 'msg' });
+      },
+      formatResult: (response) => {
+        return response;
+      },
+    },
+  );
 
   useEffect(() => {
     let stopMark = false;
@@ -62,25 +86,9 @@ export const ModalForm: FC<ModalFormProps> = (props) => {
   };
 
   const onFinish = async (values: FormValues) => {
-    setActionsLoading(true);
-    const processingHide = message.loading('Processing...');
+    message.loading({ content: 'Processing...', key: 'msg' });
     const { submitValues, uri, method } = preFinish(values);
-
-    request(uri as string, {
-      method,
-      data: submitValues,
-    })
-      .then((response) => {
-        processingHide();
-        message.success(response.message);
-        cancelHandler();
-        reloadHandler();
-        setActionsLoading(false);
-      })
-      .catch(() => {
-        processingHide();
-        setActionsLoading(false);
-      });
+    run(uri, method, submitValues);
   };
 
   const onFinishFailed = (errorInfo: any) => {
@@ -92,9 +100,12 @@ export const ModalForm: FC<ModalFormProps> = (props) => {
     wrapperCol: { span: 18 },
   };
 
-  if (mainData?.layout && mainData.dataSource) {
-    form.setFieldsValue(preSetFields(mainData));
-  }
+  useEffect(() => {
+    if (mainData?.layout && mainData.dataSource) {
+      form.setFieldsValue(preSetFields(mainData));
+    }
+  }, [mainData]);
+
   return (
     <>
       <Spin
@@ -126,14 +137,14 @@ export const ModalForm: FC<ModalFormProps> = (props) => {
             if (column.type === 'actions') {
               return (
                 <div className={styles.actionRow}>
-                  {mainData.dataSource && form.getFieldValue('update_time') && (
+                  {form.getFieldValue('update_time') && (
                     <Tag className={styles.modalBottomTip} key="update_time">
                       Update Time:&nbsp;
                       {form.getFieldValue('update_time').format('YYYY-MM-DD HH:mm:ss')}
                     </Tag>
                   )}
                   <div key="actions">
-                    <Space>{buildActions(column, actionsLoading, actionHandler)}</Space>
+                    <Space>{buildActions(column, actionHandler, loading)}</Space>
                   </div>
                 </div>
               );

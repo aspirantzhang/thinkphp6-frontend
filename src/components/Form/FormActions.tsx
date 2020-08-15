@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from 'antd';
 
-export const buildActions = (column: any, loading?: boolean, actionHandler?: any) => {
+export const buildActions = (column: any, actionHandler?: any, loading?: boolean) => {
   return column.actions.map((action: any) => {
     if (action.component === 'button') {
       return (

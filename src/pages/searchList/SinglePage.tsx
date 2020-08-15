@@ -1,7 +1,7 @@
 import React, { FC, useEffect, useState } from 'react';
 import { Row, Col, Card, Form, Input, Space, message, Tag, Tabs, Spin } from 'antd';
 import moment from 'moment';
-import { request, history } from 'umi';
+import { request, useRequest, history } from 'umi';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { buildFields, buildActions, preFinish, preSetFields } from '@/components/Form';
 import { getPageQuery } from '@/utils/utils';
@@ -15,10 +15,33 @@ const SinglePage: FC<SinglePageProps> = () => {
   const initUri = params.uri as string;
 
   const [mainData, setMainData] = useState<PageDataState | undefined>(undefined);
-  const [actionsLoading, setActionsLoading] = useState<boolean>(false);
   const [spinLoading, setSpinLoading] = useState<boolean>(true);
   const { TabPane } = Tabs;
   const [form] = Form.useForm();
+
+  const { loading, run } = useRequest(
+    (url: string, method: string, requestData: any) => {
+      return {
+        url,
+        method,
+        data: requestData,
+      };
+    },
+    {
+      manual: true,
+      debounceInterval: 1000,
+      onSuccess: (response) => {
+        message.success({ content: response.message, key: 'msg' });
+        history.goBack();
+      },
+      onError: (error) => {
+        message.error({ content: error.message, key: 'msg' });
+      },
+      formatResult: (response) => {
+        return response;
+      },
+    },
+  );
 
   useEffect(() => {
     let stopMark = false;
@@ -63,24 +86,8 @@ const SinglePage: FC<SinglePageProps> = () => {
   };
 
   const onFinish = async (values: FormValues) => {
-    setActionsLoading(true);
-    const processingHide = message.loading('Processing...');
     const { submitValues, uri, method } = preFinish(values);
-
-    request(uri, {
-      method,
-      data: submitValues,
-    })
-      .then((response) => {
-        processingHide();
-        message.success(response.message);
-        setActionsLoading(false);
-        history.goBack();
-      })
-      .catch(() => {
-        processingHide();
-        setActionsLoading(false);
-      });
+    run(uri, method, submitValues);
   };
 
   const onFinishFailed = (errorInfo: any) => {
@@ -92,9 +99,11 @@ const SinglePage: FC<SinglePageProps> = () => {
     wrapperCol: { span: 20 },
   };
 
-  if (mainData?.layout && mainData.dataSource) {
-    form.setFieldsValue(preSetFields(mainData));
-  }
+  useEffect(() => {
+    if (mainData?.layout && mainData.dataSource) {
+      form.setFieldsValue(preSetFields(mainData));
+    }
+  }, [mainData]);
 
   return (
     <>
@@ -126,14 +135,14 @@ const SinglePage: FC<SinglePageProps> = () => {
                         if (column.type === 'actions') {
                           return (
                             <div className={styles.actionRow}>
-                              {mainData.dataSource && form.getFieldValue('update_time') && (
+                              {form.getFieldValue('update_time') && (
                                 <Tag className={styles.modalBottomTip} key="update_time">
                                   Update Time:&nbsp;
                                   {form.getFieldValue('update_time').format('YYYY-MM-DD HH:mm:ss')}
                                 </Tag>
                               )}
                               <div key="actions">
-                                <Space>{buildActions(column, actionsLoading, actionHandler)}</Space>
+                                <Space>{buildActions(column, actionHandler, loading)}</Space>
                               </div>
                             </div>
                           );
@@ -156,7 +165,7 @@ const SinglePage: FC<SinglePageProps> = () => {
                     <Space>
                       {mainData?.layout.map((column: any) => {
                         if (column.type === 'actions') {
-                          return buildActions(column, actionsLoading, actionHandler);
+                          return buildActions(column, actionHandler, loading);
                         }
                         return null;
                       })}
