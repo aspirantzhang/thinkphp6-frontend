@@ -86,6 +86,7 @@ const SinglePage: FC<SinglePageProps> = () => {
   };
 
   const onFinish = async (values: FormValues) => {
+    message.loading({ content: 'Processing...', key: 'msg' });
     const { submitValues, uri, method } = preFinish(values);
     run(uri, method, submitValues);
   };
