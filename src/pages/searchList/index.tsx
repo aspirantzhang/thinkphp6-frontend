@@ -44,12 +44,17 @@ const BasicList: FC<BasicListProps> = () => {
   const pageParam = getPageParam();
   const initUri = `/api/${pageParam}`;
 
-  const { data, loading, run } = useRequest((requestQuery?) => {
-    const queryString = requestQuery || '';
-    return {
-      url: `${initUri}?${queryString}`,
-    };
-  });
+  const { data, loading, run } = useRequest(
+    (requestQuery?) => {
+      const queryString = requestQuery || '';
+      return {
+        url: `${initUri}?${queryString}`,
+      };
+    },
+    {
+      manual: true,
+    },
+  );
 
   useEffect(() => {
     run();
