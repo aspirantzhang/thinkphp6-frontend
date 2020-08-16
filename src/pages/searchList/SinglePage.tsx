@@ -119,7 +119,7 @@ const SinglePage: FC<SinglePageProps> = () => {
             <Row gutter={24}>
               <Col lg={16} md={24} sm={24} xs={24}>
                 <Card className={styles.mainCard}>
-                  <form key="form">
+                  <div key="form">
                     <Form
                       {...layout}
                       form={form}
@@ -134,14 +134,14 @@ const SinglePage: FC<SinglePageProps> = () => {
                       {mainData?.layout.map((column: any) => {
                         if (column.type === 'actions') {
                           return (
-                            <div className={styles.actionRow}>
+                            <div className={styles.actionRow} key="actionRow">
                               {form.getFieldValue('update_time') && (
                                 <Tag className={styles.modalBottomTip} key="update_time">
                                   Update Time:&nbsp;
                                   {form.getFieldValue('update_time').format('YYYY-MM-DD HH:mm:ss')}
                                 </Tag>
                               )}
-                              <div key="actions">
+                              <div key={column.key}>
                                 <Space>{buildActions(column, actionHandler, loading)}</Space>
                               </div>
                             </div>
@@ -156,7 +156,7 @@ const SinglePage: FC<SinglePageProps> = () => {
                         <Input />
                       </Form.Item>
                     </Form>
-                  </form>
+                  </div>
                 </Card>
               </Col>
               <Col lg={8} md={24} sm={24} xs={24}>

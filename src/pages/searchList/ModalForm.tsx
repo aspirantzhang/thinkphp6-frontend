@@ -117,11 +117,11 @@ export const ModalForm: FC<ModalFormProps> = (props) => {
       <div
         className={styles.titleRow}
         style={{ display: spinLoading ? 'none' : 'block' }}
-        key="title"
+        key="titleRow"
       >
         {mainData?.page.title} {mainData?.dataSource?.id && `ID: ${mainData?.dataSource?.id}`}
       </div>
-      <form style={{ display: spinLoading ? 'none' : 'block' }} key="form">
+      <div style={{ display: spinLoading ? 'none' : 'block' }} key="form">
         <Form
           {...layout}
           form={form}
@@ -136,14 +136,14 @@ export const ModalForm: FC<ModalFormProps> = (props) => {
           {mainData?.layout.map((column: any) => {
             if (column.type === 'actions') {
               return (
-                <div className={styles.actionRow}>
+                <div className={styles.actionRow} key="actionRow">
                   {form.getFieldValue('update_time') && (
                     <Tag className={styles.modalBottomTip} key="update_time">
                       Update Time:&nbsp;
                       {form.getFieldValue('update_time').format('YYYY-MM-DD HH:mm:ss')}
                     </Tag>
                   )}
-                  <div key="actions">
+                  <div key={column.key}>
                     <Space>{buildActions(column, actionHandler, loading)}</Space>
                   </div>
                 </div>
@@ -158,7 +158,7 @@ export const ModalForm: FC<ModalFormProps> = (props) => {
             <Input />
           </Form.Item>
         </Form>
-      </form>
+      </div>
     </>
   );
 };
