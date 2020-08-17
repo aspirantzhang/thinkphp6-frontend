@@ -12,13 +12,11 @@ import styles from './style.less';
 interface SinglePageProps {}
 
 const SinglePage: FC<SinglePageProps> = () => {
-  const params = getPageQuery();
-  const initUri = params.uri as string;
-
   const [mainData, setMainData] = useState<PageDataState | undefined>(undefined);
   const [spinLoading, setSpinLoading] = useBoolean(true);
   const { TabPane } = Tabs;
   const [form] = Form.useForm();
+  const initUri = getPageQuery().uri;
 
   const { loading, run } = useRequest(
     (url: string, method: string, requestData: any) => {
@@ -62,7 +60,7 @@ const SinglePage: FC<SinglePageProps> = () => {
       setMainData(undefined);
       form.resetFields();
       setSpinLoading.setTrue();
-      fetchMainData(initUri);
+      fetchMainData(initUri as string);
     }
     return () => {
       stopMark = true;
