@@ -2,6 +2,7 @@ import React, { FC, useEffect, useState } from 'react';
 import { Form, Input, Space, message, Tag, Spin } from 'antd';
 import moment from 'moment';
 import { request, useRequest } from 'umi';
+import { useBoolean } from 'ahooks';
 import { buildFields, buildActions, preFinish, preSetFields } from '@/components/Form';
 import { PageDataState, FormValues } from './data';
 import styles from './style.less';
@@ -15,20 +16,18 @@ interface ModalFormProps {
 export const ModalForm: FC<ModalFormProps> = (props) => {
   const { initUri, cancelHandler, reloadHandler } = props;
   const [mainData, setMainData] = useState<PageDataState | undefined>(undefined);
-  const [spinLoading, setSpinLoading] = useState<boolean>(true);
+  const [spinLoading, setSpinLoading] = useBoolean(true);
   const [form] = Form.useForm();
 
   const { loading, run } = useRequest(
-    (url: string, method: string, requestData: any) => {
-      return {
-        url,
-        method,
-        data: requestData,
-      };
-    },
+    (url: string, method: string, requestData: any) => ({
+      url,
+      method,
+      data: requestData,
+    }),
     {
       manual: true,
-      debounceInterval: 1000,
+      throttleInterval: 1000,
       onSuccess: (response) => {
         message.success({ content: response.message, key: 'msg' });
         cancelHandler();
@@ -49,10 +48,10 @@ export const ModalForm: FC<ModalFormProps> = (props) => {
     async function fetchMainData(uri: string) {
       try {
         const rawData = await request(uri);
-        setSpinLoading(false);
+        setSpinLoading.setFalse();
         if (!stopMark) setMainData(rawData.data);
       } catch (error) {
-        setSpinLoading(false);
+        setSpinLoading.setFalse();
         cancelHandler();
       }
     }
@@ -60,7 +59,7 @@ export const ModalForm: FC<ModalFormProps> = (props) => {
     if (initUri) {
       setMainData(undefined);
       form.resetFields();
-      setSpinLoading(true);
+      setSpinLoading.setTrue();
       fetchMainData(initUri);
     }
     return () => {

@@ -2,6 +2,7 @@ import React, { FC, useEffect, useState } from 'react';
 import { Row, Col, Card, Form, Input, Space, message, Tag, Tabs, Spin } from 'antd';
 import moment from 'moment';
 import { request, useRequest, history } from 'umi';
+import { useBoolean } from 'ahooks';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { buildFields, buildActions, preFinish, preSetFields } from '@/components/Form';
 import { getPageQuery } from '@/utils/utils';
@@ -15,7 +16,7 @@ const SinglePage: FC<SinglePageProps> = () => {
   const initUri = params.uri as string;
 
   const [mainData, setMainData] = useState<PageDataState | undefined>(undefined);
-  const [spinLoading, setSpinLoading] = useState<boolean>(true);
+  const [spinLoading, setSpinLoading] = useBoolean(true);
   const { TabPane } = Tabs;
   const [form] = Form.useForm();
 
@@ -29,7 +30,7 @@ const SinglePage: FC<SinglePageProps> = () => {
     },
     {
       manual: true,
-      debounceInterval: 1000,
+      throttleInterval: 1000,
       onSuccess: (response) => {
         message.success({ content: response.message, key: 'msg' });
         history.goBack();
@@ -49,10 +50,10 @@ const SinglePage: FC<SinglePageProps> = () => {
     async function fetchMainData(uri: string) {
       try {
         const rawData = await request(uri);
-        setSpinLoading(false);
+        setSpinLoading.setFalse();
         if (!stopMark) setMainData(rawData.data);
       } catch (error) {
-        setSpinLoading(false);
+        setSpinLoading.setFalse();
         history.goBack();
       }
     }
@@ -60,7 +61,7 @@ const SinglePage: FC<SinglePageProps> = () => {
     if (initUri) {
       setMainData(undefined);
       form.resetFields();
-      setSpinLoading(true);
+      setSpinLoading.setTrue();
       fetchMainData(initUri);
     }
     return () => {
