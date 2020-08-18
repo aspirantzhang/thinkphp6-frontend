@@ -7,7 +7,6 @@ import RightContent from '@/components/RightContent';
 import Footer from '@/components/Footer';
 import { ResponseError } from 'umi-request';
 import { queryCurrent } from './services/user';
-
 import defaultSettings from '../config/defaultSettings';
 
 export async function getInitialState(): Promise<{
@@ -34,12 +33,18 @@ export async function getInitialState(): Promise<{
 export const layout = ({
   initialState,
 }: {
-  initialState: { settings?: LayoutSettings };
+  initialState: { settings?: LayoutSettings; currentUser?: API.CurrentUser };
 }): BasicLayoutProps => {
   return {
     rightContentRender: () => <RightContent />,
     disableContentMargin: false,
     footerRender: () => <Footer />,
+    onPageChange: () => {
+      // 如果没有登录，重定向到 login
+      if (!initialState?.currentUser?.userid && history.location.pathname !== '/user/login') {
+        history.push('/user/login');
+      }
+    },
     menuHeaderRender: undefined,
     ...initialState?.settings,
   };

@@ -21,5 +21,19 @@ export const isAntDesignProOrDev = (): boolean => {
   return isAntDesignPro();
 };
 
-export const getPageQuery = () => parse(window.location.href.split('?')[1]);
+export const getPageQuery = () => {
+  const { href } = window.location;
+  const qsIndex = href.indexOf('?');
+  const sharpIndex = href.indexOf('#');
+
+  if (qsIndex !== -1) {
+    if (qsIndex > sharpIndex) {
+      return parse(href.split('?')[1]);
+    }
+
+    return parse(href.slice(qsIndex + 1, sharpIndex));
+  }
+
+  return {};
+};
 export const getPageParam = () => window.location.href.split('search-list/')[1];
