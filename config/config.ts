@@ -93,6 +93,12 @@ export default defineConfig({
       component: './searchList/SinglePage',
     },
     {
+      name: 'design',
+      icon: 'table',
+      path: '/design',
+      component: './design',
+    },
+    {
       path: '/',
       redirect: '/welcome',
     },
