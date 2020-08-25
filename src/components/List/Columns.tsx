@@ -24,7 +24,7 @@ export const buildColumns = (mainData: any, actionHandler: any) => {
         thisColumn.render = (text: any) => {
           return (
             <Space>
-              {thisColumn.values
+              {thisColumn.data
                 .filter((item: any, index: number) => index === text)
                 .map((item: any) => {
                   return (
