@@ -29,7 +29,7 @@ export const buildSearchFields = (tableColumn: any) => {
         return (
           <Form.Item name={column.key} label={column.title} key={column.key}>
             <Select mode="multiple" placeholder="Please select" style={{ width: '100px' }}>
-              {column.values.map((item: any, key: number) => (
+              {column.data.map((item: any, key: number) => (
                 <Select.Option value={key} key={item}>
                   {item}
                 </Select.Option>
