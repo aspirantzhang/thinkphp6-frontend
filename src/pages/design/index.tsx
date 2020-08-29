@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import { Card } from 'antd';
+import { Card, Button } from 'antd';
 import {
   createFormActions,
   SchemaForm,
@@ -10,14 +10,27 @@ import {
   Reset,
   FormEffectHooks,
   FormPath,
+  createEffectHook,
+  IFormEffect,
 } from '@formily/antd';
-import { Input, ArrayTable, Select, Checkbox, FormCard } from '@formily/antd-components';
+
+import {
+  Input,
+  ArrayTable,
+  Select,
+  Checkbox,
+  FormCard,
+  FormMegaLayout,
+} from '@formily/antd-components';
 import 'antd/dist/antd.css';
 
-const actions = createFormActions();
 const { onFieldValueChange$ } = FormEffectHooks;
+const pageNameEvent$ = createEffectHook('pageNameEvent');
+const actions = createFormActions();
 
 const Index = () => {
+  const [tableToolbarVisible, setTableToolbarVisible] = useState(false);
+
   const submitHandler = (values) => {
     console.log(values);
   };
@@ -66,7 +79,7 @@ const Index = () => {
     );
   };
 
-  const formEffects = ({ setFieldValue }) => {
+  const formEffects: IFormEffect = ({ setFieldValue }) => {
     onFieldValueChange$('fields.*.listData').subscribe(({ name, value }) => {
       if (value) {
         setFieldValue(
@@ -77,18 +90,46 @@ const Index = () => {
         );
       }
     });
+    onFieldValueChange$('haveTableToolbar').subscribe(({ value }) => {
+      setTableToolbarVisible(value);
+    });
+    pageNameEvent$().subscribe(() => {
+      setFieldValue('pageName', 'Group');
+    });
   };
 
   return (
     <>
       <PageHeaderWrapper>
         <Card>
+          <Button
+            onClick={() => {
+              if (actions.dispatch) {
+                actions.dispatch('pageNameEvent', null);
+              }
+            }}
+          >
+            set initial values
+          </Button>
           <SchemaForm
             actions={actions}
             components={{ ArrayTable, Input, Select, Checkbox }}
             onSubmit={submitHandler}
             effects={formEffects}
           >
+            <FormCard title="Basic">
+              <FormMegaLayout grid columns={7}>
+                <Field
+                  name="pageName"
+                  type="string"
+                  x-component="Input"
+                  title="Page Name*"
+                  x-mega-props={{ span: 5 }}
+                />
+                <Field name="haveTableToolbar" x-component="Checkbox" title="Table Toolbar?" />
+                <Field name="haveBatchToolbar" x-component="Checkbox" title="Batch Toolbar?" />
+              </FormMegaLayout>
+            </FormCard>
             <FormCard title="Fields">
               <Field
                 name="fields"
@@ -163,7 +204,10 @@ const Index = () => {
                 {actionFields()}
               </Field>
             </FormCard>
-            <FormCard title="Table Toolbar">
+            <FormCard
+              title="Table Toolbar"
+              style={{ display: tableToolbarVisible ? 'block' : 'none' }}
+            >
               <Field
                 name="tableToolBar"
                 type="array"
