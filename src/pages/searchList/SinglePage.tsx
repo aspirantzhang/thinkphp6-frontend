@@ -21,7 +21,7 @@ const SinglePage: FC<SinglePageProps> = () => {
   const { loading, run } = useRequest(
     (url: string, method: string, requestData: any) => {
       return {
-        url,
+        url: `/api/${url}`,
         method,
         data: requestData,
       };
@@ -47,7 +47,7 @@ const SinglePage: FC<SinglePageProps> = () => {
 
     async function fetchMainData(uri: string) {
       try {
-        const rawData = await request(uri);
+        const rawData = await request(`/api/${uri}`);
         setSpinLoading.setFalse();
         if (!stopMark) setMainData(rawData.data);
       } catch (error) {

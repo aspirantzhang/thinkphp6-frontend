@@ -21,7 +21,7 @@ export const ModalForm: FC<ModalFormProps> = (props) => {
 
   const { loading, run } = useRequest(
     (url: string, method: string, requestData: any) => ({
-      url,
+      url: `/api/${url}`,
       method,
       data: requestData,
     }),
@@ -47,7 +47,7 @@ export const ModalForm: FC<ModalFormProps> = (props) => {
 
     async function fetchMainData(uri: string) {
       try {
-        const rawData = await request(uri);
+        const rawData = await request(`/api/${uri}`);
         setSpinLoading.setFalse();
         if (!stopMark) setMainData(rawData.data);
       } catch (error) {

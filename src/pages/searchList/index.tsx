@@ -130,7 +130,7 @@ const BasicList: FC<BasicListProps> = () => {
         reloadHandler();
         break;
       case 'delete':
-        request(`${uri}/${record.id}`, {
+        request(`/api/${uri}/${record.id}`, {
           method,
           data: record,
         })
@@ -150,7 +150,7 @@ const BasicList: FC<BasicListProps> = () => {
           cancelText: 'Cancel',
           onOk() {
             const processingHide = message.loading('Processing...');
-            request(`${uri}`, {
+            request(`/api/${uri}`, {
               method,
               data: {
                 idArray: selectedRowKeys,
