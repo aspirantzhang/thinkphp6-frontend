@@ -12,6 +12,7 @@ import {
   FormPath,
   createEffectHook,
   IFormEffect,
+  IFormState,
 } from '@formily/antd';
 
 import {
@@ -25,11 +26,12 @@ import {
 import 'antd/dist/antd.css';
 
 const { onFieldValueChange$ } = FormEffectHooks;
-const pageNameEvent$ = createEffectHook('pageNameEvent');
+const setSampleValues$ = createEffectHook('setSampleValues');
 const actions = createFormActions();
 
 const Index = () => {
   const [tableToolbarVisible, setTableToolbarVisible] = useState(false);
+  const [batchToolbarVisible, setBatchToolbarVisible] = useState(false);
 
   const submitHandler = (values) => {
     console.log(values);
@@ -61,6 +63,9 @@ const Index = () => {
             { label: 'Delete', value: 'delete' },
             { label: 'Reset', value: 'reset' },
             { label: 'Submit', value: 'submit' },
+            { label: 'Cancel', value: 'cancel' },
+            { label: 'Reload', value: 'reload' },
+            { label: 'Batch Delete', value: 'batchDelete' },
           ]}
         />
         <Field name="uri" x-component="input" title="Uri" />
@@ -72,6 +77,7 @@ const Index = () => {
           enum={[
             { label: 'Get', value: 'get' },
             { label: 'Post', value: 'post' },
+            { label: 'Put', value: 'put' },
             { label: 'Delete', value: 'delete' },
           ]}
         />
@@ -79,7 +85,7 @@ const Index = () => {
     );
   };
 
-  const formEffects: IFormEffect = ({ setFieldValue }) => {
+  const formEffects: IFormEffect = ({ setFieldValue, setFormState }) => {
     onFieldValueChange$('fields.*.listData').subscribe(({ name, value }) => {
       if (value) {
         setFieldValue(
@@ -93,8 +99,145 @@ const Index = () => {
     onFieldValueChange$('haveTableToolbar').subscribe(({ value }) => {
       setTableToolbarVisible(value);
     });
-    pageNameEvent$().subscribe(() => {
-      setFieldValue('pageName', 'Group');
+    onFieldValueChange$('haveBatchToolbar').subscribe(({ value }) => {
+      setBatchToolbarVisible(value);
+    });
+    setSampleValues$().subscribe(() => {
+      setFormState((state: IFormState) => {
+        const sampleValues = {
+          pageName: 'Group',
+          haveBatchToolbar: true,
+          haveTableToolbar: true,
+          fields: [
+            {
+              name: 'name',
+              title: 'Group Name',
+              type: 'text',
+            },
+            {
+              name: 'parent_id',
+              title: 'Parent',
+              type: 'text',
+              listData: true,
+              addData: true,
+            },
+            {
+              name: 'rules',
+              title: 'Rules',
+              type: 'text',
+            },
+            {
+              name: 'create_time',
+              title: 'Create Time',
+              type: 'datetime',
+              listSorter: true,
+            },
+            {
+              name: 'update_time',
+              title: 'Update Time',
+              type: 'datetime',
+            },
+            {
+              name: 'status',
+              title: 'Status',
+              type: 'tag',
+              listData: true,
+              addData: true,
+            },
+          ],
+          listAction: [
+            {
+              name: 'Edit',
+              type: 'default',
+              action: 'modal',
+              uri: '/backend/groups',
+              method: 'get',
+            },
+            {
+              name: 'Full page edit',
+              type: 'default',
+              action: 'page',
+              uri: '/backend/groups',
+              method: 'get',
+            },
+            {
+              name: 'Delete',
+              type: 'default',
+              action: 'delete',
+              uri: '/backend/groups',
+              method: 'delete',
+            },
+          ],
+          addAction: [
+            {
+              name: 'Reset',
+              type: 'dashed',
+              action: 'reset',
+            },
+            {
+              name: 'Cancel',
+              type: 'dashed',
+              action: 'cancel',
+            },
+            {
+              name: 'Submit',
+              type: 'primary',
+              action: 'submit',
+              uri: '/backend/groups',
+              method: 'post',
+            },
+          ],
+          editAction: [
+            {
+              name: 'Reset',
+              type: 'dashed',
+              action: 'reset',
+            },
+            {
+              name: 'Cancel',
+              type: 'dashed',
+              action: 'cancel',
+            },
+            {
+              name: 'Submit',
+              type: 'primary',
+              action: 'submit',
+              uri: '/backend/groups/:id',
+              method: 'put',
+            },
+          ],
+          tableToolbar: [
+            {
+              name: 'Add',
+              type: 'primary',
+              action: 'modal',
+              uri: '/backend/groups/add',
+            },
+            {
+              name: 'Full page add',
+              type: 'primary',
+              action: 'page',
+              uri: '/backend/groups/add',
+            },
+            {
+              name: 'Reload',
+              type: 'default',
+              action: 'reload',
+            },
+          ],
+          batchToolbar: [
+            {
+              name: 'Delete',
+              type: 'dashed',
+              action: 'batchDelete',
+              uri: '/backend/groups/batch-delete',
+              method: 'delete',
+            },
+          ],
+        };
+        // eslint-disable-next-line no-param-reassign
+        state.values = sampleValues;
+      });
     });
   };
 
@@ -105,11 +248,13 @@ const Index = () => {
           <Button
             onClick={() => {
               if (actions.dispatch) {
-                actions.dispatch('pageNameEvent', null);
+                actions.dispatch('setSampleValues', null);
               }
             }}
+            type="primary"
+            style={{ marginBottom: '10px' }}
           >
-            set initial values
+            Sample
           </Button>
           <SchemaForm
             actions={actions}
@@ -155,6 +300,7 @@ const Index = () => {
                     enum={[
                       { label: 'Text', value: 'text' },
                       { label: 'Tree', value: 'tree' },
+                      { label: 'Tag', value: 'tag' },
                       { label: 'Datetime', value: 'datetime' },
                     ]}
                   />
@@ -204,12 +350,9 @@ const Index = () => {
                 {actionFields()}
               </Field>
             </FormCard>
-            <FormCard
-              title="Table Toolbar"
-              style={{ display: tableToolbarVisible ? 'block' : 'none' }}
-            >
+            <FormCard title="Edit Action">
               <Field
-                name="tableToolBar"
+                name="editAction"
                 type="array"
                 default={[]}
                 x-component="ArrayTable"
@@ -224,9 +367,32 @@ const Index = () => {
                 {actionFields()}
               </Field>
             </FormCard>
-            <FormCard title="Batch Toolbar">
+            <FormCard
+              title="Table Toolbar"
+              style={{ display: tableToolbarVisible ? 'block' : 'none' }}
+            >
               <Field
-                name="batchToolBar"
+                name="tableToolbar"
+                type="array"
+                default={[]}
+                x-component="ArrayTable"
+                x-component-props={{
+                  operationsWidth: 150,
+                  operations: {
+                    title: '',
+                  },
+                  draggable: true,
+                }}
+              >
+                {actionFields()}
+              </Field>
+            </FormCard>
+            <FormCard
+              title="Batch Toolbar"
+              style={{ display: batchToolbarVisible ? 'block' : 'none' }}
+            >
+              <Field
+                name="batchToolbar"
                 type="array"
                 default={[]}
                 x-component="ArrayTable"
@@ -242,8 +408,8 @@ const Index = () => {
               </Field>
             </FormCard>
             <FormButtonGroup offset={5}>
-              <Submit>查询</Submit>
-              <Reset>重置</Reset>
+              <Submit>Submit</Submit>
+              <Reset>reset</Reset>
             </FormButtonGroup>
           </SchemaForm>
         </Card>
