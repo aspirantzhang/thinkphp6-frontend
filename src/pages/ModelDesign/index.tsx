@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import { PageContainer } from '@ant-design/pro-layout';
 import { Card, Button } from 'antd';
 import {
   createFormActions,
@@ -29,7 +29,7 @@ const { onFieldValueChange$ } = FormEffectHooks;
 const setSampleValues$ = createEffectHook('setSampleValues');
 const actions = createFormActions();
 
-const Index = () => {
+const ModelDesign = () => {
   const [tableToolbarVisible, setTableToolbarVisible] = useState(false);
   const [batchToolbarVisible, setBatchToolbarVisible] = useState(false);
 
@@ -243,7 +243,7 @@ const Index = () => {
 
   return (
     <>
-      <PageHeaderWrapper>
+      <PageContainer>
         <Card>
           <Button
             onClick={() => {
@@ -413,9 +413,9 @@ const Index = () => {
             </FormButtonGroup>
           </SchemaForm>
         </Card>
-      </PageHeaderWrapper>
+      </PageContainer>
     </>
   );
 };
 
-export default Index;
+export default ModelDesign;

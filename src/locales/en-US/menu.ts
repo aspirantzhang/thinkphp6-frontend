@@ -52,4 +52,5 @@ export default {
   'menu.editor.koni': 'Koni Editor',
   'menu.admin-list': 'Admin List',
   'menu.group-list': 'Group List',
+  'menu.model-design': 'Model Design',
 };

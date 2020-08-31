@@ -1,9 +1,9 @@
 import React, { FC, useEffect, useState } from 'react';
+import { PageContainer } from '@ant-design/pro-layout';
 import { Row, Col, Card, Form, Input, Space, message, Tag, Tabs, Spin } from 'antd';
 import moment from 'moment';
 import { request, useRequest, history } from 'umi';
 import { useBoolean } from 'ahooks';
-import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { buildFields, buildActions, preFinish, preSetFields } from '@/components/Form';
 import { getPageQuery } from '@/utils/utils';
 import { PageDataState, FormValues } from './data';
@@ -107,7 +107,7 @@ const SinglePage: FC<SinglePageProps> = () => {
 
   return (
     <>
-      <PageHeaderWrapper>
+      <PageContainer>
         <Spin
           spinning={spinLoading}
           tip="Loading, please wait..."
@@ -183,7 +183,7 @@ const SinglePage: FC<SinglePageProps> = () => {
             Content of card tab 3
           </TabPane>
         </Tabs>
-      </PageHeaderWrapper>
+      </PageContainer>
     </>
   );
 };

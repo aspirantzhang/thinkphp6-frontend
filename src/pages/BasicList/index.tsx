@@ -1,8 +1,8 @@
 import React, { useEffect, useState, FC } from 'react';
+import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import { useRequest, request, history } from 'umi';
 import { ColumnsType } from 'antd/es/table';
 import { getPageParam } from '@/utils/utils';
-import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import moment from 'moment';
 import { SearchOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import {
@@ -21,7 +21,7 @@ import {
 import { join } from 'lodash';
 import { buildColumns, buildElements, buildSearchFields } from '@/components/List';
 import { ModalForm } from './ModalForm';
-import { DataState, SingleColumnType } from './data.d';
+import { DataState, SingleColumnType } from './data';
 import * as helper from './helper';
 import styles from './style.less';
 
@@ -189,14 +189,22 @@ const BasicList: FC<BasicListProps> = () => {
 
   const batchToolBar = () => {
     const hasSelected = selectedRowKeys.length > 0;
-    return (
-      <div style={{ display: hasSelected ? 'block' : 'none' }}>
-        <Space>
-          <Button type="dashed">Selected: {selectedRowKeys.length}</Button>
-          {mainData?.layout && buildElements(mainData.layout.batchToolBar, actionHandler)}
-        </Space>
-      </div>
-    );
+    if (hasSelected) {
+      return (
+        <FooterToolbar
+          extra={
+            <>
+              <Space>
+                {mainData?.layout && buildElements(mainData.layout.batchToolBar, actionHandler)}
+                &nbsp;&nbsp;&nbsp;
+              </Space>
+              Selected&nbsp;<a style={{ fontWeight: 700 }}>{selectedRowKeys.length}</a> Items
+            </>
+          }
+        />
+      );
+    }
+    return null;
   };
 
   const tableToolBar = () => {
@@ -315,7 +323,7 @@ const BasicList: FC<BasicListProps> = () => {
     return (
       <Row>
         <Col xs={24} sm={12} className={styles.toolBarLeft}>
-          {batchToolBar()}
+          ...
         </Col>
         <Col xs={24} sm={12} className={styles.toolBarRight}>
           {tableToolBar()}
@@ -328,7 +336,7 @@ const BasicList: FC<BasicListProps> = () => {
     return (
       <Row>
         <Col xs={24} sm={12} className={styles.toolBarLeft}>
-          {batchToolBar()}
+          ...
         </Col>
         <Col xs={24} sm={12} className={styles.toolBarRight}>
           {paginationLayout()}
@@ -341,7 +349,7 @@ const BasicList: FC<BasicListProps> = () => {
 
   return (
     <>
-      <PageHeaderWrapper>
+      <PageContainer>
         <Space direction="vertical" style={{ width: '100%' }}>
           {searchLayout()}
           <Card>
@@ -358,6 +366,7 @@ const BasicList: FC<BasicListProps> = () => {
             {afterTableLayout()}
           </Card>
         </Space>
+        {batchToolBar()}
         <Modal
           visible={modalVisible}
           onCancel={modalCancelHandler}
@@ -371,7 +380,7 @@ const BasicList: FC<BasicListProps> = () => {
             reloadHandler={reloadHandler}
           />
         </Modal>
-      </PageHeaderWrapper>
+      </PageContainer>
     </>
   );
 };
