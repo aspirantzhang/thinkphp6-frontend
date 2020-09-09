@@ -64,9 +64,16 @@ export const buildFields = (mainData: any) => {
       case 'actions':
         return null;
       default:
+        if (column.disabled === true) {
+          return (
+            <Form.Item label={column.title} key={column.key}>
+              {mainData.dataSource[column.key]}
+            </Form.Item>
+          );
+        }
         return (
           <Form.Item name={column.key} label={column.title} key={column.key}>
-            <Input disabled={column.disabled} />
+            <Input />
           </Form.Item>
         );
     }
