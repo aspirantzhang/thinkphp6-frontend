@@ -135,10 +135,12 @@ const SinglePage: FC<SinglePageProps> = () => {
                         if (column.type === 'actions') {
                           return (
                             <div className={styles.actionRow} key="actionRow">
-                              {form.getFieldValue('update_time') && (
+                              {mainData?.dataSource?.update_time && (
                                 <Tag className={styles.modalBottomTip} key="update_time">
                                   Update Time:&nbsp;
-                                  {form.getFieldValue('update_time').format('YYYY-MM-DD HH:mm:ss')}
+                                  {moment(mainData.dataSource.update_time, moment.ISO_8601).format(
+                                    'YYYY-MM-DD HH:mm:ss',
+                                  )}
                                 </Tag>
                               )}
                               <div key={column.key}>

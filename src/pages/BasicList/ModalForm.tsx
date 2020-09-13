@@ -136,7 +136,7 @@ export const ModalForm: FC<ModalFormProps> = (props) => {
             if (column.type === 'actions') {
               return (
                 <div className={styles.actionRow} key="actionRow">
-                  {mainData.dataSource.update_time && (
+                  {mainData?.dataSource?.update_time && (
                     <Tag className={styles.modalBottomTip} key="update_time">
                       Update Time:&nbsp;
                       {moment(mainData.dataSource.update_time, moment.ISO_8601).format(
