@@ -88,6 +88,12 @@ export default defineConfig({
       component: './BasicList',
     },
     {
+      name: 'rule-list',
+      icon: 'table',
+      path: '/search-list/backend/rules',
+      component: './BasicList',
+    },
+    {
       name: 'model-design',
       icon: 'table',
       path: '/model-design',
