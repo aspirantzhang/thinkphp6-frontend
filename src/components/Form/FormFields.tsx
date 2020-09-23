@@ -56,7 +56,7 @@ export const buildFields = (mainData: any) => {
               multiple
               treeDefaultExpandAll
               treeCheckable
-              showCheckedStrategy="SHOW_PARENT"
+              // showCheckedStrategy="SHOW_PARENT"
               allowClear
             />
           </Form.Item>
