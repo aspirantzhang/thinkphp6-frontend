@@ -4,7 +4,7 @@ import { useRequest, request, history } from 'umi';
 import { ColumnsType } from 'antd/es/table';
 import { getPageParam } from '@/utils/utils';
 import moment from 'moment';
-import { SearchOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
+import { SearchOutlined, ExclamationCircleOutlined, DeleteOutlined } from '@ant-design/icons';
 import {
   Card,
   Row,
@@ -215,6 +215,21 @@ const BasicList: FC<BasicListProps> = () => {
           icon={<SearchOutlined />}
           onClick={() => {
             setSearchExpand(!searchExpand);
+          }}
+        />
+        <Button
+          type={
+            window.location.pathname.split('/').pop().indexOf('trash') === -1 ? 'dashed' : 'danger'
+          }
+          icon={<DeleteOutlined />}
+          onClick={() => {
+            const currentUri = window.location.pathname.split('/');
+            const uriLast = currentUri.pop();
+            if (uriLast?.indexOf('trash') === -1) {
+              history.push(`${window.location.pathname}/trash`);
+            } else {
+              history.push(currentUri.join('/'));
+            }
           }}
         />
         {mainData?.layout && buildElements(mainData.layout.tableToolBar, actionHandler)}
