@@ -217,21 +217,6 @@ const BasicList: FC<BasicListProps> = () => {
             setSearchExpand(!searchExpand);
           }}
         />
-        <Button
-          type={
-            window.location.pathname.split('/').pop().indexOf('trash') === -1 ? 'dashed' : 'danger'
-          }
-          icon={<DeleteOutlined />}
-          onClick={() => {
-            const currentUri = window.location.pathname.split('/');
-            const uriLast = currentUri.pop();
-            if (uriLast?.indexOf('trash') === -1) {
-              history.push(`${window.location.pathname}/trash`);
-            } else {
-              history.push(currentUri.join('/'));
-            }
-          }}
-        />
         {mainData?.layout && buildElements(mainData.layout.tableToolBar, actionHandler)}
       </Space>
     );

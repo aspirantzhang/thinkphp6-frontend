@@ -82,12 +82,6 @@ export default defineConfig({
       component: './BasicList',
     },
     {
-      name: 'admin-list-trash',
-      hideInMenu: true,
-      path: '/search-list/backend/admins/trash',
-      component: './BasicList',
-    },
-    {
       name: 'group-list',
       icon: 'table',
       path: '/search-list/backend/groups',

@@ -51,7 +51,6 @@ export default {
   'menu.editor.mind': 'Mind Editor',
   'menu.editor.koni': 'Koni Editor',
   'menu.admin-list': 'Admin List',
-  'menu.admin-list-trash': 'Admin Trash',
   'menu.group-list': 'Group List',
   'menu.rule-list': 'Rule List',
   'menu.model-design': 'Model Design',

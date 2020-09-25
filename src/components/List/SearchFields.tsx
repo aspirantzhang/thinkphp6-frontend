@@ -28,12 +28,14 @@ export const buildSearchFields = (tableColumn: any) => {
       case 'tag':
         return (
           <Form.Item name={column.key} label={column.title} key={column.key}>
-            <Select mode="multiple" placeholder="Please select" style={{ width: '100px' }}>
-              {column.data.map((item: any, key: number) => (
-                <Select.Option value={key} key={item}>
-                  {item}
-                </Select.Option>
-              ))}
+            <Select mode={column.mode} placeholder="Please select" style={{ width: '200px' }}>
+              {column.data &&
+                Object.keys(column.data).length &&
+                Object.keys(column.data).map((key) => (
+                  <Select.Option value={key} key={key}>
+                    {column.data[key]}
+                  </Select.Option>
+                ))}
             </Select>
           </Form.Item>
         );
@@ -42,14 +44,13 @@ export const buildSearchFields = (tableColumn: any) => {
           <Form.Item name={column.key} label={column.title} key={column.key}>
             <TreeSelect
               showSearch
-              style={{ width: '250px' }}
+              style={{ width: '200px' }}
               dropdownStyle={{ maxHeight: 600, overflow: 'auto' }}
               treeData={column.data}
               placeholder="Please select"
               multiple
               treeDefaultExpandAll
               treeCheckable
-              showCheckedStrategy="SHOW_PARENT"
               allowClear
             />
           </Form.Item>
