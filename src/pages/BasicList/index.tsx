@@ -4,7 +4,7 @@ import { useRequest, request, history } from 'umi';
 import { ColumnsType } from 'antd/es/table';
 import { getPageParam } from '@/utils/utils';
 import moment from 'moment';
-import { SearchOutlined, ExclamationCircleOutlined, DeleteOutlined } from '@ant-design/icons';
+import { SearchOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import {
   Card,
   Row,
@@ -98,6 +98,7 @@ const BasicList: FC<BasicListProps> = () => {
         columns={batchOverviewColumns}
         pagination={false}
         bordered
+        rowKey="id"
         size="small"
       />
     );
@@ -140,12 +141,15 @@ const BasicList: FC<BasicListProps> = () => {
           })
           .catch(() => {});
         break;
+      case 'deletePermanently':
       case 'batchDelete':
         confirm({
-          title: `Overview of Batch ${record.text} Operation`,
+          title: `Overview of ${type === 'deletePermanently' ? 'Permanently' : ''} ${
+            record.text
+          } Operation`,
           icon: <ExclamationCircleOutlined />,
           content: buildBatchOverview(),
-          okText: `Sure to ${record.text} !!!`,
+          okText: `Sure to ${type === 'deletePermanently' ? 'Permanently' : ''} ${record.text} !!!`,
           okType: 'danger',
           cancelText: 'Cancel',
           onOk() {
@@ -154,6 +158,7 @@ const BasicList: FC<BasicListProps> = () => {
               method,
               data: {
                 idArray: selectedRowKeys,
+                type,
               },
             })
               .then((response) => {
@@ -195,7 +200,8 @@ const BasicList: FC<BasicListProps> = () => {
           extra={
             <>
               <Space>
-                {mainData?.layout && buildElements(mainData.layout.batchToolBar, actionHandler)}
+                {mainData?.layout &&
+                  buildElements(mainData.layout.batchToolBar, actionHandler, mainData?.page.trash)}
                 &nbsp;&nbsp;&nbsp;
               </Space>
               Selected&nbsp;<a style={{ fontWeight: 700 }}>{selectedRowKeys.length}</a> Items
@@ -217,7 +223,8 @@ const BasicList: FC<BasicListProps> = () => {
             setSearchExpand(!searchExpand);
           }}
         />
-        {mainData?.layout && buildElements(mainData.layout.tableToolBar, actionHandler)}
+        {mainData?.layout &&
+          buildElements(mainData.layout.tableToolBar, actionHandler, mainData?.page.trash)}
       </Space>
     );
   };

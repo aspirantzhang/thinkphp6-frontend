@@ -20,7 +20,7 @@ export interface PageState {
   title: string;
   type: string;
   searchBar: boolean;
-  searchExpand: boolean;
+  trash: boolean;
 }
 
 export interface LayoutState {
