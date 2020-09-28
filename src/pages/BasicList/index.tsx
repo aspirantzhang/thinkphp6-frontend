@@ -17,6 +17,7 @@ import {
   Table,
   message,
   Modal,
+  Alert,
 } from 'antd';
 import { join } from 'lodash';
 import { buildColumns, buildElements, buildSearchFields } from '@/components/List';
@@ -77,7 +78,7 @@ const BasicList: FC<BasicListProps> = () => {
     setModalVisible(true);
   };
 
-  const buildBatchOverview = (dataSource: any) => {
+  const buildBatchOverview = (dataSource: any, action: string) => {
     const batchOverviewColumns: ColumnsType<SingleColumnType> = [
       {
         title: 'ID',
@@ -92,15 +93,25 @@ const BasicList: FC<BasicListProps> = () => {
     ];
 
     return (
-      <Table
-        className={styles.batchOverviewTable}
-        dataSource={dataSource}
-        columns={batchOverviewColumns}
-        pagination={false}
-        bordered
-        rowKey="id"
-        size="small"
-      />
+      <>
+        {action === 'delete' && (
+          <Alert
+            message="The operation will delete all child records when a parent record is deleted."
+            type="warning"
+            showIcon
+          />
+        )}
+
+        <Table
+          className={styles.batchOverviewTable}
+          dataSource={dataSource}
+          columns={batchOverviewColumns}
+          pagination={false}
+          bordered
+          rowKey="id"
+          size="small"
+        />
+      </>
     );
   };
 
@@ -132,7 +143,7 @@ const BasicList: FC<BasicListProps> = () => {
             actions.text
           } Operation`,
           icon: <ExclamationCircleOutlined />,
-          content: buildBatchOverview(action === 'delete' ? [record] : selectedRowData),
+          content: buildBatchOverview(action === 'delete' ? [record] : selectedRowData, 'delete'),
           okText: `Sure to ${action === 'deletePermanently' ? 'Permanently' : ''} ${
             actions.text
           } !!!`,
