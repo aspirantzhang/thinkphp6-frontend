@@ -77,7 +77,7 @@ const BasicList: FC<BasicListProps> = () => {
     setModalVisible(true);
   };
 
-  const buildBatchOverview = () => {
+  const buildBatchOverview = (dataSource: any) => {
     const batchOverviewColumns: ColumnsType<SingleColumnType> = [
       {
         title: 'ID',
@@ -94,7 +94,7 @@ const BasicList: FC<BasicListProps> = () => {
     return (
       <Table
         className={styles.batchOverviewTable}
-        dataSource={selectedRowData}
+        dataSource={dataSource}
         columns={batchOverviewColumns}
         pagination={false}
         bordered
@@ -104,15 +104,9 @@ const BasicList: FC<BasicListProps> = () => {
     );
   };
 
-  /**
-   * Action Handler
-   * @param type action type: modal / delete etc...
-   * @param uri handle uri
-   * @param method http method of uri
-   * @param record current record
-   */
-  const actionHandler = (type: string, uri: string, method: string, record?: any) => {
-    switch (type) {
+  const actionHandler = (actions: any, record?: any) => {
+    const { action, method, uri } = actions;
+    switch (action) {
       case 'modal':
         if (record) {
           showModal(uri, record.id);
@@ -131,34 +125,28 @@ const BasicList: FC<BasicListProps> = () => {
         reloadHandler();
         break;
       case 'delete':
-        request(`/api/${uri}/${record.id}`, {
-          method,
-          data: record,
-        })
-          .then((response) => {
-            message.success(response.message);
-            reloadHandler();
-          })
-          .catch(() => {});
-        break;
       case 'deletePermanently':
       case 'batchDelete':
         confirm({
-          title: `Overview of ${type === 'deletePermanently' ? 'Permanently' : ''} ${
-            record.text
+          title: `Overview of ${action === 'deletePermanently' ? 'Permanently' : ''} ${
+            actions.text
           } Operation`,
           icon: <ExclamationCircleOutlined />,
-          content: buildBatchOverview(),
-          okText: `Sure to ${type === 'deletePermanently' ? 'Permanently' : ''} ${record.text} !!!`,
+          content: buildBatchOverview(action === 'delete' ? [record] : selectedRowData),
+          okText: `Sure to ${action === 'deletePermanently' ? 'Permanently' : ''} ${
+            actions.text
+          } !!!`,
           okType: 'danger',
           cancelText: 'Cancel',
           onOk() {
             const processingHide = message.loading('Processing...');
+            const ids = action === 'delete' ? [record.id] : selectedRowKeys;
+
             request(`/api/${uri}`, {
               method,
               data: {
-                idArray: selectedRowKeys,
-                type,
+                ids,
+                type: action,
               },
             })
               .then((response) => {
@@ -173,7 +161,7 @@ const BasicList: FC<BasicListProps> = () => {
               });
           },
           onCancel() {
-            message.warning(`${record.text} Operation Cancelled.`);
+            message.warning(`${actions.text} Operation Cancelled.`);
           },
         });
         break;

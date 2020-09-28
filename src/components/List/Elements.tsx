@@ -15,7 +15,7 @@ export const buildElements = (data: any, actionHandler: any, isTrash: boolean) =
         <Button
           type={element.type}
           onClick={() => {
-            actionHandler(elementAction, element.uri, element.method, element);
+            actionHandler({ ...element, action: elementAction }, element);
           }}
           key={element.action}
         >

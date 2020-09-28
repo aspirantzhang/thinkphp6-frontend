@@ -1,6 +1,6 @@
 import React from 'react';
 import moment from 'moment';
-import { Space, Tag, Popconfirm, Button } from 'antd';
+import { Space, Tag, Button } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import { SingleColumnType } from './data.d';
 
@@ -51,28 +51,11 @@ export const buildColumns = (mainData: any, actionHandler: any) => {
             <Space>
               {thisColumn.actions.map((action: any) => {
                 if (action.component === 'button') {
-                  // Popconfirm
-                  if (action.action === 'delete') {
-                    return (
-                      <Popconfirm
-                        title={`${record[Object.keys(record)[1]]} - (ID:${record.id})`}
-                        onConfirm={() => {
-                          actionHandler(action.action, action.uri, action.method, record);
-                        }}
-                        okText="Delete"
-                        okType="danger"
-                        key={action.action}
-                      >
-                        <Button type={action.type}>{action.text}</Button>
-                      </Popconfirm>
-                    );
-                  }
-
                   return (
                     <Button
                       type={action.type}
                       onClick={() => {
-                        actionHandler(action.action, action.uri, action.method, record);
+                        actionHandler(action, record);
                       }}
                       key={action.action}
                     >

@@ -10,7 +10,7 @@ export const buildActions = (column: any, actionHandler?: any, loading?: boolean
           key={action.action}
           loading={loading}
           onClick={() => {
-            actionHandler(action.action, action.uri, action.method);
+            actionHandler(action);
           }}
         >
           {action.text}

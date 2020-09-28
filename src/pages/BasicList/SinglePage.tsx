@@ -67,8 +67,9 @@ const SinglePage: FC<SinglePageProps> = () => {
     };
   }, [initUri]);
 
-  const actionHandler = (type: string, uri: string, method: string) => {
-    switch (type) {
+  const actionHandler = (actions: any) => {
+    const { action, method, uri } = actions;
+    switch (action) {
       case 'submit':
         form.setFieldsValue({ uri, method });
         form.submit();
