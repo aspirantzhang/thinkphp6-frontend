@@ -139,14 +139,10 @@ const BasicList: FC<BasicListProps> = () => {
       case 'deletePermanently':
       case 'batchDelete':
         confirm({
-          title: `Overview of ${action === 'deletePermanently' ? 'Permanently' : ''} ${
-            actions.text
-          } Operation`,
+          title: `Overview of ${actions.text} Operation`,
           icon: <ExclamationCircleOutlined />,
           content: buildBatchOverview(action === 'delete' ? [record] : selectedRowData, 'delete'),
-          okText: `Sure to ${action === 'deletePermanently' ? 'Permanently' : ''} ${
-            actions.text
-          } !!!`,
+          okText: `Sure to ${actions.text} !!!`,
           okType: 'danger',
           cancelText: 'Cancel',
           onOk() {
@@ -199,8 +195,7 @@ const BasicList: FC<BasicListProps> = () => {
           extra={
             <>
               <Space>
-                {mainData?.layout &&
-                  buildElements(mainData.layout.batchToolBar, actionHandler, mainData?.page.trash)}
+                {mainData?.layout && buildElements(mainData.layout.batchToolBar, actionHandler)}
                 &nbsp;&nbsp;&nbsp;
               </Space>
               Selected&nbsp;<a style={{ fontWeight: 700 }}>{selectedRowKeys.length}</a> Items
@@ -222,8 +217,7 @@ const BasicList: FC<BasicListProps> = () => {
             setSearchExpand(!searchExpand);
           }}
         />
-        {mainData?.layout &&
-          buildElements(mainData.layout.tableToolBar, actionHandler, mainData?.page.trash)}
+        {mainData?.layout && buildElements(mainData.layout.tableToolBar, actionHandler)}
       </Space>
     );
   };
@@ -269,6 +263,8 @@ const BasicList: FC<BasicListProps> = () => {
     });
     run(`${searchQueryString}${sortQuery}`);
     setSearchQuery(searchQueryString);
+    setSelectedRowData([]);
+    setSelectedRowKeys([]);
   };
 
   const modalCancelHandler = () => {
