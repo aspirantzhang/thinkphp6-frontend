@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import { Card, Button } from 'antd';
+import { useRequest } from 'umi';
 import {
   createFormActions,
   SchemaForm,
@@ -33,8 +34,26 @@ const ModelDesign = () => {
   const [tableToolbarVisible, setTableToolbarVisible] = useState(false);
   const [batchToolbarVisible, setBatchToolbarVisible] = useState(false);
 
+  const { run } = useRequest(
+    (data?) => {
+      return {
+        url: `/api/backend/models`,
+        method: 'post',
+        body: JSON.stringify({
+          data,
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      };
+    },
+    {
+      manual: true,
+    },
+  );
+
   const submitHandler = (values) => {
-    console.log(values);
+    run(values);
   };
 
   const actionFields = () => {
@@ -50,6 +69,7 @@ const ModelDesign = () => {
             { label: 'Primary', value: 'primary' },
             { label: 'Default', value: 'default' },
             { label: 'Dashed', value: 'dashed' },
+            { label: 'Danger', value: 'danger' },
           ]}
         />
         <Field
@@ -61,11 +81,11 @@ const ModelDesign = () => {
             { label: 'Modal', value: 'modal' },
             { label: 'Page', value: 'page' },
             { label: 'Delete', value: 'delete' },
+            { label: 'Restore', value: 'restore' },
             { label: 'Reset', value: 'reset' },
             { label: 'Submit', value: 'submit' },
             { label: 'Cancel', value: 'cancel' },
             { label: 'Reload', value: 'reload' },
-            { label: 'Batch Delete', value: 'batchDelete' },
           ]}
         />
         <Field name="uri" x-component="input" title="Uri" />
@@ -105,7 +125,10 @@ const ModelDesign = () => {
     setSampleValues$().subscribe(() => {
       setFormState((state: IFormState) => {
         const sampleValues = {
-          pageName: 'Group',
+          title: 'Group',
+          name: 'group',
+          icon: 'table',
+          component: '/search-list/backend/groups',
           haveBatchToolbar: true,
           haveTableToolbar: true,
           fields: [
@@ -228,10 +251,26 @@ const ModelDesign = () => {
           batchToolbar: [
             {
               name: 'Delete',
-              type: 'dashed',
-              action: 'batchDelete',
-              uri: '/backend/groups/batch-delete',
+              type: 'danger',
+              action: 'delete',
+              uri: '/backend/groups',
               method: 'delete',
+            },
+          ],
+          batchToolbarTrashed: [
+            {
+              name: 'Delete Permanently',
+              type: 'danger',
+              action: 'deletePermanently',
+              uri: '/backend/groups',
+              method: 'delete',
+            },
+            {
+              name: 'Restore',
+              type: 'default',
+              action: 'restore',
+              uri: '/backend/groups/restore',
+              method: 'post',
             },
           ],
         };
@@ -263,13 +302,34 @@ const ModelDesign = () => {
             effects={formEffects}
           >
             <FormCard title="Basic">
-              <FormMegaLayout grid columns={7}>
+              <FormMegaLayout grid columns={10}>
                 <Field
-                  name="pageName"
+                  name="title"
                   type="string"
                   x-component="Input"
-                  title="Page Name*"
-                  x-mega-props={{ span: 5 }}
+                  title="Page Title*"
+                  x-mega-props={{ span: 2 }}
+                />
+                <Field
+                  name="name"
+                  type="string"
+                  x-component="Input"
+                  title="Name String*"
+                  x-mega-props={{ span: 2 }}
+                />
+                <Field
+                  name="icon"
+                  type="string"
+                  x-component="Input"
+                  title="Icon*"
+                  x-mega-props={{ span: 2 }}
+                />
+                <Field
+                  name="component"
+                  type="string"
+                  x-component="Input"
+                  title="Component*"
+                  x-mega-props={{ span: 2 }}
                 />
                 <Field name="haveTableToolbar" x-component="Checkbox" title="Table Toolbar?" />
                 <Field name="haveBatchToolbar" x-component="Checkbox" title="Batch Toolbar?" />
@@ -393,6 +453,26 @@ const ModelDesign = () => {
             >
               <Field
                 name="batchToolbar"
+                type="array"
+                default={[]}
+                x-component="ArrayTable"
+                x-component-props={{
+                  operationsWidth: 150,
+                  operations: {
+                    title: '',
+                  },
+                  draggable: true,
+                }}
+              >
+                {actionFields()}
+              </Field>
+            </FormCard>
+            <FormCard
+              title="Batch Toolbar - Trashed"
+              style={{ display: batchToolbarVisible ? 'block' : 'none' }}
+            >
+              <Field
+                name="batchToolbarTrashed"
                 type="array"
                 default={[]}
                 x-component="ArrayTable"
