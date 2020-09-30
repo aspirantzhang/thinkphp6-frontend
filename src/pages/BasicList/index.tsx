@@ -94,7 +94,7 @@ const BasicList: FC<BasicListProps> = () => {
 
     return (
       <>
-        {action === 'delete' && (
+        {(action === 'delete' || action === 'deletePermanently') && (
           <Alert
             message="The operation will delete all child records when a parent record is deleted."
             type="warning"
@@ -137,22 +137,20 @@ const BasicList: FC<BasicListProps> = () => {
         break;
       case 'delete':
       case 'deletePermanently':
-      case 'batchDelete':
+      case 'restore':
         confirm({
           title: `Overview of ${actions.text} Operation`,
           icon: <ExclamationCircleOutlined />,
-          content: buildBatchOverview(action === 'delete' ? [record] : selectedRowData, 'delete'),
+          content: buildBatchOverview(selectedRowData, action),
           okText: `Sure to ${actions.text} !!!`,
           okType: 'danger',
           cancelText: 'Cancel',
           onOk() {
             const processingHide = message.loading('Processing...');
-            const ids = action === 'delete' ? [record.id] : selectedRowKeys;
-
             request(`/api/${uri}`, {
               method,
               data: {
-                ids,
+                ids: selectedRowKeys,
                 type: action,
               },
             })
