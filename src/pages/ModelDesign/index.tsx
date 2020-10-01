@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
-import { Card, Button } from 'antd';
+import { Card, Button, message } from 'antd';
 import { useRequest } from 'umi';
 import {
   createFormActions,
@@ -34,7 +34,7 @@ const ModelDesign = () => {
   const [tableToolbarVisible, setTableToolbarVisible] = useState(false);
   const [batchToolbarVisible, setBatchToolbarVisible] = useState(false);
 
-  const { run } = useRequest(
+  const { run, loading } = useRequest(
     (data?) => {
       return {
         url: `/api/backend/models`,
@@ -49,6 +49,15 @@ const ModelDesign = () => {
     },
     {
       manual: true,
+      onSuccess: (response) => {
+        message.success({ content: response.message, key: 'msg' });
+      },
+      onError: (error) => {
+        message.error({ content: error.message, key: 'msg' });
+      },
+      formatResult: (response) => {
+        return response;
+      },
     },
   );
 
@@ -488,8 +497,8 @@ const ModelDesign = () => {
               </Field>
             </FormCard>
             <FormButtonGroup offset={5}>
-              <Submit>Submit</Submit>
-              <Reset>reset</Reset>
+              <Submit loading={loading}>Submit</Submit>
+              <Reset loading={loading}>reset</Reset>
             </FormButtonGroup>
           </SchemaForm>
         </Card>
