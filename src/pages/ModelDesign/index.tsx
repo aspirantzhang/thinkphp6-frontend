@@ -137,7 +137,8 @@ const ModelDesign = () => {
           title: 'Group',
           name: 'group',
           icon: 'table',
-          component: '/search-list/backend/groups',
+          path: '/search-list/backend/groups',
+          component: './BasicList',
           haveBatchToolbar: true,
           haveTableToolbar: true,
           fields: [
@@ -311,7 +312,7 @@ const ModelDesign = () => {
             effects={formEffects}
           >
             <FormCard title="Basic">
-              <FormMegaLayout grid columns={10}>
+              <FormMegaLayout grid columns={4}>
                 <Field
                   name="title"
                   type="string"
@@ -319,6 +320,10 @@ const ModelDesign = () => {
                   title="Page Title*"
                   x-mega-props={{ span: 2 }}
                 />
+                <Field name="haveTableToolbar" x-component="Checkbox" title="Table Toolbar?" />
+                <Field name="haveBatchToolbar" x-component="Checkbox" title="Batch Toolbar?" />
+              </FormMegaLayout>
+              <FormMegaLayout grid columns={8}>
                 <Field
                   name="name"
                   type="string"
@@ -334,14 +339,19 @@ const ModelDesign = () => {
                   x-mega-props={{ span: 2 }}
                 />
                 <Field
+                  name="path"
+                  type="string"
+                  x-component="Input"
+                  title="Path*"
+                  x-mega-props={{ span: 2 }}
+                />
+                <Field
                   name="component"
                   type="string"
                   x-component="Input"
                   title="Component*"
                   x-mega-props={{ span: 2 }}
                 />
-                <Field name="haveTableToolbar" x-component="Checkbox" title="Table Toolbar?" />
-                <Field name="haveBatchToolbar" x-component="Checkbox" title="Batch Toolbar?" />
               </FormMegaLayout>
             </FormCard>
             <FormCard title="Fields">

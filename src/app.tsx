@@ -6,20 +6,23 @@ import { history, RequestConfig } from 'umi';
 import RightContent from '@/components/RightContent';
 import Footer from '@/components/Footer';
 import { ResponseError } from 'umi-request';
-import { queryCurrent } from './services/user';
+import { queryCurrent, queryMenu } from './services/user';
 import defaultSettings from '../config/defaultSettings';
 
 export async function getInitialState(): Promise<{
   currentUser?: API.CurrentUser;
   settings?: LayoutSettings;
+  menu?: any;
 }> {
   // 如果是登录页面，不执行
   if (history.location.pathname !== '/user/login') {
     try {
       const currentUser = await queryCurrent();
+      const menu = await queryMenu();
       return {
         currentUser,
         settings: defaultSettings,
+        menu,
       };
     } catch (error) {
       history.push('/user/login');
@@ -33,8 +36,10 @@ export async function getInitialState(): Promise<{
 export const layout = ({
   initialState,
 }: {
-  initialState: { settings?: LayoutSettings; currentUser?: API.CurrentUser };
+  initialState: { settings?: LayoutSettings; currentUser?: API.CurrentUser; menu: any };
 }): BasicLayoutProps => {
+  console.log('settings', initialState.settings);
+
   return {
     rightContentRender: () => <RightContent />,
     disableContentMargin: false,
@@ -45,8 +50,10 @@ export const layout = ({
         history.push('/user/login');
       }
     },
+    menuDataRender: () => initialState.menu,
     menuHeaderRender: undefined,
     ...initialState?.settings,
+    iconfontUrl: '//at.alicdn.com/t/font_2112134_5g5tcvx7qw.js',
   };
 };
 
