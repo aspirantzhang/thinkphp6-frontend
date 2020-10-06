@@ -38,9 +38,8 @@ export const layout = ({
 }: {
   initialState: { settings?: LayoutSettings; currentUser?: API.CurrentUser; menu: any };
 }): BasicLayoutProps => {
-  console.log('settings', initialState.settings);
-
   return {
+    ...initialState?.settings,
     rightContentRender: () => <RightContent />,
     disableContentMargin: false,
     footerRender: () => <Footer />,
@@ -50,10 +49,9 @@ export const layout = ({
         history.push('/user/login');
       }
     },
-    menuDataRender: () => initialState.menu,
     menuHeaderRender: undefined,
-    ...initialState?.settings,
     iconfontUrl: '//at.alicdn.com/t/font_2112134_5g5tcvx7qw.js',
+    // menuDataRender: () => initialState.menu,
   };
 };
 

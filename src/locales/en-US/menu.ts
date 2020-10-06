@@ -54,4 +54,5 @@ export default {
   'menu.group-list': 'Group List',
   'menu.rule-list': 'Rule List',
   'menu.model-design': 'Model Design',
+  'menu.model-list': 'Model List',
 };

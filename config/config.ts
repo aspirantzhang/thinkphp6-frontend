@@ -29,6 +29,14 @@ export default defineConfig({
   targets: {
     ie: 11,
   },
+  routes: [
+    {
+      name: 'list.table-list',
+      icon: 'table',
+      path: '/list',
+      component: './ListTableList',
+    },
+  ],
   // umi routes: https://umijs.org/docs/routing
   routes: [
     {
@@ -69,12 +77,6 @@ export default defineConfig({
       path: '/list',
       component: './ListTableList',
     },
-    // {
-    //   path: '/search-list/:uri',
-    //   name: 'search-list2',
-    //   hideInMenu: false,
-    //   component: './BasicList',
-    // },
     {
       name: 'admin-list',
       icon: 'table',
@@ -94,10 +96,10 @@ export default defineConfig({
       component: './BasicList',
     },
     {
-      name: 'model-design',
+      name: 'model-list',
       icon: 'table',
-      path: '/model-design',
-      component: './ModelDesign',
+      path: '/search-list/backend/models',
+      component: './BasicList',
     },
     {
       path: '/search-list/page',
