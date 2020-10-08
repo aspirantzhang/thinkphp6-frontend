@@ -12,7 +12,11 @@ export interface DataState {
 }
 export interface PageDataState {
   page: PageState;
-  layout: any;
+  layout: {
+    tabs: Array;
+    sidebars: Array;
+    actions: Array;
+  };
   dataSource: Array;
   meta: MetaState;
 }

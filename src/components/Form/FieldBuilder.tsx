@@ -1,8 +1,9 @@
 import React from 'react';
 import { Form, Input, DatePicker, Switch, TreeSelect } from 'antd';
+import { forEach } from 'lodash';
 
-export const buildFields = (mainData: any) => {
-  return mainData?.layout.map((column: any) => {
+export const FieldBuilder = (data: any) => {
+  return data?.map((column: any) => {
     switch (column.type) {
       case 'datetime':
         if (column.key !== 'update_time') {
@@ -67,7 +68,7 @@ export const buildFields = (mainData: any) => {
         if (column.disabled === true) {
           return (
             <Form.Item label={column.title} key={column.key}>
-              {mainData.dataSource[column.key]}
+              {data.dataSource[column.key]}
             </Form.Item>
           );
         }

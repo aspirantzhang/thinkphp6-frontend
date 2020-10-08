@@ -3,7 +3,7 @@ import { Form, Input, Space, message, Tag, Spin } from 'antd';
 import moment from 'moment';
 import { request, useRequest } from 'umi';
 import { useBoolean } from 'ahooks';
-import { buildFields, buildActions, preFinish, preSetFields } from '@/components/Form';
+import { FieldBuilder, ActionBuilder, FinishPrepare, FieldsPrepare } from '@/components/Form';
 import { PageDataState, FormValues } from './data';
 import styles from './style.less';
 
@@ -87,7 +87,7 @@ export const ModalForm: FC<ModalFormProps> = (props) => {
 
   const onFinish = async (values: FormValues) => {
     message.loading({ content: 'Processing...', key: 'msg' });
-    const { submitValues, uri, method } = preFinish(values);
+    const { submitValues, uri, method } = FinishPrepare(values);
     run(uri, method, submitValues);
   };
 
@@ -102,7 +102,7 @@ export const ModalForm: FC<ModalFormProps> = (props) => {
 
   useEffect(() => {
     if (mainData?.layout && mainData.dataSource) {
-      form.setFieldsValue(preSetFields(mainData));
+      form.setFieldsValue(FieldsPrepare(mainData));
     }
   }, [mainData]);
 
@@ -132,27 +132,23 @@ export const ModalForm: FC<ModalFormProps> = (props) => {
             create_time: moment(),
           }}
         >
-          {buildFields(mainData)}
-          {mainData?.layout.map((column: any) => {
-            if (column.type === 'actions') {
-              return (
-                <div className={styles.actionRow} key="actionRow">
-                  {mainData?.dataSource?.update_time && (
-                    <Tag className={styles.modalBottomTip} key="update_time">
-                      Update Time:&nbsp;
-                      {moment(mainData.dataSource.update_time, moment.ISO_8601).format(
-                        'YYYY-MM-DD HH:mm:ss',
-                      )}
-                    </Tag>
-                  )}
-                  <div key={column.key}>
-                    <Space>{buildActions(column, actionHandler, loading)}</Space>
-                  </div>
-                </div>
-              );
-            }
-            return null;
-          })}
+          {mainData?.layout?.tabs && FieldBuilder(mainData.layout.tabs[0].data)}
+
+          <div className={styles.actionRow} key="actionRow">
+            {mainData?.dataSource?.update_time && (
+              <Tag className={styles.modalBottomTip} key="update_time">
+                Update Time:&nbsp;
+                {moment(mainData.dataSource.update_time, moment.ISO_8601).format(
+                  'YYYY-MM-DD HH:mm:ss',
+                )}
+              </Tag>
+            )}
+            <Space>
+              {mainData?.layout?.actions &&
+                ActionBuilder(mainData.layout.actions[0], actionHandler, loading)}
+            </Space>
+          </div>
+
           <Form.Item name="uri" key="uri" hidden>
             <Input />
           </Form.Item>

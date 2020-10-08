@@ -1,10 +1,10 @@
 import React, { FC, useEffect, useState } from 'react';
-import { PageContainer } from '@ant-design/pro-layout';
+import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import { Row, Col, Card, Form, Input, Space, message, Tag, Tabs, Spin } from 'antd';
 import moment from 'moment';
 import { request, useRequest, history } from 'umi';
 import { useBoolean } from 'ahooks';
-import { buildFields, buildActions, preFinish, preSetFields } from '@/components/Form';
+import { FieldBuilder, ActionBuilder, FinishPrepare, FieldsPrepare } from '@/components/Form';
 import { getPageQuery } from '@/utils/utils';
 import { PageDataState, FormValues } from './data';
 import styles from './style.less';
@@ -87,7 +87,7 @@ const SinglePage: FC<SinglePageProps> = () => {
 
   const onFinish = async (values: FormValues) => {
     message.loading({ content: 'Processing...', key: 'msg' });
-    const { submitValues, uri, method } = preFinish(values);
+    const { submitValues, uri, method } = FinishPrepare(values);
     run(uri, method, submitValues);
   };
 
@@ -102,7 +102,7 @@ const SinglePage: FC<SinglePageProps> = () => {
 
   useEffect(() => {
     if (mainData?.layout && mainData.dataSource) {
-      form.setFieldsValue(preSetFields(mainData));
+      form.setFieldsValue(FieldsPrepare(mainData));
     }
   }, [mainData]);
 
@@ -115,77 +115,79 @@ const SinglePage: FC<SinglePageProps> = () => {
           className={styles.modalSpin}
           key="spin"
         />
-        <Tabs defaultActiveKey="1" type="card" style={{ display: spinLoading ? 'none' : 'block' }}>
-          <TabPane tab="Card Tab 1" key="1">
-            <Row gutter={24}>
-              <Col lg={16} md={24} sm={24} xs={24}>
-                <Card className={styles.mainCard}>
-                  <div key="form">
-                    <Form
-                      {...layout}
-                      form={form}
-                      onFinish={onFinish}
-                      onFinishFailed={onFinishFailed}
-                      initialValues={{
-                        status: true,
-                        create_time: moment(),
-                      }}
-                    >
-                      {buildFields(mainData)}
-                      {mainData?.layout.map((column: any) => {
-                        if (column.type === 'actions') {
-                          return (
-                            <div className={styles.actionRow} key="actionRow">
-                              {mainData?.dataSource?.update_time && (
-                                <Tag className={styles.modalBottomTip} key="update_time">
-                                  Update Time:&nbsp;
-                                  {moment(mainData.dataSource.update_time, moment.ISO_8601).format(
-                                    'YYYY-MM-DD HH:mm:ss',
-                                  )}
-                                </Tag>
-                              )}
-                              <div key={column.key}>
-                                <Space>{buildActions(column, actionHandler, loading)}</Space>
-                              </div>
-                            </div>
-                          );
-                        }
-                        return null;
-                      })}
-                      <Form.Item name="uri" key="uri" hidden>
-                        <Input />
-                      </Form.Item>
-                      <Form.Item name="method" key="method" hidden>
-                        <Input />
-                      </Form.Item>
-                    </Form>
-                  </div>
-                </Card>
-              </Col>
-              <Col lg={8} md={24} sm={24} xs={24}>
-                <Space direction="vertical" style={{ width: '100%' }}>
-                  <Card>
-                    <Space>
-                      {mainData?.layout.map((column: any) => {
-                        if (column.type === 'actions') {
-                          return buildActions(column, actionHandler, loading);
-                        }
-                        return null;
-                      })}
-                    </Space>
-                  </Card>
-                  <Card title="Sidebar 2">sidebar2</Card>
+        <Form
+          {...layout}
+          form={form}
+          onFinish={onFinish}
+          onFinishFailed={onFinishFailed}
+          initialValues={{
+            status: true,
+            create_time: moment(),
+          }}
+        >
+          <Row gutter={24}>
+            <Col lg={16} md={24} sm={24} xs={24}>
+              <Tabs
+                defaultActiveKey="1"
+                size="large"
+                type="card"
+                style={{ display: spinLoading ? 'none' : 'block' }}
+              >
+                {mainData?.layout?.tabs.map((value: any) => {
+                  return (
+                    <TabPane tab={value.title} key={value.name}>
+                      <Card bordered={false}>{FieldBuilder(value.data)}</Card>
+                    </TabPane>
+                  );
+                })}
+              </Tabs>
+            </Col>
+            <Col lg={8} md={24} sm={24} xs={24}>
+              <Space direction="vertical" style={{ width: '100%' }}>
+                {mainData?.layout?.actions?.map((action: any) => {
+                  return (
+                    <Card className={styles.textCenter} size="small" key={action.name}>
+                      <Space>{ActionBuilder(action, actionHandler, loading)}</Space>
+                    </Card>
+                  );
+                })}
+                {mainData?.layout?.sidebars?.map((sidebar: any) => {
+                  return (
+                    <Card title={sidebar.title} key={sidebar.name}>
+                      {FieldBuilder(sidebar.data)}
+                    </Card>
+                  );
+                })}
+              </Space>
+            </Col>
+          </Row>
+          <Form.Item name="uri" key="uri" hidden>
+            <Input />
+          </Form.Item>
+          <Form.Item name="method" key="method" hidden>
+            <Input />
+          </Form.Item>
+          <FooterToolbar
+            className={styles.textAlignRight}
+            extra={
+              <>
+                <Space>
+                  {mainData?.layout.actions.map((action: any) => {
+                    return ActionBuilder(action, actionHandler, loading);
+                  })}
                 </Space>
-              </Col>
-            </Row>
-          </TabPane>
-          <TabPane tab="Card Tab 2" key="2">
-            Content of card tab 2
-          </TabPane>
-          <TabPane tab="Card Tab 3" key="3">
-            Content of card tab 3
-          </TabPane>
-        </Tabs>
+                {mainData?.dataSource?.update_time && (
+                  <Tag className={styles.fullPageBottomTip} key="update_time">
+                    Update Time:&nbsp;
+                    {moment(mainData.dataSource.update_time, moment.ISO_8601).format(
+                      'YYYY-MM-DD HH:mm:ss',
+                    )}
+                  </Tag>
+                )}
+              </>
+            }
+          />
+        </Form>
       </PageContainer>
     </>
   );

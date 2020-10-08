@@ -1,6 +1,6 @@
-import { buildFields } from './FormFields';
-import { buildActions } from './FormActions';
-import { preFinish } from './PreFinish';
-import { preSetFields } from './PreSetFields';
+import { FieldBuilder } from './FieldBuilder';
+import { ActionBuilder } from './FormActions';
+import { FinishPrepare } from './FinishPrepare';
+import { FieldsPrepare } from './FieldsPrepare';
 
-export { buildFields, buildActions, preFinish, preSetFields };
+export { FieldBuilder, ActionBuilder, FinishPrepare, FieldsPrepare };

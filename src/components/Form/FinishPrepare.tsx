@@ -1,7 +1,7 @@
 import moment from 'moment';
 import { unset } from 'lodash';
 
-export const preFinish = (values: any) => {
+export const FinishPrepare = (values: any) => {
   const submitValues = {};
   let uri = '';
   let method = '';
