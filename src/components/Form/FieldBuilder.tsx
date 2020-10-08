@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Input, DatePicker, Switch, TreeSelect } from 'antd';
+import { Form, Input, DatePicker, Switch, TreeSelect, Descriptions } from 'antd';
 import { forEach } from 'lodash';
 
 export const FieldBuilder = (data: any) => {
@@ -67,8 +67,8 @@ export const FieldBuilder = (data: any) => {
       default:
         if (column.disabled === true) {
           return (
-            <Form.Item label={column.title} key={column.key}>
-              {data.dataSource[column.key]}
+            <Form.Item name={column.key} label={column.title} key={column.key}>
+              <Input bordered={false} disabled style={{ paddingLeft: '2px' }} />
             </Form.Item>
           );
         }
