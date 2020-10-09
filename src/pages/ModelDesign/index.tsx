@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
-import { PageContainer } from '@ant-design/pro-layout';
-import { Card, Button, message } from 'antd';
-import { useRequest } from 'umi';
+import React, { FC, useEffect, useState } from 'react';
+import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
+import { Card, message, Button, Space, Spin } from 'antd';
+import { request, useRequest, history } from 'umi';
+
 import {
   createFormActions,
   SchemaForm,
   SchemaMarkupField as Field,
-  FormButtonGroup,
   Submit,
   Reset,
   FormEffectHooks,
@@ -24,33 +24,37 @@ import {
   FormCard,
   FormMegaLayout,
 } from '@formily/antd-components';
-import 'antd/dist/antd.css';
+import { getPageQuery } from '@/utils/utils';
+import styles from './style.less';
 
 const { onFieldValueChange$ } = FormEffectHooks;
-const setSampleValues$ = createEffectHook('setSampleValues');
+const setExampleValues$ = createEffectHook('setExampleValues');
 const actions = createFormActions();
 
-const ModelDesign = () => {
+interface SinglePageProps {}
+
+const ModelDesign: FC<SinglePageProps> = () => {
   const [tableToolbarVisible, setTableToolbarVisible] = useState(false);
   const [batchToolbarVisible, setBatchToolbarVisible] = useState(false);
+  const [formLoading, setFormLoading] = useState(true);
 
-  const { run, loading } = useRequest(
-    (data?) => {
+  const [mainData, setMainData] = useState(undefined);
+  const initUri = getPageQuery().uri;
+
+  const { loading, run } = useRequest(
+    (url: string, method: string, requestData: any) => {
       return {
-        url: `/api/backend/models`,
-        method: 'post',
-        body: JSON.stringify({
-          data,
-        }),
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        url: `/api/${url}`,
+        method,
+        data: requestData,
       };
     },
     {
       manual: true,
+      throttleInterval: 1000,
       onSuccess: (response) => {
         message.success({ content: response.message, key: 'msg' });
+        history.goBack();
       },
       onError: (error) => {
         message.error({ content: error.message, key: 'msg' });
@@ -61,8 +65,63 @@ const ModelDesign = () => {
     },
   );
 
-  const submitHandler = (values) => {
-    run(values);
+  useEffect(() => {
+    let stopMark = false;
+
+    async function fetchMainData(uri: string) {
+      try {
+        const rawData = await request(`/api/${uri}`);
+        setFormLoading(false);
+        if (!stopMark) setMainData(rawData.data.data);
+      } catch (error) {
+        setFormLoading(false);
+        history.goBack();
+      }
+    }
+
+    if (initUri) {
+      setMainData(undefined);
+      setFormLoading(true);
+      fetchMainData(initUri as string);
+    }
+    return () => {
+      stopMark = true;
+    };
+  }, [initUri]);
+
+  // const { run, loading } = useRequest(
+  //   (data?) => {
+  //     return {
+  //       url: `/api/backend/models`,
+  //       method: 'post',
+  //       body: JSON.stringify({
+  //         data,
+  //       }),
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //     };
+  //   },
+  //   {
+  //     manual: true,
+  //     onSuccess: (response) => {
+  //       message.success({ content: response.message, key: 'msg' });
+  //     },
+  //     onError: (error) => {
+  //       message.error({ content: error.message, key: 'msg' });
+  //     },
+  //     formatResult: (response) => {
+  //       return response;
+  //     },
+  //   },
+  // );
+
+  const submitHandler = (values: any) => {
+    // console.log(values);
+    // run(values);
+    run(initUri as string, 'post', {
+      data: values,
+    });
   };
 
   const actionFields = () => {
@@ -90,6 +149,7 @@ const ModelDesign = () => {
             { label: 'Modal', value: 'modal' },
             { label: 'Page', value: 'page' },
             { label: 'Delete', value: 'delete' },
+            { label: 'Delete Permanently', value: 'deletePermanently' },
             { label: 'Restore', value: 'restore' },
             { label: 'Reset', value: 'reset' },
             { label: 'Submit', value: 'submit' },
@@ -131,9 +191,9 @@ const ModelDesign = () => {
     onFieldValueChange$('haveBatchToolbar').subscribe(({ value }) => {
       setBatchToolbarVisible(value);
     });
-    setSampleValues$().subscribe(() => {
+    setExampleValues$().subscribe(() => {
       setFormState((state: IFormState) => {
-        const sampleValues = {
+        const exampleValues = {
           title: 'Group',
           name: 'group',
           icon: 'table',
@@ -285,7 +345,7 @@ const ModelDesign = () => {
           ],
         };
         // eslint-disable-next-line no-param-reassign
-        state.values = sampleValues;
+        state.values = exampleValues;
       });
     });
   };
@@ -293,24 +353,21 @@ const ModelDesign = () => {
   return (
     <>
       <PageContainer>
-        <Card>
-          <Button
-            onClick={() => {
-              if (actions.dispatch) {
-                actions.dispatch('setSampleValues', null);
-              }
-            }}
-            type="primary"
-            style={{ marginBottom: '10px' }}
-          >
-            Sample
-          </Button>
-          <SchemaForm
-            actions={actions}
-            components={{ ArrayTable, Input, Select, Checkbox }}
-            onSubmit={submitHandler}
-            effects={formEffects}
-          >
+        <Spin
+          spinning={formLoading}
+          tip="Loading, please wait..."
+          className={styles.modalSpin}
+          key="spin"
+        />
+        <SchemaForm
+          actions={actions}
+          components={{ ArrayTable, Input, Select, Checkbox }}
+          onSubmit={submitHandler}
+          effects={formEffects}
+          initialValues={mainData}
+          style={{ width: '100%', display: formLoading ? 'none' : 'block' }}
+        >
+          <Card>
             <FormCard title="Basic">
               <FormMegaLayout grid columns={4}>
                 <Field
@@ -506,12 +563,37 @@ const ModelDesign = () => {
                 {actionFields()}
               </Field>
             </FormCard>
-            <FormButtonGroup offset={5}>
-              <Submit loading={loading}>Submit</Submit>
-              <Reset loading={loading}>reset</Reset>
-            </FormButtonGroup>
-          </SchemaForm>
-        </Card>
+          </Card>
+
+          <FooterToolbar
+            extra={
+              <>
+                <Space>
+                  <Submit loading={loading}>Submit</Submit>
+                  <Reset loading={loading}>Reset</Reset>
+                  <Button
+                    onClick={() => {
+                      history.goBack();
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      if (actions.dispatch) {
+                        actions.dispatch('setExampleValues', null);
+                      }
+                    }}
+                    type="primary"
+                    style={{ marginBottom: '10px' }}
+                  >
+                    Example
+                  </Button>
+                </Space>
+              </>
+            }
+          />
+        </SchemaForm>
       </PageContainer>
     </>
   );

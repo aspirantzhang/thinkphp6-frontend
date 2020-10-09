@@ -103,8 +103,11 @@ export default defineConfig({
     },
     {
       path: '/search-list/page',
-      // layout: false,
       component: './BasicList/SinglePage',
+    },
+    {
+      path: '/model-design/page',
+      component: './ModelDesign',
     },
     {
       path: '/',

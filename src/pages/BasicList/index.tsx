@@ -132,6 +132,11 @@ const BasicList: FC<BasicListProps> = () => {
           history.push(`/search-list/page?uri=${uri}`);
         }
         break;
+      case 'modelDesign':
+        if (record) {
+          history.push(`/model-design/page?uri=${uri}/${record.id}`);
+        }
+        break;
       case 'reload':
         reloadHandler();
         break;

@@ -1,6 +1,5 @@
 import React from 'react';
-import { Form, Input, DatePicker, Switch, TreeSelect, Descriptions } from 'antd';
-import { forEach } from 'lodash';
+import { Form, Input, DatePicker, Switch, TreeSelect } from 'antd';
 
 export const FieldBuilder = (data: any) => {
   return data?.map((column: any) => {
