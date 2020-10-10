@@ -146,7 +146,7 @@ const BasicList: FC<BasicListProps> = () => {
         confirm({
           title: `Overview of ${actions.text} Operation`,
           icon: <ExclamationCircleOutlined />,
-          content: buildBatchOverview(selectedRowData, action),
+          content: buildBatchOverview(record.id ? [record] : selectedRowData, action),
           okText: `Sure to ${actions.text} !!!`,
           okType: 'danger',
           cancelText: 'Cancel',
@@ -155,7 +155,7 @@ const BasicList: FC<BasicListProps> = () => {
             request(`/api/${uri}`, {
               method,
               data: {
-                ids: selectedRowKeys,
+                ids: record.id ? [record.id] : selectedRowKeys,
                 type: action,
               },
             })
