@@ -29,14 +29,6 @@ export default defineConfig({
   targets: {
     ie: 11,
   },
-  routes: [
-    {
-      name: 'list.table-list',
-      icon: 'table',
-      path: '/list',
-      component: './ListTableList',
-    },
-  ],
   // umi routes: https://umijs.org/docs/routing
   routes: [
     {
@@ -51,63 +43,12 @@ export default defineConfig({
       ],
     },
     {
-      path: '/welcome',
-      name: 'welcome',
-      icon: 'smile',
-      component: './Welcome',
-    },
-    {
-      path: '/admin',
-      name: 'admin',
-      icon: 'crown',
-      access: 'canAdmin',
-      component: './Admin',
-      routes: [
-        {
-          path: '/admin/sub-page',
-          name: 'sub-page',
-          icon: 'smile',
-          component: './Welcome',
-        },
-      ],
-    },
-    {
-      name: 'list.table-list',
-      icon: 'table',
-      path: '/list',
-      component: './ListTableList',
-    },
-    {
-      name: 'admin-list',
-      icon: 'table',
-      path: '/search-list/backend/admins',
-      component: './BasicList',
-    },
-    {
-      name: 'group-list',
-      icon: 'table',
-      path: '/search-list/backend/groups',
-      component: './BasicList',
-    },
-    {
-      name: 'rule-list',
-      icon: 'table',
-      path: '/search-list/backend/rules',
-      component: './BasicList',
-    },
-    {
-      name: 'model-list',
-      icon: 'table',
-      path: '/search-list/backend/models',
-      component: './BasicList',
-    },
-    {
-      path: '/search-list/page',
+      path: '/single-page/:page*',
       component: './BasicList/SinglePage',
     },
     {
-      path: '/model-design/page',
-      component: './ModelDesign',
+      path: '/basic-list/:page*',
+      component: './BasicList',
     },
     {
       path: '/',
@@ -116,6 +57,66 @@ export default defineConfig({
     {
       component: './404',
     },
+
+    // {
+    //   path: '/welcome',
+    //   name: 'welcome',
+    //   icon: 'smile',
+    //   component: './Welcome',
+    // },
+    // {
+    //   path: '/admin',
+    //   name: 'admin',
+    //   icon: 'crown',
+    //   access: 'canAdmin',
+    //   component: './Admin',
+    //   routes: [
+    //     {
+    //       path: '/admin/sub-page',
+    //       name: 'sub-page',
+    //       icon: 'smile',
+    //       component: './Welcome',
+    //     },
+    //   ],
+    // },
+    // {
+    //   name: 'list.table-list',
+    //   icon: 'table',
+    //   path: '/list',
+    //   component: './ListTableList',
+    // },
+    // {
+    //   name: 'admin-list',
+    //   icon: 'table',
+    //   path: '/search-list/backend/admins',
+    //   component: './BasicList',
+    // },
+    // {
+    //   name: 'group-list',
+    //   icon: 'table',
+    //   path: '/search-list/backend/groups',
+    //   component: './BasicList',
+    // },
+    // {
+    //   name: 'rule-list',
+    //   icon: 'table',
+    //   path: '/search-list/backend/rules',
+    //   component: './BasicList',
+    // },
+    // {
+    //   name: 'model-list',
+    //   icon: 'table',
+    //   path: '/search-list/backend/models',
+    //   component: './BasicList',
+    // },
+    // {
+    //   path: '/search-list/page',
+    //   component: './BasicList/SinglePage',
+    // },
+    // {
+    //   path: '/model-design/page',
+    //   component: './ModelDesign',
+    // },
   ],
   // Theme for antd: https://ant.design/docs/react/customize-theme-cn
   theme: {

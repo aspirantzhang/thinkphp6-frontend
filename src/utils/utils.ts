@@ -36,4 +36,3 @@ export const getPageQuery = () => {
 
   return {};
 };
-export const getPageParam = () => window.location.href.split('search-list/')[1];

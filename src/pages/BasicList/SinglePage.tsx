@@ -2,10 +2,9 @@ import React, { FC, useEffect, useState } from 'react';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import { Row, Col, Card, Form, Input, Space, message, Tag, Tabs, Spin } from 'antd';
 import moment from 'moment';
-import { request, useRequest, history } from 'umi';
+import { request, useRequest, history, useRouteMatch } from 'umi';
 import { useBoolean } from 'ahooks';
 import { FieldBuilder, ActionBuilder, FinishPrepare, FieldsPrepare } from '@/components/Form';
-import { getPageQuery } from '@/utils/utils';
 import { PageDataState, FormValues } from './data';
 import styles from './style.less';
 
@@ -16,7 +15,9 @@ const SinglePage: FC<SinglePageProps> = () => {
   const [spinLoading, setSpinLoading] = useBoolean(true);
   const { TabPane } = Tabs;
   const [form] = Form.useForm();
-  const initUri = getPageQuery().uri;
+  const match = useRouteMatch<{ page: string }>();
+
+  const initUri = match.params.page;
 
   const { loading, run } = useRequest(
     (url: string, method: string, requestData: any) => {

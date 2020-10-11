@@ -2,7 +2,6 @@ import React from 'react';
 import { Button } from 'antd';
 
 export const ActionBuilder = (actions: any, actionHandler: any, loading: boolean) => {
-  console.log(actions);
   return actions.data.map((action: any) => {
     switch (action.component) {
       case 'button':

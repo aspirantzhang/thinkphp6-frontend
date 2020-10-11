@@ -1,8 +1,7 @@
 import React, { useEffect, useState, FC } from 'react';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
-import { useRequest, request, history } from 'umi';
+import { useRequest, request, history, useRouteMatch } from 'umi';
 import { ColumnsType } from 'antd/es/table';
-import { getPageParam } from '@/utils/utils';
 import moment from 'moment';
 import { SearchOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import {
@@ -38,22 +37,22 @@ const BasicList: FC<BasicListProps> = () => {
   const [paginationQuery, setPaginationQuery] = useState('');
   const [sortQuery, setSortQuery] = useState('&sort=id&order=desc');
   const [searchQuery, setSearchQuery] = useState('');
-
   const [searchForm] = Form.useForm();
   const { confirm } = Modal;
+  const match = useRouteMatch<{ page: string }>();
 
-  const pageParam = getPageParam();
-  const initUri = `/api/${pageParam}`;
+  const initUri = match.params.page;
 
   const { data, loading, run } = useRequest(
     (requestQuery?) => {
       const queryString = requestQuery || '';
       return {
-        url: `${initUri}?${queryString}`,
+        url: `/api/${initUri}?${queryString}`,
       };
     },
     {
       manual: true,
+      throttleInterval: 1000,
     },
   );
 
@@ -127,9 +126,9 @@ const BasicList: FC<BasicListProps> = () => {
         break;
       case 'page':
         if (record) {
-          history.push(`/search-list/page?uri=${uri}/${record.id}`);
+          history.push(`/single-page${uri}/${record.id}`);
         } else {
-          history.push(`/search-list/page?uri=${uri}`);
+          history.push(`/single-page${uri}`);
         }
         break;
       case 'modelDesign':

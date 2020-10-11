@@ -38,6 +38,13 @@ export const layout = ({
 }: {
   initialState: { settings?: LayoutSettings; currentUser?: API.CurrentUser; menu: any };
 }): BasicLayoutProps => {
+  const newMenu = [
+    {
+      name: 'admin-list',
+      icon: 'icon-table',
+      path: '/basic-list/backend/admins',
+    },
+  ];
   return {
     ...initialState?.settings,
     rightContentRender: () => <RightContent />,
@@ -51,6 +58,7 @@ export const layout = ({
     },
     menuHeaderRender: undefined,
     iconfontUrl: '//at.alicdn.com/t/font_2112134_5g5tcvx7qw.js',
+    menuDataRender: () => newMenu,
     // menuDataRender: () => initialState.menu,
   };
 };
