@@ -56,6 +56,40 @@ export const layout = ({
         },
       ],
     },
+    {
+      name: 'group-list',
+      icon: 'icon-table',
+      path: '/basic-list/backend/groups',
+      children: [
+        {
+          name: 'add',
+          path: '/basic-list/backend/groups/add',
+          hideInMenu: true,
+        },
+        {
+          name: 'edit',
+          path: '/basic-list/backend/groups/:id',
+          hideInMenu: true,
+        },
+      ],
+    },
+    {
+      name: 'rule-list',
+      icon: 'icon-table',
+      path: '/basic-list/backend/rules',
+      children: [
+        {
+          name: 'add',
+          path: '/basic-list/backend/rules/add',
+          hideInMenu: true,
+        },
+        {
+          name: 'edit',
+          path: '/basic-list/backend/rules/:id',
+          hideInMenu: true,
+        },
+      ],
+    },
 
     // {
     //   name: 'admin-list',

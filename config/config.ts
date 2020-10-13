@@ -48,7 +48,7 @@ export default defineConfig({
       component: './BasicList',
     },
     {
-      path: '/basic-list/:app/:controller/:id',
+      path: '/basic-list/:app/:controller/:action',
       component: './BasicList/SinglePage',
     },
 
