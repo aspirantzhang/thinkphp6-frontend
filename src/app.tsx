@@ -43,7 +43,31 @@ export const layout = ({
       name: 'admin-list',
       icon: 'icon-table',
       path: '/basic-list/backend/admins',
+      children: [
+        {
+          name: 'add',
+          path: '/basic-list/backend/admins/add',
+          hideInMenu: true,
+        },
+        {
+          name: 'edit',
+          path: '/basic-list/backend/admins/:id',
+          hideInMenu: true,
+        },
+      ],
     },
+
+    // {
+    //   name: 'admin-list',
+    //   icon: 'icon-table',
+    //   path: '/basic-list/page',
+    // },
+    // {
+    //   name: 'welcome',
+    //   icon: 'icon-table',
+    //   path: '/basic-list/welcome',
+    //   hideInMenu: true,
+    // },
   ];
   return {
     ...initialState?.settings,

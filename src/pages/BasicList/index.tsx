@@ -21,8 +21,8 @@ import {
 import { join } from 'lodash';
 import { buildColumns, buildElements, buildSearchFields } from '@/components/List';
 import { ModalForm } from './ModalForm';
-import { DataState, SingleColumnType } from './data';
 import * as helper from './helper';
+import { DataState, SingleColumnType, UriMatchState } from './data';
 import styles from './style.less';
 
 interface BasicListProps {}
@@ -39,9 +39,10 @@ const BasicList: FC<BasicListProps> = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchForm] = Form.useForm();
   const { confirm } = Modal;
-  const match = useRouteMatch<{ page: string }>();
+  const match = useRouteMatch<UriMatchState>();
 
-  const initUri = match.params.page;
+  const { fullUri } = helper.buildUriMatch(match);
+  const initUri = fullUri;
 
   const { data, loading, run } = useRequest(
     (requestQuery?) => {
@@ -125,15 +126,15 @@ const BasicList: FC<BasicListProps> = () => {
         }
         break;
       case 'page':
-        if (record) {
-          history.push(`/single-page${uri}/${record.id}`);
+        if (record.id) {
+          history.push(`/basic-list${uri}/${record.id}`);
         } else {
-          history.push(`/single-page${uri}`);
+          history.push(`/basic-list${uri}`);
         }
         break;
       case 'modelDesign':
         if (record) {
-          history.push(`/model-design/page?uri=${uri}/${record.id}`);
+          history.push(`/model-design/page/${uri}/${record.id}`);
         }
         break;
       case 'reload':
@@ -197,7 +198,8 @@ const BasicList: FC<BasicListProps> = () => {
           extra={
             <>
               <Space>
-                {mainData?.layout && buildElements(mainData.layout.batchToolBar, actionHandler)}
+                {mainData?.layout?.batchToolBar &&
+                  buildElements(mainData.layout.batchToolBar, actionHandler)}
                 &nbsp;&nbsp;&nbsp;
               </Space>
               Selected&nbsp;<a style={{ fontWeight: 700 }}>{selectedRowKeys.length}</a> Items
@@ -219,7 +221,8 @@ const BasicList: FC<BasicListProps> = () => {
             setSearchExpand(!searchExpand);
           }}
         />
-        {mainData?.layout && buildElements(mainData.layout.tableToolBar, actionHandler)}
+        {mainData?.layout?.tableToolBar &&
+          buildElements(mainData.layout.tableToolBar, actionHandler)}
       </Space>
     );
   };
@@ -286,7 +289,7 @@ const BasicList: FC<BasicListProps> = () => {
           <Form.Item name="id" label="ID">
             <InputNumber />
           </Form.Item>
-          {mainData?.layout && buildSearchFields(mainData.layout.tableColumn)}
+          {mainData?.layout?.tableColumn && buildSearchFields(mainData.layout.tableColumn)}
           <Form.Item>
             <Button type="primary" htmlType="submit">
               Search
@@ -311,14 +314,14 @@ const BasicList: FC<BasicListProps> = () => {
   const paginationLayout = () => {
     return (
       <Pagination
-        total={mainData?.meta.total}
+        total={mainData?.meta?.total}
         showSizeChanger
         showQuickJumper
         showTotal={(total) => `Total ${total} items`}
         onChange={paginationChangeHandler}
         onShowSizeChange={paginationChangeHandler}
-        current={mainData?.meta.page}
-        pageSize={mainData ? mainData.meta.per_page : 10}
+        current={mainData?.meta?.page}
+        pageSize={mainData ? mainData.meta?.per_page : 10}
       />
     );
   };

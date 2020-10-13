@@ -15,7 +15,7 @@ export const buildColumns = (mainData: any, actionHandler: any) => {
     },
   ];
   // Build Column
-  if (mainData?.layout) {
+  if (mainData?.layout?.tableColumn) {
     mainData.layout.tableColumn.forEach((column: any) => {
       const thisColumn = column;
 

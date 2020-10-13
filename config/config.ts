@@ -42,14 +42,24 @@ export default defineConfig({
         },
       ],
     },
+
     {
-      path: '/single-page/:page*',
-      component: './BasicList/SinglePage',
-    },
-    {
-      path: '/basic-list/:page*',
+      path: '/basic-list/:app/:controller',
       component: './BasicList',
     },
+    {
+      path: '/basic-list/:app/:controller/:id',
+      component: './BasicList/SinglePage',
+    },
+
+    // {
+    //   path: '/basic-list/:page*',
+    //   component: './BasicList',
+    // },
+    // {
+    //   path: '/single-page/:page*',
+    //   component: './BasicList/SinglePage',
+    // },
     {
       path: '/',
       redirect: '/welcome',
@@ -64,21 +74,21 @@ export default defineConfig({
     //   icon: 'smile',
     //   component: './Welcome',
     // },
-    // {
-    //   path: '/admin',
-    //   name: 'admin',
-    //   icon: 'crown',
-    //   access: 'canAdmin',
-    //   component: './Admin',
-    //   routes: [
-    //     {
-    //       path: '/admin/sub-page',
-    //       name: 'sub-page',
-    //       icon: 'smile',
-    //       component: './Welcome',
-    //     },
-    //   ],
-    // },
+    {
+      path: '/admin',
+      name: 'admin',
+      icon: 'crown',
+      access: 'canAdmin',
+      component: './Admin',
+      routes: [
+        {
+          path: '/admin/sub-page',
+          name: 'sub-page',
+          icon: 'smile',
+          component: './Welcome',
+        },
+      ],
+    },
     // {
     //   name: 'list.table-list',
     //   icon: 'table',

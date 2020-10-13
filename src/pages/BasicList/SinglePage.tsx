@@ -5,7 +5,8 @@ import moment from 'moment';
 import { request, useRequest, history, useRouteMatch } from 'umi';
 import { useBoolean } from 'ahooks';
 import { FieldBuilder, ActionBuilder, FinishPrepare, FieldsPrepare } from '@/components/Form';
-import { PageDataState, FormValues } from './data';
+import * as helper from './helper';
+import { PageDataState, FormValues, UriMatchState } from './data';
 import styles from './style.less';
 
 interface SinglePageProps {}
@@ -15,9 +16,10 @@ const SinglePage: FC<SinglePageProps> = () => {
   const [spinLoading, setSpinLoading] = useBoolean(true);
   const { TabPane } = Tabs;
   const [form] = Form.useForm();
-  const match = useRouteMatch<{ page: string }>();
+  const match = useRouteMatch<UriMatchState>();
 
-  const initUri = match.params.page;
+  const { fullUri } = helper.buildUriMatch(match);
+  const initUri = fullUri;
 
   const { loading, run } = useRequest(
     (url: string, method: string, requestData: any) => {
