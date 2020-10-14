@@ -38,88 +38,6 @@ export const layout = ({
 }: {
   initialState: { settings?: LayoutSettings; currentUser?: API.CurrentUser; menu: any };
 }): BasicLayoutProps => {
-  const newMenu = [
-    {
-      name: 'admin-list',
-      icon: 'icon-table',
-      path: '/basic-list/backend/admins',
-      children: [
-        {
-          name: 'add',
-          path: '/basic-list/backend/admins/add',
-          hideInMenu: true,
-        },
-        {
-          name: 'edit',
-          path: '/basic-list/backend/admins/:id',
-          hideInMenu: true,
-        },
-      ],
-    },
-    {
-      name: 'group-list',
-      icon: 'icon-table',
-      path: '/basic-list/backend/groups',
-      children: [
-        {
-          name: 'add',
-          path: '/basic-list/backend/groups/add',
-          hideInMenu: true,
-        },
-        {
-          name: 'edit',
-          path: '/basic-list/backend/groups/:id',
-          hideInMenu: true,
-        },
-      ],
-    },
-    {
-      name: 'rule-list',
-      icon: 'icon-table',
-      path: '/basic-list/backend/rules',
-      children: [
-        {
-          name: 'add',
-          path: '/basic-list/backend/rules/add',
-          hideInMenu: true,
-        },
-        {
-          name: 'edit',
-          path: '/basic-list/backend/rules/:id',
-          hideInMenu: true,
-        },
-      ],
-    },
-    {
-      name: 'menu-list',
-      icon: 'icon-table',
-      path: '/basic-list/backend/menus',
-      children: [
-        {
-          name: 'add',
-          path: '/basic-list/backend/menus/add',
-          hideInMenu: true,
-        },
-        {
-          name: 'edit',
-          path: '/basic-list/backend/menus/:id',
-          hideInMenu: true,
-        },
-      ],
-    },
-
-    // {
-    //   name: 'admin-list',
-    //   icon: 'icon-table',
-    //   path: '/basic-list/page',
-    // },
-    // {
-    //   name: 'welcome',
-    //   icon: 'icon-table',
-    //   path: '/basic-list/welcome',
-    //   hideInMenu: true,
-    // },
-  ];
   return {
     ...initialState?.settings,
     rightContentRender: () => <RightContent />,
@@ -133,8 +51,7 @@ export const layout = ({
     },
     menuHeaderRender: undefined,
     iconfontUrl: '//at.alicdn.com/t/font_2112134_5g5tcvx7qw.js',
-    menuDataRender: () => newMenu,
-    // menuDataRender: () => initialState.menu,
+    menuDataRender: () => initialState.menu,
   };
 };
 
