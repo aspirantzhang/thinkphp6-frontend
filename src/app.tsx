@@ -90,6 +90,23 @@ export const layout = ({
         },
       ],
     },
+    {
+      name: 'menu-list',
+      icon: 'icon-table',
+      path: '/basic-list/backend/menus',
+      children: [
+        {
+          name: 'add',
+          path: '/basic-list/backend/menus/add',
+          hideInMenu: true,
+        },
+        {
+          name: 'edit',
+          path: '/basic-list/backend/menus/:id',
+          hideInMenu: true,
+        },
+      ],
+    },
 
     // {
     //   name: 'admin-list',
