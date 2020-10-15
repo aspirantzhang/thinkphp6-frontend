@@ -27,7 +27,7 @@ export const FieldsPrepare = (mainData: PageDataState) => {
         // type equals 'text' or other
         formData[field.key] = mainData.dataSource[field.key];
         // Object to string
-        if (field.type === 'text' && typeof mainData.dataSource[field.key] === 'object') {
+        if (field.type === 'textarea' && typeof mainData.dataSource[field.key] === 'object') {
           formData[field.key] = JSON.stringify(mainData.dataSource[field.key]);
         }
         break;

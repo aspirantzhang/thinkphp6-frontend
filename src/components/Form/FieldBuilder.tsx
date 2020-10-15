@@ -61,6 +61,12 @@ export const FieldBuilder = (data: any) => {
             />
           </Form.Item>
         );
+      case 'textarea':
+        return (
+          <Form.Item name={column.key} label={column.title} key={column.key}>
+            <Input.TextArea autoSize={{ minRows: 3, maxRows: 25 }} />
+          </Form.Item>
+        );
       case 'actions':
         return null;
       default:
