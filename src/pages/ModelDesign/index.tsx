@@ -93,7 +93,7 @@ const ModelDesign: FC<SinglePageProps> = () => {
   }, [initUri]);
 
   const submitHandler = (values: any) => {
-    run(initUri as string, 'post', {
+    run(initUri as string, 'put', {
       data: values,
     });
   };

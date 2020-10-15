@@ -52,18 +52,9 @@ export default defineConfig({
       component: './BasicList/SinglePage',
     },
     {
-      path: '/basic-list/design/:app/:controller/:action/:params*',
+      path: '/basic-list/:app/:controller/design/:params*',
       component: './ModelDesign',
     },
-
-    // {
-    //   path: '/basic-list/:page*',
-    //   component: './BasicList',
-    // },
-    // {
-    //   path: '/single-page/:page*',
-    //   component: './BasicList/SinglePage',
-    // },
     {
       path: '/',
       redirect: '/welcome',
@@ -93,44 +84,6 @@ export default defineConfig({
         },
       ],
     },
-    // {
-    //   name: 'list.table-list',
-    //   icon: 'table',
-    //   path: '/list',
-    //   component: './ListTableList',
-    // },
-    // {
-    //   name: 'admin-list',
-    //   icon: 'table',
-    //   path: '/search-list/backend/admins',
-    //   component: './BasicList',
-    // },
-    // {
-    //   name: 'group-list',
-    //   icon: 'table',
-    //   path: '/search-list/backend/groups',
-    //   component: './BasicList',
-    // },
-    // {
-    //   name: 'rule-list',
-    //   icon: 'table',
-    //   path: '/search-list/backend/rules',
-    //   component: './BasicList',
-    // },
-    // {
-    //   name: 'model-list',
-    //   icon: 'table',
-    //   path: '/search-list/backend/models',
-    //   component: './BasicList',
-    // },
-    // {
-    //   path: '/search-list/page',
-    //   component: './BasicList/SinglePage',
-    // },
-    // {
-    //   path: '/model-design/page',
-    //   component: './ModelDesign',
-    // },
   ],
   // Theme for antd: https://ant.design/docs/react/customize-theme-cn
   theme: {
