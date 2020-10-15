@@ -50,7 +50,7 @@ export const layout = ({
       }
     },
     menuHeaderRender: undefined,
-    iconfontUrl: '//at.alicdn.com/t/font_2112134_5g5tcvx7qw.js',
+    iconfontUrl: '//at.alicdn.com/t/font_2112134_uyx998l7ji.js',
     menuDataRender: () => initialState.menu,
   };
 };
