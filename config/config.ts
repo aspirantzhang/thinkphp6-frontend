@@ -51,6 +51,10 @@ export default defineConfig({
       path: '/basic-list/:app/:controller/:action',
       component: './BasicList/SinglePage',
     },
+    {
+      path: '/basic-list/design/:app/:controller/:action/:params*',
+      component: './ModelDesign',
+    },
 
     // {
     //   path: '/basic-list/:page*',

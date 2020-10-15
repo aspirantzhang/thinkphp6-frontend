@@ -134,7 +134,7 @@ const BasicList: FC<BasicListProps> = () => {
         break;
       case 'modelDesign':
         if (record) {
-          history.push(`/model-design/page/${uri}/${record.id}`);
+          history.push(`/basic-list/design${uri}/${record.id}`);
         }
         break;
       case 'reload':

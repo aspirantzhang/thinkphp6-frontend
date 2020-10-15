@@ -1,7 +1,9 @@
 import React, { FC, useEffect, useState } from 'react';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import { Card, message, Button, Space, Spin } from 'antd';
-import { request, useRequest, history } from 'umi';
+import { request, useRequest, history, useRouteMatch } from 'umi';
+import * as helper from '@/pages/BasicList/helper';
+import { UriMatchState } from '@/pages/BasicList/data';
 
 import {
   createFormActions,
@@ -24,7 +26,6 @@ import {
   FormCard,
   FormMegaLayout,
 } from '@formily/antd-components';
-import { getPageQuery } from '@/utils/utils';
 import styles from './style.less';
 
 const { onFieldValueChange$ } = FormEffectHooks;
@@ -37,9 +38,11 @@ const ModelDesign: FC<SinglePageProps> = () => {
   const [tableToolbarVisible, setTableToolbarVisible] = useState(false);
   const [batchToolbarVisible, setBatchToolbarVisible] = useState(false);
   const [formLoading, setFormLoading] = useState(true);
-
   const [mainData, setMainData] = useState(undefined);
-  const initUri = getPageQuery().uri;
+
+  const match = useRouteMatch<UriMatchState>();
+  const { fullUri } = helper.buildUriMatch(match);
+  const initUri = fullUri;
 
   const { loading, run } = useRequest(
     (url: string, method: string, requestData: any) => {
@@ -89,36 +92,7 @@ const ModelDesign: FC<SinglePageProps> = () => {
     };
   }, [initUri]);
 
-  // const { run, loading } = useRequest(
-  //   (data?) => {
-  //     return {
-  //       url: `/api/backend/models`,
-  //       method: 'post',
-  //       body: JSON.stringify({
-  //         data,
-  //       }),
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //       },
-  //     };
-  //   },
-  //   {
-  //     manual: true,
-  //     onSuccess: (response) => {
-  //       message.success({ content: response.message, key: 'msg' });
-  //     },
-  //     onError: (error) => {
-  //       message.error({ content: error.message, key: 'msg' });
-  //     },
-  //     formatResult: (response) => {
-  //       return response;
-  //     },
-  //   },
-  // );
-
   const submitHandler = (values: any) => {
-    // console.log(values);
-    // run(values);
     run(initUri as string, 'post', {
       data: values,
     });
