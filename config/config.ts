@@ -52,7 +52,7 @@ export default defineConfig({
       component: './BasicList/SinglePage',
     },
     {
-      path: '/basic-list/:app/:controller/design/:params*',
+      path: '/basic-list/:app/:controller/:design/:params*',
       component: './ModelDesign',
     },
     {

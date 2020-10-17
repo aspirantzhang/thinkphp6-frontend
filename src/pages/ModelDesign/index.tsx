@@ -168,11 +168,6 @@ const ModelDesign: FC<SinglePageProps> = () => {
     setExampleValues$().subscribe(() => {
       setFormState((state: IFormState) => {
         const exampleValues = {
-          title: 'Group',
-          name: 'group',
-          icon: 'table',
-          path: '/search-list/backend/groups',
-          component: './BasicList',
           haveBatchToolbar: true,
           haveTableToolbar: true,
           fields: [
@@ -192,17 +187,6 @@ const ModelDesign: FC<SinglePageProps> = () => {
               name: 'rules',
               title: 'Rules',
               type: 'text',
-            },
-            {
-              name: 'create_time',
-              title: 'Create Time',
-              type: 'datetime',
-              listSorter: true,
-            },
-            {
-              name: 'update_time',
-              title: 'Update Time',
-              type: 'datetime',
             },
             {
               name: 'status',
@@ -343,18 +327,11 @@ const ModelDesign: FC<SinglePageProps> = () => {
         >
           <Card>
             <FormCard title="Basic">
-              <FormMegaLayout grid columns={4}>
-                <Field
-                  name="title"
-                  type="string"
-                  x-component="Input"
-                  title="Page Title*"
-                  x-mega-props={{ span: 2 }}
-                />
+              <FormMegaLayout grid columns={2}>
                 <Field name="haveTableToolbar" x-component="Checkbox" title="Table Toolbar?" />
                 <Field name="haveBatchToolbar" x-component="Checkbox" title="Batch Toolbar?" />
               </FormMegaLayout>
-              <FormMegaLayout grid columns={8}>
+              {/* <FormMegaLayout grid columns={8}>
                 <Field
                   name="name"
                   type="string"
@@ -383,7 +360,7 @@ const ModelDesign: FC<SinglePageProps> = () => {
                   title="Component*"
                   x-mega-props={{ span: 2 }}
                 />
-              </FormMegaLayout>
+              </FormMegaLayout> */}
             </FormCard>
             <FormCard title="Fields">
               <Field
@@ -409,7 +386,8 @@ const ModelDesign: FC<SinglePageProps> = () => {
                     default="text"
                     enum={[
                       { label: 'Text', value: 'text' },
-                      { label: 'Tree', value: 'tree' },
+                      { label: 'Long Text', value: 'longtext' },
+                      { label: 'Number', value: 'number' },
                       { label: 'Tag', value: 'tag' },
                       { label: 'Datetime', value: 'datetime' },
                     ]}
