@@ -148,7 +148,7 @@ const ModelDesign: FC<SinglePageProps> = () => {
     );
   };
 
-  const formEffects: IFormEffect = ({ setFieldValue, setFormState }) => {
+  const formEffects: IFormEffect = ({ setFieldValue, setFormState, setFieldState }) => {
     onFieldValueChange$('fields.*.listData').subscribe(({ name, value }) => {
       if (value) {
         setFieldValue(
@@ -165,57 +165,46 @@ const ModelDesign: FC<SinglePageProps> = () => {
     onFieldValueChange$('haveBatchToolbar').subscribe(({ value }) => {
       setBatchToolbarVisible(value);
     });
+    onFieldValueChange$('routeName').subscribe(({ value }) => {
+      if (value) {
+        setFieldState(
+          FormPath.transform(name, /\d/, ($1) => {
+            return `*.*.uri`;
+          }),
+          (state: any) => {
+            if (state.value) {
+              state.value = state.value.replace(/(backend\/)(\w*)(\/.*)?/g, `$1${value}$3`);
+            }
+          },
+        );
+      }
+    });
     setExampleValues$().subscribe(() => {
       setFormState((state: IFormState) => {
         const exampleValues = {
           haveBatchToolbar: true,
           haveTableToolbar: true,
-          fields: [
-            {
-              name: 'name',
-              title: 'Group Name',
-              type: 'text',
-            },
-            {
-              name: 'parent_id',
-              title: 'Parent',
-              type: 'text',
-              listData: true,
-              addData: true,
-            },
-            {
-              name: 'rules',
-              title: 'Rules',
-              type: 'text',
-            },
-            {
-              name: 'status',
-              title: 'Status',
-              type: 'tag',
-              listData: true,
-              addData: true,
-            },
-          ],
+          fields: [],
           listAction: [
             {
               name: 'Edit',
               type: 'default',
               action: 'modal',
-              uri: '/backend/groups',
+              uri: '/backend/routeName',
               method: 'get',
             },
             {
               name: 'Full page edit',
               type: 'default',
               action: 'page',
-              uri: '/backend/groups',
+              uri: '/backend/routeName',
               method: 'get',
             },
             {
               name: 'Delete',
               type: 'default',
               action: 'delete',
-              uri: '/backend/groups',
+              uri: '/backend/routeName',
               method: 'delete',
             },
           ],
@@ -234,7 +223,7 @@ const ModelDesign: FC<SinglePageProps> = () => {
               name: 'Submit',
               type: 'primary',
               action: 'submit',
-              uri: '/backend/groups',
+              uri: '/backend/routeName',
               method: 'post',
             },
           ],
@@ -253,7 +242,7 @@ const ModelDesign: FC<SinglePageProps> = () => {
               name: 'Submit',
               type: 'primary',
               action: 'submit',
-              uri: '/backend/groups/:id',
+              uri: '/backend/routeName/:id',
               method: 'put',
             },
           ],
@@ -262,13 +251,13 @@ const ModelDesign: FC<SinglePageProps> = () => {
               name: 'Add',
               type: 'primary',
               action: 'modal',
-              uri: '/backend/groups/add',
+              uri: '/backend/routeName/add',
             },
             {
               name: 'Full page add',
               type: 'primary',
               action: 'page',
-              uri: '/backend/groups/add',
+              uri: '/backend/routeName/add',
             },
             {
               name: 'Reload',
@@ -281,7 +270,7 @@ const ModelDesign: FC<SinglePageProps> = () => {
               name: 'Delete',
               type: 'danger',
               action: 'delete',
-              uri: '/backend/groups',
+              uri: '/backend/routeName',
               method: 'delete',
             },
           ],
@@ -290,20 +279,20 @@ const ModelDesign: FC<SinglePageProps> = () => {
               name: 'Delete Permanently',
               type: 'danger',
               action: 'deletePermanently',
-              uri: '/backend/groups',
+              uri: '/backend/routeName',
               method: 'delete',
             },
             {
               name: 'Restore',
               type: 'default',
               action: 'restore',
-              uri: '/backend/groups/restore',
+              uri: '/backend/routeName/restore',
               method: 'post',
             },
           ],
         };
-        // eslint-disable-next-line no-param-reassign
-        state.values = exampleValues;
+
+        state.initialValues = exampleValues;
       });
     });
   };
@@ -327,40 +316,27 @@ const ModelDesign: FC<SinglePageProps> = () => {
         >
           <Card>
             <FormCard title="Basic">
-              <FormMegaLayout grid columns={2}>
-                <Field name="haveTableToolbar" x-component="Checkbox" title="Table Toolbar?" />
-                <Field name="haveBatchToolbar" x-component="Checkbox" title="Batch Toolbar?" />
+              <FormMegaLayout grid columns={9}>
+                <Field
+                  name="routeName"
+                  type="string"
+                  x-component="Input"
+                  title="Route Name*"
+                  x-mega-props={{ span: 3 }}
+                />
+                <Field
+                  name="haveTableToolbar"
+                  x-component="Checkbox"
+                  title="Table Toolbar?"
+                  x-mega-props={{ span: 3 }}
+                />
+                <Field
+                  name="haveBatchToolbar"
+                  x-component="Checkbox"
+                  title="Batch Toolbar?"
+                  x-mega-props={{ span: 3 }}
+                />
               </FormMegaLayout>
-              {/* <FormMegaLayout grid columns={8}>
-                <Field
-                  name="name"
-                  type="string"
-                  x-component="Input"
-                  title="Name String*"
-                  x-mega-props={{ span: 2 }}
-                />
-                <Field
-                  name="icon"
-                  type="string"
-                  x-component="Input"
-                  title="Icon*"
-                  x-mega-props={{ span: 2 }}
-                />
-                <Field
-                  name="path"
-                  type="string"
-                  x-component="Input"
-                  title="Path*"
-                  x-mega-props={{ span: 2 }}
-                />
-                <Field
-                  name="component"
-                  type="string"
-                  x-component="Input"
-                  title="Component*"
-                  x-mega-props={{ span: 2 }}
-                />
-              </FormMegaLayout> */}
             </FormCard>
             <FormCard title="Fields">
               <Field
