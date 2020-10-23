@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { Link, SelectLang, useModel } from 'umi';
 import { getPageQuery } from '@/utils/utils';
 import logo from '@/assets/logo.svg';
-import { LoginParamsType, fakeAccountLogin } from '@/services/login';
+import { LoginParamsType, login } from '@/services/login';
 import Footer from '@/components/Footer';
 import LoginFrom from './components/Login';
 import styles from './style.less';
@@ -58,8 +58,8 @@ const Login: React.FC<{}> = () => {
     setSubmitting(true);
     try {
       // 登录
-      const msg = await fakeAccountLogin({ ...values, type });
-      if (msg.status === 'ok') {
+      const msg = await login({ ...values, type });
+      if (msg.success === true) {
         message.success('登录成功！');
         replaceGoto();
         setTimeout(() => {

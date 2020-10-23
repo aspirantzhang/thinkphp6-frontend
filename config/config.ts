@@ -57,7 +57,7 @@ export default defineConfig({
     },
     {
       path: '/',
-      redirect: '/welcome',
+      redirect: '/basic-list/backend/admins',
     },
     {
       component: './404',
