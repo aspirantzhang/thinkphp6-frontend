@@ -1,5 +1,5 @@
-import { buildColumns } from './Columns';
+import { ColumnBuilder } from './Columns';
 import { buildElements } from './Elements';
-import { buildSearchFields } from './SearchFields';
+import { SearchBuilder } from './SearchBuilder';
 
-export { buildColumns, buildElements, buildSearchFields };
+export { ColumnBuilder, buildElements, SearchBuilder };

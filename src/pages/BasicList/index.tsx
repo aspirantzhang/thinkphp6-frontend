@@ -19,7 +19,7 @@ import {
   Alert,
 } from 'antd';
 import { join } from 'lodash';
-import { buildColumns, buildElements, buildSearchFields } from '@/components/List';
+import { ColumnBuilder, buildElements, SearchBuilder } from '@/components/List';
 import { ModalForm } from './ModalForm';
 import * as helper from './helper';
 import { DataState, SingleColumnType, UriMatchState } from './data';
@@ -289,7 +289,7 @@ const BasicList: FC<BasicListProps> = () => {
           <Form.Item name="id" label="ID">
             <InputNumber />
           </Form.Item>
-          {mainData?.layout?.tableColumn && buildSearchFields(mainData.layout.tableColumn)}
+          {mainData?.layout?.tableColumn && SearchBuilder(mainData.layout.tableColumn)}
           <Form.Item>
             <Button type="primary" htmlType="submit">
               Search
@@ -353,7 +353,7 @@ const BasicList: FC<BasicListProps> = () => {
   };
 
   const columns = mainData?.layout?.tableColumn
-    ? buildColumns(mainData?.layout?.tableColumn, actionHandler)
+    ? ColumnBuilder(mainData?.layout?.tableColumn, actionHandler)
     : [];
 
   return (

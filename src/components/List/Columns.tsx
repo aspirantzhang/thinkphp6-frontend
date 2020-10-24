@@ -4,8 +4,43 @@ import { Space, Tag, Button } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import { SingleColumnType } from './data.d';
 
-export const buildColumns = (tableColumn: any, actionHandler: any) => {
-  const idColumn: ColumnsType<SingleColumnType> = [
+export const ColumnBuilder = (tableColumn: any, actionHandler: any) => {
+  const tagRender = (data: any, value: any) => {
+    let result: any[] = [];
+    data.forEach((optionValue: any, optionKey: number) => {
+      if (optionKey === value) {
+        result.push(
+          <Tag color={value === 0 ? 'red' : 'blue'} key={value}>
+            {optionValue}
+          </Tag>,
+        );
+      }
+    });
+    return result;
+  };
+
+  const actionsRender = (data: any, record: any) => {
+    return data.map((action: any) => {
+      switch (action.component) {
+        case 'button':
+          return (
+            <Button
+              type={action.type}
+              onClick={() => {
+                actionHandler(action, record);
+              }}
+              key={action.action}
+            >
+              {action.text}
+            </Button>
+          );
+        default:
+          return null;
+      }
+    });
+  };
+
+  let columns: ColumnsType<SingleColumnType> = [
     {
       title: 'ID',
       dataIndex: 'id',
@@ -14,67 +49,33 @@ export const buildColumns = (tableColumn: any, actionHandler: any) => {
       fixed: 'left',
     },
   ];
+
   if (tableColumn) {
-    return idColumn.concat(
-      tableColumn
-        .filter((item: any, index: number) => {
-          return item.hideInColumn !== true;
-        })
-        .map((column: any) => {
-          switch (column.type) {
-            case 'tag':
-            case 'tree':
-              column.render = (text: any) => {
-                return (
-                  <Space>
-                    {column.data
-                      .filter((item: any, index: number) => index === text)
-                      .map((item: any) => {
-                        return (
-                          <Tag color={text === 0 ? 'red' : 'blue'} key={text}>
-                            {item}
-                          </Tag>
-                        );
-                      })}
-                  </Space>
-                );
-              };
-              return column;
-            case 'datetime':
-              column.render = (text: any) => {
-                return moment(text).format('YYYY-MM-DD HH:mm:ss');
-              };
-              return column;
-            case 'actions':
-              column.render = (text: any, record: any) => {
-                return (
-                  <Space>
-                    {column.actions.map((action: any) => {
-                      if (action.component === 'button') {
-                        return (
-                          <Button
-                            type={action.type}
-                            onClick={() => {
-                              actionHandler(action, record);
-                            }}
-                            key={action.action}
-                          >
-                            {action.text}
-                          </Button>
-                        );
-                      }
-                      return null;
-                    })}
-                  </Space>
-                );
-              };
-              return column;
-            default:
-              return column;
-          }
-        }),
-    );
-  } else {
-    return idColumn;
+    tableColumn.forEach((column: any) => {
+      if (column.hideInColumn !== true) {
+        switch (column.type) {
+          case 'tag':
+          case 'tree':
+            column.render = (text: string) => {
+              return <Space>{tagRender(column.data, text)}</Space>;
+            };
+            break;
+          case 'datetime':
+            column.render = (text: string) => {
+              return moment(text).format('YYYY-MM-DD HH:mm:ss');
+            };
+            break;
+          case 'actions':
+            column.render = (_: string, record: any) => {
+              return <Space>{actionsRender(column.actions, record)}</Space>;
+            };
+            break;
+          default:
+            break;
+        }
+        columns.push(column);
+      }
+    });
   }
+  return columns;
 };

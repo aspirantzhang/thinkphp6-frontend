@@ -4,7 +4,7 @@ import { Form, Input, DatePicker, Select, TreeSelect } from 'antd';
 
 const { RangePicker } = DatePicker;
 
-export const buildSearchFields = (tableColumn: any) => {
+export const SearchBuilder = (tableColumn: any) => {
   return tableColumn.map((column: any) => {
     switch (column.type) {
       case 'datetime':
@@ -29,13 +29,14 @@ export const buildSearchFields = (tableColumn: any) => {
         return (
           <Form.Item name={column.key} label={column.title} key={column.key}>
             <Select mode={column.mode} placeholder="Please select" style={{ width: '200px' }}>
-              {column.data &&
-                Object.keys(column.data).length &&
-                Object.keys(column.data).map((key) => (
-                  <Select.Option value={key} key={key}>
-                    {column.data[key]}
-                  </Select.Option>
-                ))}
+              {column?.data &&
+                Object.keys(column.data).map((item: any, index: number) => {
+                  return (
+                    <Select.Option value={item} key={item}>
+                      {column.data[item]}
+                    </Select.Option>
+                  );
+                })}
             </Select>
           </Form.Item>
         );
