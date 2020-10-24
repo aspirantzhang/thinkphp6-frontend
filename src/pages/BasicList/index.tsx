@@ -352,7 +352,9 @@ const BasicList: FC<BasicListProps> = () => {
     );
   };
 
-  const columns = mainData?.layout ? buildColumns(mainData, actionHandler) : [];
+  const columns = mainData?.layout?.tableColumn
+    ? buildColumns(mainData?.layout?.tableColumn, actionHandler)
+    : [];
 
   return (
     <>
