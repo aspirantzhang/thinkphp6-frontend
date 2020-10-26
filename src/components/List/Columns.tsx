@@ -2,7 +2,6 @@ import React from 'react';
 import moment from 'moment';
 import { Space, Tag, Button } from 'antd';
 import { ColumnsType } from 'antd/es/table';
-import { SingleColumnType } from './data.d';
 
 export const ColumnBuilder = (tableColumn: any, actionHandler: any) => {
   const tagRender = (data: any, value: any) => {
@@ -40,7 +39,7 @@ export const ColumnBuilder = (tableColumn: any, actionHandler: any) => {
     });
   };
 
-  let columns: ColumnsType<SingleColumnType> = [
+  let columns: ColumnsType<BasicListAPI.Record> = [
     {
       title: 'ID',
       dataIndex: 'id',

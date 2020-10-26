@@ -2,6 +2,7 @@ import React, { useEffect, useState, FC } from 'react';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import { useRequest, request, history, useRouteMatch } from 'umi';
 import { ColumnsType } from 'antd/es/table';
+import { TableRowSelection } from 'antd/es/table/interface';
 import moment from 'moment';
 import { SearchOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import {
@@ -22,35 +23,31 @@ import { join } from 'lodash';
 import { ColumnBuilder, buildElements, SearchBuilder } from '@/components/List';
 import { ModalForm } from './ModalForm';
 import * as helper from './helper';
-import { DataState, SingleColumnType, UriMatchState } from './data';
 import styles from './style.less';
 
 interface BasicListProps {}
 
 const BasicList: FC<BasicListProps> = () => {
-  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
-  const [selectedRowData, setSelectedRowData] = useState([]);
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+  const [selectedRowData, setSelectedRowData] = useState<BasicListAPI.Record[]>([]);
   const [searchExpand, setSearchExpand] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [formInitUri, setFormInitUri] = useState('');
-  const [mainData, setMainData] = useState<DataState | undefined>(undefined);
+  const [mainData, setMainData] = useState<BasicListAPI.Data | undefined>(undefined);
   const [paginationQuery, setPaginationQuery] = useState('');
   const [sortQuery, setSortQuery] = useState('&sort=id&order=desc');
   const [searchQuery, setSearchQuery] = useState('');
   const [searchForm] = Form.useForm();
   const { confirm } = Modal;
-  const match = useRouteMatch<UriMatchState>();
+  const match = useRouteMatch<BasicListAPI.UriMatchState>();
 
   const { fullUri } = helper.buildUriMatch(match);
-  const initUri = fullUri;
+  const initUri = fullUri as string;
 
-  const { data, loading, run } = useRequest(
-    (requestQuery?) => {
-      const queryString = requestQuery || '';
-      return {
-        url: `/api/${initUri}?${queryString}`,
-      };
-    },
+  const { data, loading, run }: BasicListAPI.InitRequest = useRequest(
+    (requestQuery?) => ({
+      url: `/api/${initUri}?${requestQuery || ''}`,
+    }),
     {
       manual: true,
       throttleInterval: 1000,
@@ -70,27 +67,26 @@ const BasicList: FC<BasicListProps> = () => {
   };
 
   const showModal = (uri: string, id?: number) => {
-    if (id) {
-      setFormInitUri(`${uri}/${id}`);
-    } else {
-      setFormInitUri(`${uri}`);
-    }
+    setFormInitUri(`${uri}${id ? '/' + id : ''}`);
     setModalVisible(true);
   };
 
-  const buildBatchOverview = (dataSource: any, action: string) => {
-    const batchOverviewColumns: ColumnsType<SingleColumnType> = [
+  const buildBatchOverview = (dataSource: BasicListAPI.Record[], action: string) => {
+    const batchOverviewColumns: ColumnsType<BasicListAPI.Record> = [
       {
         title: 'ID',
         dataIndex: 'id',
         key: 'id',
       },
-      {
-        title: mainData?.layout.tableColumn[0].title,
-        dataIndex: mainData?.layout.tableColumn[0].dataIndex,
-        key: mainData?.layout.tableColumn[0].key,
-      },
     ];
+
+    if (mainData?.layout?.tableColumn[0]) {
+      batchOverviewColumns.push({
+        title: mainData.layout.tableColumn[0].title || '',
+        dataIndex: mainData.layout.tableColumn[0].dataIndex || undefined,
+        key: mainData.layout.tableColumn[0].key || undefined,
+      });
+    }
 
     return (
       <>
@@ -115,7 +111,7 @@ const BasicList: FC<BasicListProps> = () => {
     );
   };
 
-  const actionHandler = (actions: any, record?: any) => {
+  const actionHandler = (actions: BasicListAPI.Action, record?: BasicListAPI.Record) => {
     const { action, method, uri } = actions;
     switch (action) {
       case 'modal':
@@ -126,11 +122,7 @@ const BasicList: FC<BasicListProps> = () => {
         }
         break;
       case 'page':
-        if (record.id) {
-          history.push(`/basic-list${uri}/${record.id}`);
-        } else {
-          history.push(`/basic-list${uri}`);
-        }
+        history.push(`/basic-list${uri}${record?.id ? '/' + record.id : ''}`);
         break;
       case 'modelDesign':
         if (record) {
@@ -146,7 +138,7 @@ const BasicList: FC<BasicListProps> = () => {
         confirm({
           title: `Overview of ${actions.text} Operation`,
           icon: <ExclamationCircleOutlined />,
-          content: buildBatchOverview(record.id ? [record] : selectedRowData, action),
+          content: buildBatchOverview(record?.id ? [record] : selectedRowData, action),
           okText: `Sure to ${actions.text} !!!`,
           okType: 'danger',
           cancelText: 'Cancel',
@@ -155,7 +147,7 @@ const BasicList: FC<BasicListProps> = () => {
             request(`/api/${uri}`, {
               method,
               data: {
-                ids: record.id ? [record.id] : selectedRowKeys,
+                ids: record?.id ? [record.id] : selectedRowKeys,
                 type: action,
               },
             })
@@ -181,9 +173,8 @@ const BasicList: FC<BasicListProps> = () => {
     }
   };
 
-  const tableChangeHandler = (pagination: any, filters: any, sorter: any) => {
+  const tableChangeHandler = (_: any, __: any, sorter: any) => {
     const sortQueryString = helper.buildSorter(sorter);
-
     if (sortQueryString) {
       run(`${searchQuery}${sortQueryString}`);
       setSortQuery(sortQueryString);
@@ -191,8 +182,7 @@ const BasicList: FC<BasicListProps> = () => {
   };
 
   const batchToolBar = () => {
-    const hasSelected = selectedRowKeys.length > 0;
-    if (hasSelected) {
+    if (selectedRowKeys.length > 0) {
       return (
         <FooterToolbar
           extra={
@@ -212,27 +202,29 @@ const BasicList: FC<BasicListProps> = () => {
   };
 
   const tableToolBar = () => {
-    return (
-      <Space>
-        <Button
-          type={searchExpand ? 'primary' : 'dashed'}
-          icon={<SearchOutlined />}
-          onClick={() => {
-            setSearchExpand(!searchExpand);
-          }}
-        />
-        {mainData?.layout?.tableToolBar &&
-          buildElements(mainData.layout.tableToolBar, actionHandler)}
-      </Space>
-    );
+    if (mainData?.layout?.tableToolBar) {
+      return (
+        <Space>
+          <Button
+            type={searchExpand ? 'primary' : 'dashed'}
+            icon={<SearchOutlined />}
+            onClick={() => {
+              setSearchExpand(!searchExpand);
+            }}
+          />
+          {buildElements(mainData.layout.tableToolBar, actionHandler)}
+        </Space>
+      );
+    }
+    return null;
   };
 
-  const onSelectChange = (rowKeys: any, selectedRows: any) => {
+  const onSelectChange = (rowKeys: React.Key[], selectedRows: BasicListAPI.Record[]) => {
     setSelectedRowKeys(rowKeys);
     setSelectedRowData(selectedRows);
   };
 
-  const tableRowSelection = {
+  const tableRowSelection: TableRowSelection<BasicListAPI.Record> = {
     selectedRowKeys,
     onChange: onSelectChange,
   };
@@ -242,19 +234,21 @@ const BasicList: FC<BasicListProps> = () => {
     searchForm.submit();
   };
 
-  const searchFormHandler = async (values: any) => {
+  const searchFormHandler = (values: any) => {
     let searchQueryString = '';
 
     Object.keys(values).forEach((key) => {
-      const thisValue = values[key];
-      const multiValueArray: string[] = [];
-      if (thisValue) {
-        if (typeof thisValue === 'object') {
-          Object.keys(thisValue).forEach((innerKey) => {
-            if (moment.isMoment(thisValue[innerKey])) {
-              multiValueArray.push(thisValue[innerKey].utc().format());
+      const searchItem = values[key];
+
+      if (searchItem) {
+        // object(array) or string
+        if (typeof searchItem === 'object') {
+          const multiValueArray: string[] = [];
+          Object.keys(searchItem).forEach((searchItemKey) => {
+            if (moment.isMoment(searchItem[searchItemKey])) {
+              multiValueArray.push(searchItem[searchItemKey].utc().format());
             } else {
-              multiValueArray.push(thisValue[innerKey]);
+              multiValueArray.push(searchItem[searchItemKey]);
             }
           });
 
@@ -262,7 +256,7 @@ const BasicList: FC<BasicListProps> = () => {
             join(multiValueArray, ','),
           )}`;
         } else {
-          searchQueryString = `${searchQueryString}&${key}=${encodeURIComponent(thisValue)}`;
+          searchQueryString = `${searchQueryString}&${key}=${encodeURIComponent(searchItem)}`;
         }
       }
     });
@@ -278,31 +272,34 @@ const BasicList: FC<BasicListProps> = () => {
   };
 
   const searchLayout = () => {
-    return (
-      <Card
-        bordered={false}
-        className={styles.searchCard}
-        title={false}
-        style={{ display: searchExpand ? 'block' : 'none' }}
-      >
-        <Form layout="inline" form={searchForm} onFinish={searchFormHandler}>
-          <Form.Item name="id" label="ID">
-            <InputNumber />
-          </Form.Item>
-          {mainData?.layout?.tableColumn && SearchBuilder(mainData.layout.tableColumn)}
-          <Form.Item>
-            <Button type="primary" htmlType="submit">
-              Search
-            </Button>
-          </Form.Item>
-          <Form.Item>
-            <Button htmlType="button" onClick={searchFormClear}>
-              Clear Search
-            </Button>
-          </Form.Item>
-        </Form>
-      </Card>
-    );
+    if (mainData?.layout?.tableColumn) {
+      return (
+        <Card
+          bordered={false}
+          className={styles.searchCard}
+          title={false}
+          style={{ display: searchExpand ? 'block' : 'none' }}
+        >
+          <Form layout="inline" form={searchForm} onFinish={searchFormHandler}>
+            <Form.Item name="id" label="ID">
+              <InputNumber />
+            </Form.Item>
+            {SearchBuilder(mainData.layout.tableColumn)}
+            <Form.Item>
+              <Button type="primary" htmlType="submit">
+                Search
+              </Button>
+            </Form.Item>
+            <Form.Item>
+              <Button htmlType="button" onClick={searchFormClear}>
+                Clear Search
+              </Button>
+            </Form.Item>
+          </Form>
+        </Card>
+      );
+    }
+    return null;
   };
 
   const paginationChangeHandler = (page: number, pageSize?: number) => {
@@ -314,14 +311,14 @@ const BasicList: FC<BasicListProps> = () => {
   const paginationLayout = () => {
     return (
       <Pagination
-        total={mainData?.meta?.total}
+        total={mainData?.meta?.total || 0}
         showSizeChanger
         showQuickJumper
         showTotal={(total) => `Total ${total} items`}
         onChange={paginationChangeHandler}
         onShowSizeChange={paginationChangeHandler}
-        current={mainData?.meta?.page}
-        pageSize={mainData ? mainData.meta?.per_page : 10}
+        current={mainData?.meta?.page || 1}
+        pageSize={mainData?.meta?.per_page || 10}
       />
     );
   };
@@ -367,7 +364,7 @@ const BasicList: FC<BasicListProps> = () => {
               columns={columns}
               pagination={false}
               rowKey="id"
-              dataSource={mainData && mainData.dataSource}
+              dataSource={mainData?.dataSource}
               rowSelection={tableRowSelection}
               onChange={tableChangeHandler}
               loading={loading}
