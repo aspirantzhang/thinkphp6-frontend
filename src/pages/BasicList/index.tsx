@@ -29,22 +29,22 @@ interface BasicListProps {}
 
 const BasicList: FC<BasicListProps> = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
-  const [selectedRowData, setSelectedRowData] = useState<BasicListAPI.Record[]>([]);
+  const [selectedRowData, setSelectedRowData] = useState<ListAPI.Record[]>([]);
   const [searchExpand, setSearchExpand] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [formInitUri, setFormInitUri] = useState('');
-  const [mainData, setMainData] = useState<BasicListAPI.Data | undefined>(undefined);
+  const [mainData, setMainData] = useState<ListAPI.Data | undefined>(undefined);
   const [paginationQuery, setPaginationQuery] = useState('');
   const [sortQuery, setSortQuery] = useState('&sort=id&order=desc');
   const [searchQuery, setSearchQuery] = useState('');
   const [searchForm] = Form.useForm();
   const { confirm } = Modal;
-  const match = useRouteMatch<BasicListAPI.UriMatchState>();
+  const match = useRouteMatch<ListAPI.UriMatchState>();
 
   const { fullUri } = helper.buildUriMatch(match);
   const initUri = fullUri as string;
 
-  const { data, loading, run }: BasicListAPI.InitRequest = useRequest(
+  const { data, loading, run }: ListAPI.InitRequest = useRequest(
     (requestQuery?) => ({
       url: `/api/${initUri}?${requestQuery || ''}`,
     }),
@@ -71,8 +71,8 @@ const BasicList: FC<BasicListProps> = () => {
     setModalVisible(true);
   };
 
-  const buildBatchOverview = (dataSource: BasicListAPI.Record[], action: string) => {
-    const batchOverviewColumns: ColumnsType<BasicListAPI.Record> = [
+  const buildBatchOverview = (dataSource: ListAPI.Record[], action: string) => {
+    const batchOverviewColumns: ColumnsType<ListAPI.Record> = [
       {
         title: 'ID',
         dataIndex: 'id',
@@ -111,7 +111,7 @@ const BasicList: FC<BasicListProps> = () => {
     );
   };
 
-  const actionHandler = (actions: BasicListAPI.Action, record?: BasicListAPI.Record) => {
+  const actionHandler = (actions: ListAPI.Action, record?: ListAPI.Record) => {
     const { action, method, uri } = actions;
     switch (action) {
       case 'modal':
@@ -219,12 +219,12 @@ const BasicList: FC<BasicListProps> = () => {
     return null;
   };
 
-  const onSelectChange = (rowKeys: React.Key[], selectedRows: BasicListAPI.Record[]) => {
+  const onSelectChange = (rowKeys: React.Key[], selectedRows: ListAPI.Record[]) => {
     setSelectedRowKeys(rowKeys);
     setSelectedRowData(selectedRows);
   };
 
-  const tableRowSelection: TableRowSelection<BasicListAPI.Record> = {
+  const tableRowSelection: TableRowSelection<ListAPI.Record> = {
     selectedRowKeys,
     onChange: onSelectChange,
   };

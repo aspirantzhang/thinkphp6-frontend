@@ -39,7 +39,7 @@ export const ColumnBuilder = (tableColumn: any, actionHandler: any) => {
     });
   };
 
-  let columns: ColumnsType<BasicListAPI.Record> = [
+  let columns: ColumnsType<ListAPI.Record> = [
     {
       title: 'ID',
       dataIndex: 'id',
