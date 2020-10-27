@@ -40,7 +40,7 @@ const BasicList: FC<BasicListProps> = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchForm] = Form.useForm();
   const { confirm } = Modal;
-  const match = useRouteMatch<ListAPI.UriMatchState>();
+  const match = useRouteMatch<API.UriMatchState>();
 
   const { fullUri } = helper.buildUriMatch(match);
   const initUri = fullUri as string;
@@ -112,7 +112,7 @@ const BasicList: FC<BasicListProps> = () => {
     );
   };
 
-  const actionHandler = (actions: ListAPI.Action, record?: ListAPI.Record) => {
+  const actionHandler: API.ActionHandler = (actions, record?) => {
     const { action, method, uri } = actions;
     switch (action) {
       case 'modal':
@@ -362,7 +362,7 @@ const BasicList: FC<BasicListProps> = () => {
           <Card>
             {beforeTableLayout()}
             <Table<ListAPI.Record>
-              columns={columns}
+              columns={columns as ColumnsType<ListAPI.Record>}
               pagination={false}
               rowKey="id"
               dataSource={mainData?.dataSource}

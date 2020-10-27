@@ -3,7 +3,6 @@ import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import { Card, message, Button, Space, Spin } from 'antd';
 import { request, useRequest, history, useRouteMatch } from 'umi';
 import * as helper from '@/pages/BasicList/helper';
-import { UriMatchState } from '@/pages/BasicList/data';
 
 import {
   createFormActions,
@@ -40,7 +39,7 @@ const ModelDesign: FC<SinglePageProps> = () => {
   const [formLoading, setFormLoading] = useState(true);
   const [mainData, setMainData] = useState(undefined);
 
-  const match = useRouteMatch<UriMatchState>();
+  const match = useRouteMatch<API.UriMatchState>();
   const { fullUri } = helper.buildUriMatch(match);
   const initUri = fullUri;
 

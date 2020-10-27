@@ -1,7 +1,11 @@
 import React from 'react';
 import { Button } from 'antd';
 
-export const ActionBuilder = (actions: PageAPI.Action, actionHandler: any, loading: boolean) => {
+export const ActionBuilder = (
+  actions: PageAPI.Action,
+  actionHandler: API.ActionHandler,
+  loading: boolean,
+) => {
   return actions.data.map((action: any) => {
     switch (action.component) {
       case 'button':

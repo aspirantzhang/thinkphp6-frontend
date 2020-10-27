@@ -1,7 +1,8 @@
 import moment from 'moment';
 import { unset } from 'lodash';
+import { Store } from 'rc-field-form/lib/interface';
 
-export const FinishPrepare = (values: PageAPI.FormValues) => {
+export const FinishPrepare = (values: Store) => {
   const submitValues = {};
   let uri = '';
   let method = '';

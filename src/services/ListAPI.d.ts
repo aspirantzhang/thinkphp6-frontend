@@ -19,36 +19,21 @@ declare namespace ListAPI {
     title: string;
     dataIndex: string;
     key: string;
-    type: string;
-    data: any;
+    type?: string;
+    data?: any;
     hideInColumn?: boolean;
     sorter?: boolean;
-    mode: string;
+    mode?: any;
     actions?: Action[];
-    render?: () => void;
-  }
-
-  export interface TableToolBar {
-    component: string;
-    text: string;
-    type: string;
-    action: string;
-    uri: string;
-  }
-
-  export interface BatchToolBar {
-    component: string;
-    text: string;
-    type: string;
-    action: string;
-    uri: string;
-    method: string;
+    fixed?: string;
+    render?: (...key: any) => void;
+    // [key: string]: any;
   }
 
   export interface Layout {
     tableColumn: TableColumn[];
-    tableToolBar: TableToolBar[];
-    batchToolBar: BatchToolBar[];
+    tableToolBar: Action[];
+    batchToolBar: Action[];
   }
 
   export interface Record {
@@ -72,12 +57,5 @@ declare namespace ListAPI {
     success: boolean;
     message: string;
     data: Data;
-  }
-
-  export interface UriMatchState {
-    app?: string;
-    controller?: string;
-    action?: string;
-    [key: string]: string;
   }
 }

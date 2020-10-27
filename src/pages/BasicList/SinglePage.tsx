@@ -16,7 +16,7 @@ const SinglePage: FC<SinglePageProps> = () => {
   const [spinLoading, setSpinLoading] = useBoolean(true);
   const { TabPane } = Tabs;
   const [form] = Form.useForm();
-  const match = useRouteMatch<ListAPI.UriMatchState>();
+  const match = useRouteMatch<API.UriMatchState>();
 
   const { fullUri } = helper.buildUriMatch(match);
   const initUri = fullUri as string;
@@ -70,7 +70,7 @@ const SinglePage: FC<SinglePageProps> = () => {
     };
   }, [initUri]);
 
-  const actionHandler = (actions: PageAPI.ActionData) => {
+  const actionHandler: API.ActionHandler = (actions) => {
     const { action, method, uri } = actions;
     switch (action) {
       case 'submit':

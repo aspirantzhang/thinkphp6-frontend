@@ -32,4 +32,13 @@ declare namespace API {
     extra: any;
     status: string;
   }
+
+  export type ActionHandler = (actions: ListAPI.Action, record?: ListAPI.Record) => void;
+
+  export interface UriMatchState {
+    app?: string;
+    controller?: string;
+    action?: string;
+    [key: string]: string;
+  }
 }

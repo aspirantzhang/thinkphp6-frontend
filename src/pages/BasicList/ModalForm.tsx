@@ -67,7 +67,7 @@ export const ModalForm: FC<ModalFormProps> = (props) => {
     };
   }, [initUri]);
 
-  const actionHandler = (actions: PageAPI.ActionData) => {
+  const actionHandler: API.ActionHandler = (actions) => {
     const { action, method, uri } = actions;
     switch (action) {
       case 'submit':

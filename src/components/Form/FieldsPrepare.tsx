@@ -1,19 +1,19 @@
 import moment from 'moment';
-import { PageDataState } from '@/pages/BasicList/data';
+import { Store } from 'rc-field-form/lib/interface';
 
-export const FieldsPrepare = (mainData: PageDataState) => {
+export const FieldsPrepare = (mainData: PageAPI.Data) => {
   // combine fields from tabs and sidebars
-  let allFields: any[] = [];
-  mainData?.layout?.tabs?.forEach((tab: any) => {
+  let allFields: PageAPI.FormData[] = [];
+  mainData?.layout?.tabs?.forEach((tab: PageAPI.Form) => {
     allFields = allFields.concat(tab.data);
   });
-  mainData?.layout?.sidebars?.forEach((sidebar: any) => {
+  mainData?.layout?.sidebars?.forEach((sidebar: PageAPI.Form) => {
     allFields = allFields.concat(sidebar.data);
   });
 
-  const formData: any = [];
+  const formData: Store = [];
 
-  allFields.map((field: any) => {
+  allFields.forEach((field: PageAPI.FormData) => {
     switch (field.type) {
       case 'datetime':
         formData[field.key] = moment(mainData.dataSource[field.key], moment.ISO_8601);
@@ -32,7 +32,6 @@ export const FieldsPrepare = (mainData: PageDataState) => {
         }
         break;
     }
-    return null;
   });
 
   return formData;

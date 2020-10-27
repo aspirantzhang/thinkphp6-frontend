@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from 'antd';
 
-export const buildElements = (data: any, actionHandler: any) => {
+export const buildElements = (data: ListAPI.Action[], actionHandler: API.ActionHandler) => {
   return data.map((element: any) => {
     if (element.component === 'button') {
       return (
