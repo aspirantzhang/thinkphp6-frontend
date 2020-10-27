@@ -74,16 +74,6 @@ declare namespace ListAPI {
     data: Data;
   }
 
-  export interface InitRequest {
-    data?: Data;
-    loading?: boolean;
-    run?: (params?: string) => {};
-  }
-
-  export interface FormValues {
-    [name: string]: any;
-  }
-
   export interface UriMatchState {
     app?: string;
     controller?: string;

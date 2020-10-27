@@ -44,7 +44,7 @@ const BasicList: FC<BasicListProps> = () => {
   const { fullUri } = helper.buildUriMatch(match);
   const initUri = fullUri as string;
 
-  const { data, loading, run }: ListAPI.InitRequest = useRequest(
+  const { data, loading, run } = useRequest(
     (requestQuery?) => ({
       url: `/api/${initUri}?${requestQuery || ''}`,
     }),

@@ -4,7 +4,7 @@ import moment from 'moment';
 import { request, useRequest } from 'umi';
 import { useBoolean } from 'ahooks';
 import { FieldBuilder, ActionBuilder, FinishPrepare, FieldsPrepare } from '@/components/Form';
-import { PageDataState, FormValues } from './data';
+import { Store, ValidateErrorEntity } from 'rc-field-form/lib/interface';
 import styles from './style.less';
 
 interface ModalFormProps {
@@ -15,12 +15,12 @@ interface ModalFormProps {
 
 export const ModalForm: FC<ModalFormProps> = (props) => {
   const { initUri, cancelHandler, reloadHandler } = props;
-  const [mainData, setMainData] = useState<PageDataState | undefined>(undefined);
+  const [mainData, setMainData] = useState<PageAPI.Data | undefined>(undefined);
   const [spinLoading, setSpinLoading] = useBoolean(true);
   const [form] = Form.useForm();
 
   const { loading, run } = useRequest(
-    (url: string, method: string, requestData: any) => ({
+    (url: string, method: string, requestData: Store) => ({
       url: `/api/${url}`,
       method,
       data: requestData,
@@ -28,13 +28,13 @@ export const ModalForm: FC<ModalFormProps> = (props) => {
     {
       manual: true,
       throttleInterval: 1000,
-      onSuccess: (response) => {
-        message.success({ content: response.message, key: 'msg' });
+      onSuccess: (response: PageAPI.Base) => {
+        message.success({ content: response.message, key: 'submit' });
         cancelHandler();
         reloadHandler();
       },
-      onError: (error) => {
-        message.error({ content: error.message, key: 'msg' });
+      onError: (error: Error) => {
+        message.error({ content: error.message, key: 'submit' });
       },
       formatResult: (response) => {
         return response;
@@ -67,7 +67,7 @@ export const ModalForm: FC<ModalFormProps> = (props) => {
     };
   }, [initUri]);
 
-  const actionHandler = (actions: any) => {
+  const actionHandler = (actions: PageAPI.ActionData) => {
     const { action, method, uri } = actions;
     switch (action) {
       case 'submit':
@@ -85,14 +85,14 @@ export const ModalForm: FC<ModalFormProps> = (props) => {
     }
   };
 
-  const onFinish = async (values: FormValues) => {
-    message.loading({ content: 'Processing...', key: 'msg' });
+  const onFinish = async (values: Store) => {
+    message.loading({ content: 'Processing...', key: 'submit' });
     const { submitValues, uri, method } = FinishPrepare(values);
     run(uri, method, submitValues);
   };
 
-  const onFinishFailed = (errorInfo: any) => {
-    message.error(errorInfo.errorFields[0].errors[0]);
+  const onFinishFailed = (errorInfo: ValidateErrorEntity<Store>) => {
+    message.error({ content: errorInfo?.errorFields[0]?.errors[0], key: 'submit' });
   };
 
   const layout = {
