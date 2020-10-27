@@ -3,6 +3,7 @@ import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import { useRequest, request, history, useRouteMatch } from 'umi';
 import { ColumnsType } from 'antd/es/table';
 import { TableRowSelection } from 'antd/es/table/interface';
+import { Store } from 'rc-field-form/lib/interface';
 import moment from 'moment';
 import { SearchOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import {
@@ -234,7 +235,7 @@ const BasicList: FC<BasicListProps> = () => {
     searchForm.submit();
   };
 
-  const searchFormHandler = (values: any) => {
+  const searchFormHandler = (values: Store) => {
     let searchQueryString = '';
 
     Object.keys(values).forEach((key) => {
@@ -360,7 +361,7 @@ const BasicList: FC<BasicListProps> = () => {
           {searchLayout()}
           <Card>
             {beforeTableLayout()}
-            <Table
+            <Table<ListAPI.Record>
               columns={columns}
               pagination={false}
               rowKey="id"

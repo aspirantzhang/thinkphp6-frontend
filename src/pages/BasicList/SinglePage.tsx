@@ -5,24 +5,24 @@ import moment from 'moment';
 import { request, useRequest, history, useRouteMatch } from 'umi';
 import { useBoolean } from 'ahooks';
 import { FieldBuilder, ActionBuilder, FinishPrepare, FieldsPrepare } from '@/components/Form';
+import { Store, ValidateErrorEntity } from 'rc-field-form/lib/interface';
 import * as helper from './helper';
-import { PageDataState, FormValues, UriMatchState } from './data';
 import styles from './style.less';
 
 interface SinglePageProps {}
 
 const SinglePage: FC<SinglePageProps> = () => {
-  const [mainData, setMainData] = useState<PageDataState | undefined>(undefined);
+  const [mainData, setMainData] = useState<PageAPI.Data | undefined>(undefined);
   const [spinLoading, setSpinLoading] = useBoolean(true);
   const { TabPane } = Tabs;
   const [form] = Form.useForm();
-  const match = useRouteMatch<UriMatchState>();
+  const match = useRouteMatch<ListAPI.UriMatchState>();
 
   const { fullUri } = helper.buildUriMatch(match);
-  const initUri = fullUri;
+  const initUri = fullUri as string;
 
   const { loading, run } = useRequest(
-    (url: string, method: string, requestData: any) => {
+    (url: string, method: string, requestData: Store) => {
       return {
         url: `/api/${url}`,
         method,
@@ -33,11 +33,11 @@ const SinglePage: FC<SinglePageProps> = () => {
       manual: true,
       throttleInterval: 1000,
       onSuccess: (response) => {
-        message.success({ content: response.message, key: 'msg' });
+        message.success({ content: response.message, key: 'submit' });
         history.goBack();
       },
       onError: (error) => {
-        message.error({ content: error.message, key: 'msg' });
+        message.error({ content: error.message, key: 'submit' });
       },
       formatResult: (response) => {
         return response;
@@ -70,7 +70,7 @@ const SinglePage: FC<SinglePageProps> = () => {
     };
   }, [initUri]);
 
-  const actionHandler = (actions: any) => {
+  const actionHandler = (actions: PageAPI.ActionData) => {
     const { action, method, uri } = actions;
     switch (action) {
       case 'submit':
@@ -88,14 +88,14 @@ const SinglePage: FC<SinglePageProps> = () => {
     }
   };
 
-  const onFinish = async (values: FormValues) => {
-    message.loading({ content: 'Processing...', key: 'msg' });
+  const onFinish = async (values: Store) => {
+    message.loading({ content: 'Processing...', key: 'submit' });
     const { submitValues, uri, method } = FinishPrepare(values);
     run(uri, method, submitValues);
   };
 
-  const onFinishFailed = (errorInfo: any) => {
-    message.error(errorInfo.errorFields[0].errors[0]);
+  const onFinishFailed = (errorInfo: ValidateErrorEntity<Store>) => {
+    message.error({ content: errorInfo?.errorFields[0]?.errors[0], key: 'submit' });
   };
 
   const layout = {
@@ -136,7 +136,7 @@ const SinglePage: FC<SinglePageProps> = () => {
                 type="card"
                 style={{ display: spinLoading ? 'none' : 'block' }}
               >
-                {mainData?.layout?.tabs.map((value: any) => {
+                {mainData?.layout?.tabs.map((value: PageAPI.Form) => {
                   return (
                     <TabPane tab={value.title} key={value.name}>
                       <Card bordered={false}>{FieldBuilder(value.data)}</Card>
@@ -147,14 +147,14 @@ const SinglePage: FC<SinglePageProps> = () => {
             </Col>
             <Col lg={8} md={24} sm={24} xs={24}>
               <Space direction="vertical" style={{ width: '100%' }}>
-                {mainData?.layout?.actions?.map((action: any) => {
+                {mainData?.layout?.actions?.map((actions: PageAPI.Action) => {
                   return (
-                    <Card className={styles.textCenter} size="small" key={action.name}>
-                      <Space>{ActionBuilder(action, actionHandler, loading)}</Space>
+                    <Card className={styles.textCenter} size="small" key={actions.name}>
+                      <Space>{ActionBuilder(actions, actionHandler, loading)}</Space>
                     </Card>
                   );
                 })}
-                {mainData?.layout?.sidebars?.map((sidebar: any) => {
+                {mainData?.layout?.sidebars?.map((sidebar: PageAPI.Form) => {
                   return (
                     <Card title={sidebar.title} key={sidebar.name}>
                       {FieldBuilder(sidebar.data)}
@@ -175,8 +175,8 @@ const SinglePage: FC<SinglePageProps> = () => {
             extra={
               <>
                 <Space>
-                  {mainData?.layout.actions.map((action: any) => {
-                    return ActionBuilder(action, actionHandler, loading);
+                  {mainData?.layout.actions.map((actions: PageAPI.Action) => {
+                    return ActionBuilder(actions, actionHandler, loading);
                   })}
                 </Space>
                 {mainData?.dataSource?.update_time && (

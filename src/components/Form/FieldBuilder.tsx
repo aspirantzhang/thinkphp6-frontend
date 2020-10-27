@@ -1,7 +1,7 @@
 import React from 'react';
 import { Form, Input, DatePicker, Switch, TreeSelect } from 'antd';
 
-export const FieldBuilder = (data: any) => {
+export const FieldBuilder = (data: PageAPI.FormData[]) => {
   return data?.map((column: any) => {
     switch (column.type) {
       case 'datetime':

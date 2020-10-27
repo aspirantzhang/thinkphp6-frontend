@@ -4,7 +4,7 @@ declare module PageAPI {
     type: string;
   }
 
-  export interface TabData {
+  export interface FormData {
     title: string;
     dataIndex: string;
     key: string;
@@ -14,10 +14,10 @@ declare module PageAPI {
     mode: string;
   }
 
-  export interface Tab {
+  export interface Form {
     name: string;
     title: string;
-    data: TabData[];
+    data: FormData[];
   }
 
   export interface ActionData {
@@ -36,7 +36,8 @@ declare module PageAPI {
   }
 
   export interface Layout {
-    tabs: Tab[];
+    tabs: Form[];
+    sidebars?: Form[];
     actions: Action[];
   }
 
