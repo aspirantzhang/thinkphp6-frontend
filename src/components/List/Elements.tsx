@@ -10,6 +10,7 @@ export const buildElements = (data: ListAPI.Action[], actionHandler: API.ActionH
           onClick={() => {
             actionHandler(element, element);
           }}
+          id={element.id || ''}
           key={element.action}
         >
           {element.text}
