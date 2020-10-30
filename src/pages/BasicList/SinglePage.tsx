@@ -105,7 +105,7 @@ const SinglePage: FC<SinglePageProps> = () => {
 
   useEffect(() => {
     if (mainData?.layout && mainData.dataSource) {
-      form.setFieldsValue(FieldsPrepare(mainData));
+      form.setFieldsValue(FieldPrepare(mainData));
     }
   }, [mainData]);
 
@@ -176,7 +176,7 @@ const SinglePage: FC<SinglePageProps> = () => {
               <>
                 <Space>
                   {mainData?.layout.actions.map((actions: PageAPI.Action) => {
-                    return ActionBuilder(actions, actionHandler, loading);
+                    return ActionBuilder(actions.data, actionHandler, loading);
                   })}
                 </Space>
                 {mainData?.dataSource?.update_time && (
