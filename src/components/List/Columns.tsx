@@ -1,14 +1,15 @@
 import React from 'react';
 import moment from 'moment';
 import { Space, Tag, Button } from 'antd';
+import { ButtonType } from 'antd/lib/button';
 
 export const ColumnBuilder = (
   tableColumn: ListAPI.TableColumn[],
   actionHandler: API.ActionHandler,
 ) => {
-  const tagRender = (data: any, value: React.Key) => {
-    let result: any[] = [];
-    data.forEach((optionValue: React.Key, optionKey: React.Key) => {
+  const tagRender = (data: API.Store, value: API.StoreValue) => {
+    let result: React.ReactNode[] = [];
+    data.forEach((optionValue: API.StoreValue, optionKey: API.StoreValue) => {
       if (optionKey === value) {
         result.push(
           <Tag color={value === 0 ? 'red' : 'blue'} key={value}>
@@ -20,13 +21,13 @@ export const ColumnBuilder = (
     return result;
   };
 
-  const actionsRender = (data: ListAPI.Action[], record: any) => {
-    return data.map((action: any) => {
+  const actionsRender = (data: ListAPI.Action[], record: ListAPI.Record) => {
+    return data.map((action: ListAPI.Action) => {
       switch (action.component) {
         case 'button':
           return (
             <Button
-              type={action.type}
+              type={action.type as ButtonType}
               onClick={() => {
                 actionHandler(action, record);
               }}

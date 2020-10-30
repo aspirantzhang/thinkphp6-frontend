@@ -41,4 +41,10 @@ declare namespace API {
     action?: string;
     [key: string]: string;
   }
+
+  export interface Store {
+    [key: string]: any;
+  }
+
+  export type StoreValue = string | number;
 }

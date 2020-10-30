@@ -1,5 +1,4 @@
 import moment from 'moment';
-import { Store } from 'rc-field-form/lib/interface';
 
 export const FieldsPrepare = (mainData: PageAPI.Data) => {
   // combine fields from tabs and sidebars
@@ -11,7 +10,7 @@ export const FieldsPrepare = (mainData: PageAPI.Data) => {
     allFields = allFields.concat(sidebar.data);
   });
 
-  const formData: Store = [];
+  const formData: API.Store = [];
 
   allFields.forEach((field: PageAPI.FormData) => {
     switch (field.type) {

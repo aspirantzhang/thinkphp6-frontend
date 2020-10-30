@@ -5,7 +5,7 @@ import moment from 'moment';
 import { request, useRequest, history, useRouteMatch } from 'umi';
 import { useBoolean } from 'ahooks';
 import { FieldBuilder, ActionBuilder, FinishPrepare, FieldsPrepare } from '@/components/Form';
-import { Store, ValidateErrorEntity } from 'rc-field-form/lib/interface';
+import { ValidateErrorEntity } from 'rc-field-form/lib/interface';
 import * as helper from './helper';
 import styles from './style.less';
 
@@ -22,7 +22,7 @@ const SinglePage: FC<SinglePageProps> = () => {
   const initUri = fullUri as string;
 
   const { loading, run } = useRequest(
-    (url: string, method: string, requestData: Store) => {
+    (url: string, method: string, requestData: API.Store) => {
       return {
         url: `/api/${url}`,
         method,
@@ -88,13 +88,13 @@ const SinglePage: FC<SinglePageProps> = () => {
     }
   };
 
-  const onFinish = async (values: Store) => {
+  const onFinish = async (values: API.Store) => {
     message.loading({ content: 'Processing...', key: 'submit' });
     const { submitValues, uri, method } = FinishPrepare(values);
     run(uri, method, submitValues);
   };
 
-  const onFinishFailed = (errorInfo: ValidateErrorEntity<Store>) => {
+  const onFinishFailed = (errorInfo: ValidateErrorEntity<API.Store>) => {
     message.error({ content: errorInfo?.errorFields[0]?.errors[0], key: 'submit' });
   };
 

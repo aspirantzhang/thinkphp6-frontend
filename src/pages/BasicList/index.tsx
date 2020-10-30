@@ -3,7 +3,6 @@ import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import { useRequest, request, history, useRouteMatch } from 'umi';
 import { ColumnsType } from 'antd/es/table';
 import { TableRowSelection } from 'antd/es/table/interface';
-import { Store } from 'rc-field-form/lib/interface';
 import moment from 'moment';
 import { SearchOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import {
@@ -135,7 +134,7 @@ const BasicList: FC<BasicListProps> = () => {
         break;
       case 'delete':
       case 'deletePermanently':
-      case 'restore':
+      case 'reAPI.Store':
         confirm({
           title: `Overview of ${actions.text} Operation`,
           icon: <ExclamationCircleOutlined />,
@@ -236,7 +235,7 @@ const BasicList: FC<BasicListProps> = () => {
     searchForm.submit();
   };
 
-  const searchFormHandler = (values: Store) => {
+  const searchFormHandler = (values: API.Store) => {
     let searchQueryString = '';
 
     Object.keys(values).forEach((key) => {

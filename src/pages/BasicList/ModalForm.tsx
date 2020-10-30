@@ -4,7 +4,7 @@ import moment from 'moment';
 import { request, useRequest } from 'umi';
 import { useBoolean } from 'ahooks';
 import { FieldBuilder, ActionBuilder, FinishPrepare, FieldsPrepare } from '@/components/Form';
-import { Store, ValidateErrorEntity } from 'rc-field-form/lib/interface';
+import { ValidateErrorEntity } from 'rc-field-form/lib/interface';
 import styles from './style.less';
 
 interface ModalFormProps {
@@ -20,7 +20,7 @@ export const ModalForm: FC<ModalFormProps> = (props) => {
   const [form] = Form.useForm();
 
   const { loading, run } = useRequest(
-    (url: string, method: string, requestData: Store) => ({
+    (url: string, method: string, requestData: API.Store) => ({
       url: `/api/${url}`,
       method,
       data: requestData,
@@ -85,13 +85,13 @@ export const ModalForm: FC<ModalFormProps> = (props) => {
     }
   };
 
-  const onFinish = async (values: Store) => {
+  const onFinish = async (values: API.Store) => {
     message.loading({ content: 'Processing...', key: 'submit' });
     const { submitValues, uri, method } = FinishPrepare(values);
     run(uri, method, submitValues);
   };
 
-  const onFinishFailed = (errorInfo: ValidateErrorEntity<Store>) => {
+  const onFinishFailed = (errorInfo: ValidateErrorEntity<API.Store>) => {
     message.error({ content: errorInfo?.errorFields[0]?.errors[0], key: 'submit' });
   };
 

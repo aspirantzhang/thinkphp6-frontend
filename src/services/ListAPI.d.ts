@@ -13,6 +13,7 @@ declare namespace ListAPI {
     action: string;
     uri: string;
     method: string;
+    [keyName: string]: any;
   }
 
   export interface TableColumn {
