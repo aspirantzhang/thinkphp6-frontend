@@ -3,11 +3,11 @@ import { Button } from 'antd';
 import { ButtonType } from 'antd/lib/button';
 
 export const ActionBuilder = (
-  actions: PageAPI.Action,
+  actions: PageAPI.ActionData[],
   actionHandler: API.ActionHandler,
-  loading: boolean,
+  loading: boolean = false,
 ) => {
-  return actions.data.map((action: PageAPI.ActionData) => {
+  return actions.map((action: PageAPI.ActionData) => {
     switch (action.component) {
       case 'button':
         return (
@@ -18,6 +18,7 @@ export const ActionBuilder = (
             onClick={() => {
               actionHandler(action);
             }}
+            id={action.id || ''}
           >
             {action.text}
           </Button>

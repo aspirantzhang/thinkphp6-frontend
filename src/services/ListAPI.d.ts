@@ -6,16 +6,6 @@ declare namespace ListAPI {
     trash: boolean;
   }
 
-  export interface Action {
-    component: string;
-    text: string;
-    type: string;
-    action: string;
-    uri: string;
-    method: string;
-    [keyName: string]: any;
-  }
-
   export interface TableColumn {
     title: string;
     dataIndex: string;
@@ -25,7 +15,7 @@ declare namespace ListAPI {
     hideInColumn?: boolean;
     sorter?: boolean;
     mode?: any;
-    actions?: Action[];
+    actions?: PageAPI.ActionData[];
     fixed?: string;
     render?: (...key: any) => void;
     // [key: string]: any;
@@ -33,8 +23,8 @@ declare namespace ListAPI {
 
   export interface Layout {
     tableColumn: TableColumn[];
-    tableToolBar: Action[];
-    batchToolBar: Action[];
+    tableToolBar: PageAPI.ActionData[];
+    batchToolBar: PageAPI.ActionData[];
   }
 
   export interface Record {

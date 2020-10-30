@@ -27,6 +27,7 @@ declare module PageAPI {
     action: string;
     uri: string;
     method: string;
+    [keyName: string]: any;
   }
 
   export interface Action {

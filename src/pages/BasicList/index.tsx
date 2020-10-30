@@ -20,7 +20,8 @@ import {
   Alert,
 } from 'antd';
 import { join } from 'lodash';
-import { ColumnBuilder, buildElements, SearchBuilder } from '@/components/List';
+import { ColumnBuilder, SearchBuilder } from '@/components/List';
+import { ActionBuilder } from '@/components/Form/ActionBuilder';
 import { ModalForm } from './ModalForm';
 import * as helper from './helper';
 import styles from './style.less';
@@ -134,7 +135,7 @@ const BasicList: FC<BasicListProps> = () => {
         break;
       case 'delete':
       case 'deletePermanently':
-      case 'reAPI.Store':
+      case 'restore':
         confirm({
           title: `Overview of ${actions.text} Operation`,
           icon: <ExclamationCircleOutlined />,
@@ -189,7 +190,7 @@ const BasicList: FC<BasicListProps> = () => {
             <>
               <Space>
                 {mainData?.layout?.batchToolBar &&
-                  buildElements(mainData.layout.batchToolBar, actionHandler)}
+                  ActionBuilder(mainData.layout.batchToolBar, actionHandler)}
                 &nbsp;&nbsp;&nbsp;
               </Space>
               Selected&nbsp;<a style={{ fontWeight: 700 }}>{selectedRowKeys.length}</a> Items
@@ -213,7 +214,7 @@ const BasicList: FC<BasicListProps> = () => {
             }}
             id="searchExpandButton"
           />
-          {buildElements(mainData.layout.tableToolBar, actionHandler)}
+          {ActionBuilder(mainData.layout.tableToolBar, actionHandler)}
         </Space>
       );
     }

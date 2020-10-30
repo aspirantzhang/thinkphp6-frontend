@@ -150,7 +150,7 @@ const SinglePage: FC<SinglePageProps> = () => {
                 {mainData?.layout?.actions?.map((actions: PageAPI.Action) => {
                   return (
                     <Card className={styles.textCenter} size="small" key={actions.name}>
-                      <Space>{ActionBuilder(actions, actionHandler, loading)}</Space>
+                      <Space>{ActionBuilder(actions.data, actionHandler, loading)}</Space>
                     </Card>
                   );
                 })}

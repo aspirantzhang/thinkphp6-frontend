@@ -145,7 +145,7 @@ export const ModalForm: FC<ModalFormProps> = (props) => {
             )}
             <Space>
               {mainData?.layout?.actions &&
-                ActionBuilder(mainData.layout.actions[0], actionHandler, loading)}
+                ActionBuilder(mainData.layout.actions[0].data, actionHandler, loading)}
             </Space>
           </div>
 
