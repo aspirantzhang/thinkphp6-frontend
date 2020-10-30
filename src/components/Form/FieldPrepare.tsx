@@ -1,6 +1,6 @@
 import moment from 'moment';
 
-export const FieldsPrepare = (mainData: PageAPI.Data) => {
+export const FieldPrepare = (mainData: PageAPI.Data) => {
   // combine fields from tabs and sidebars
   let allFields: PageAPI.FormData[] = [];
   mainData?.layout?.tabs?.forEach((tab: PageAPI.Form) => {

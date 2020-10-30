@@ -3,7 +3,7 @@ import { Form, Input, Space, message, Tag, Spin } from 'antd';
 import moment from 'moment';
 import { request, useRequest } from 'umi';
 import { useBoolean } from 'ahooks';
-import { FieldBuilder, ActionBuilder, FinishPrepare, FieldsPrepare } from '@/components/Form';
+import { FieldBuilder, ActionBuilder, FinishPrepare, FieldPrepare } from '@/components/Form';
 import { ValidateErrorEntity } from 'rc-field-form/lib/interface';
 import styles from './style.less';
 
@@ -102,7 +102,7 @@ export const ModalForm: FC<ModalFormProps> = (props) => {
 
   useEffect(() => {
     if (mainData?.layout && mainData.dataSource) {
-      form.setFieldsValue(FieldsPrepare(mainData));
+      form.setFieldsValue(FieldPrepare(mainData));
     }
   }, [mainData]);
 
