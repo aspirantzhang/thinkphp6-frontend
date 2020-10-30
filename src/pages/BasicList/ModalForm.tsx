@@ -34,7 +34,8 @@ export const ModalForm: FC<ModalFormProps> = (props) => {
         reloadHandler();
       },
       onError: (error: Error) => {
-        message.error({ content: error.message, key: 'submit' });
+        message.destroy('submit');
+        // message.error({ content: error.message, key: 'submit' });
       },
       formatResult: (response) => {
         return response;

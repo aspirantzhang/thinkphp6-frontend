@@ -37,7 +37,8 @@ const SinglePage: FC<SinglePageProps> = () => {
         history.goBack();
       },
       onError: (error) => {
-        message.error({ content: error.message, key: 'submit' });
+        message.destroy('submit');
+        // message.error({ content: error.message, key: 'submit' });
       },
       formatResult: (response) => {
         return response;
