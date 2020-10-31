@@ -7,8 +7,8 @@ afterEach(async () => {});
 describe('BasicList', () => {
   it('basic list', async () => {
     const browser = await puppeteer.launch({
-      headless: false,
-      slowMo: 20,
+      // headless: false,
+      // slowMo: 20,
       timeout: 5000,
     });
 
