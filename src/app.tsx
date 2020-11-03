@@ -45,7 +45,11 @@ export const layout = ({
     footerRender: () => <Footer />,
     onPageChange: () => {
       // 如果没有登录，重定向到 login
-      if (!initialState?.currentUser?.userid && history.location.pathname !== '/user/login') {
+      if (
+        !initialState?.currentUser?.userid &&
+        history.location.pathname !== '/user/login' &&
+        history.location.pathname !== '/api'
+      ) {
         history.push('/user/login');
       }
     },
@@ -59,20 +63,6 @@ export const layout = ({
  * 异常处理程序
  */
 const errorHandler = (error: ResponseError) => {
-  // console.log(response);
-
-  // if (response && response.status) {
-  // }
-
-  // if (response && response.status) {
-  //   const errorText = codeMessage[response.status] || response.statusText;
-  //   const { status, url } = response;
-
-  //   Modal.error({
-  //     title: 'This is an error message',
-  //     content: 'some messages...some messages...',
-  //   });
-  // }
   if (error.name === 'BizError') {
     message.error(error.message, 6);
   } else if (!error.response) {

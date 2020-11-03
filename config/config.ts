@@ -44,6 +44,13 @@ export default defineConfig({
     },
 
     {
+      path: '/api',
+      layout: false,
+      name: 'api',
+      component: './api/index',
+    },
+
+    {
       path: '/basic-list/:app/:controller',
       component: './BasicList',
     },

@@ -69,6 +69,7 @@
     "react-dom": "^16.8.6",
     "react-drag-listview": "^0.1.7",
     "react-helmet-async": "^1.0.7",
+    "swagger-ui-react": "^3.36.1",
     "umi": "^3.2.23",
     "umi-request": "^1.0.8",
     "use-merge-value": "^1.0.1"
