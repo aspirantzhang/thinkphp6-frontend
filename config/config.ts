@@ -44,7 +44,7 @@ export default defineConfig({
     },
 
     {
-      path: '/api',
+      path: '/',
       layout: false,
       name: 'api',
       component: './api/index',
@@ -62,10 +62,10 @@ export default defineConfig({
       path: '/basic-list/:app/:controller/:design/:params*',
       component: './ModelDesign',
     },
-    {
-      path: '/',
-      redirect: '/basic-list/backend/admins',
-    },
+    // {
+    //   path: '/',
+    //   redirect: '/basic-list/backend/admins',
+    // },
     {
       component: './404',
     },
