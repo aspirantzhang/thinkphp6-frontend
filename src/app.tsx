@@ -48,6 +48,7 @@ export const layout = ({
       if (
         !initialState?.currentUser?.userid &&
         history.location.pathname !== '/user/login' &&
+        history.location.pathname !== '/api' &&
         history.location.pathname !== '/'
       ) {
         history.push('/user/login');

@@ -23,6 +23,7 @@ import { join } from 'lodash';
 import { ColumnBuilder, SearchBuilder } from '@/components/List';
 import { ActionBuilder } from '@/components/Form/ActionBuilder';
 import { ModalForm } from './ModalForm';
+import { getApiBase } from '@/utils/utils';
 import * as helper from './helper';
 import styles from './style.less';
 
@@ -47,7 +48,7 @@ const BasicList: FC<BasicListProps> = () => {
 
   const { data, loading, run } = useRequest(
     (requestQuery?) => ({
-      url: `/api/${initUri}?${requestQuery || ''}`,
+      url: getApiBase() + `/${initUri}?${requestQuery || ''}`,
     }),
     {
       manual: true,
@@ -145,7 +146,7 @@ const BasicList: FC<BasicListProps> = () => {
           cancelText: 'Cancel',
           onOk() {
             const processingHide = message.loading('Processing...');
-            request(`/api/${uri}`, {
+            request(getApiBase() + `/${uri}`, {
               method,
               data: {
                 ids: record?.id ? [record.id] : selectedRowKeys,

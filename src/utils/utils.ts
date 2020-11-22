@@ -21,6 +21,12 @@ export const isAntDesignProOrDev = (): boolean => {
   return isAntDesignPro();
 };
 
+export const getApiBase = (): string => {
+  const domain =
+    location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '');
+  return process.env.NODE_ENV === 'development' ? domain + '/api' : domain;
+};
+
 export const getPageQuery = () => {
   const { href } = window.location;
   const qsIndex = href.indexOf('?');

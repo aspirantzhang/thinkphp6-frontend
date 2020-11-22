@@ -6,6 +6,7 @@ import { request, useRequest, history, useRouteMatch } from 'umi';
 import { useBoolean } from 'ahooks';
 import { FieldBuilder, ActionBuilder, FinishPrepare, FieldPrepare } from '@/components/Form';
 import { ValidateErrorEntity } from 'rc-field-form/lib/interface';
+import { getApiBase } from '@/utils/utils';
 import * as helper from './helper';
 import styles from './style.less';
 
@@ -22,13 +23,11 @@ const SinglePage: FC<SinglePageProps> = () => {
   const initUri = fullUri as string;
 
   const { loading, run } = useRequest(
-    (url: string, method: string, requestData: API.Store) => {
-      return {
-        url: `/api/${url}`,
-        method,
-        data: requestData,
-      };
-    },
+    (url: string, method: string, requestData: API.Store) => ({
+      url: getApiBase() + `/${url}`,
+      method,
+      data: requestData,
+    }),
     {
       manual: true,
       throttleInterval: 1000,
@@ -51,7 +50,7 @@ const SinglePage: FC<SinglePageProps> = () => {
 
     async function fetchMainData(uri: string) {
       try {
-        const rawData = await request(`/api/${uri}`);
+        const rawData = await request(getApiBase() + `/${uri}`);
         setSpinLoading.setFalse();
         if (!stopMark) setMainData(rawData.data);
       } catch (error) {

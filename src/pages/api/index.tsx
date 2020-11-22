@@ -2,6 +2,7 @@ import React from 'react';
 import SwaggerUI from 'swagger-ui-react';
 import 'swagger-ui-react/swagger-ui.css';
 import { BasicLayout } from '@ant-design/pro-layout';
+import { getApiBase } from '@/utils/utils';
 
 const Index = () => {
   return (
@@ -11,7 +12,7 @@ const Index = () => {
       }}
       pure={true}
     >
-      <SwaggerUI url="http://www.test.com/index/api" />
+      <SwaggerUI url={getApiBase() + '/index/api'} />
     </BasicLayout>
   );
 };

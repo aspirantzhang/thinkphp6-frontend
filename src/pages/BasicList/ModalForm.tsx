@@ -5,6 +5,7 @@ import { request, useRequest } from 'umi';
 import { useBoolean } from 'ahooks';
 import { FieldBuilder, ActionBuilder, FinishPrepare, FieldPrepare } from '@/components/Form';
 import { ValidateErrorEntity } from 'rc-field-form/lib/interface';
+import { getApiBase } from '@/utils/utils';
 import styles from './style.less';
 
 interface ModalFormProps {
@@ -21,7 +22,7 @@ export const ModalForm: FC<ModalFormProps> = (props) => {
 
   const { loading, run } = useRequest(
     (url: string, method: string, requestData: API.Store) => ({
-      url: `/api/${url}`,
+      url: getApiBase() + `/${url}`,
       method,
       data: requestData,
     }),
@@ -48,7 +49,7 @@ export const ModalForm: FC<ModalFormProps> = (props) => {
 
     async function fetchMainData(uri: string) {
       try {
-        const rawData = await request(`/api/${uri}`);
+        const rawData = await request(getApiBase() + `/${uri}`);
         setSpinLoading.setFalse();
         if (!stopMark) setMainData(rawData.data);
       } catch (error) {

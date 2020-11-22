@@ -2,6 +2,7 @@ import React, { FC, useEffect, useState } from 'react';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import { Card, message, Button, Space, Spin } from 'antd';
 import { request, useRequest, history, useRouteMatch } from 'umi';
+import { getApiBase } from '@/utils/utils';
 import * as helper from '@/pages/BasicList/helper';
 
 import {
@@ -46,7 +47,7 @@ const ModelDesign: FC<SinglePageProps> = () => {
   const { loading, run } = useRequest(
     (url: string, method: string, requestData: any) => {
       return {
-        url: `/api/${url}`,
+        url: getApiBase() + `/${url}`,
         method,
         data: requestData,
       };
@@ -72,7 +73,7 @@ const ModelDesign: FC<SinglePageProps> = () => {
 
     async function fetchMainData(uri: string) {
       try {
-        const rawData = await request(`/api/${uri}`);
+        const rawData = await request(getApiBase() + `/${uri}`);
         setFormLoading(false);
         if (!stopMark) setMainData(rawData.data.data);
       } catch (error) {
