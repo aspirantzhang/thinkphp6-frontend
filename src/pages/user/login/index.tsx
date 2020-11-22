@@ -43,7 +43,8 @@ const replaceGoto = () => {
       return;
     }
   }
-  window.location.href = urlParams.href.split(urlParams.pathname)[0] + (redirect || '/');
+  window.location.href =
+    urlParams.href.split(urlParams.pathname)[0] + (redirect || '/admin/basic-list/backend/admins');
 };
 
 const Login: React.FC<{}> = () => {
