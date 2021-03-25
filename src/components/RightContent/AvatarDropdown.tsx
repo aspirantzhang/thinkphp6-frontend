@@ -2,28 +2,28 @@ import React, { useCallback } from 'react';
 import { LogoutOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
 import { Avatar, Menu, Spin } from 'antd';
 import { history, useModel } from 'umi';
-import { getPageQuery } from '@/utils/utils';
-import { outLogin } from '@/services/login';
 import { stringify } from 'querystring';
 import HeaderDropdown from '../HeaderDropdown';
 import styles from './index.less';
+import { outLogin } from '@/services/ant-design-pro/login';
 
-export interface GlobalHeaderRightProps {
+export type GlobalHeaderRightProps = {
   menu?: boolean;
-}
+};
 
 /**
  * 退出登录，并且将当前的 url 保存
  */
 const loginOut = async () => {
   await outLogin();
-  const { redirect } = getPageQuery();
+  const { query = {}, pathname } = history.location;
+  const { redirect } = query;
   // Note: There may be security issues, please note
   if (window.location.pathname !== '/user/login' && !redirect) {
     history.replace({
       pathname: '/user/login',
       search: stringify({
-        redirect: window.location.href,
+        redirect: pathname,
       }),
     });
   }
@@ -40,14 +40,14 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
       domEvent: React.MouseEvent<HTMLElement>;
     }) => {
       const { key } = event;
-      if (key === 'logout') {
+      if (key === 'logout' && initialState) {
         setInitialState({ ...initialState, currentUser: undefined });
         loginOut();
         return;
       }
       history.push(`/account/${key}`);
     },
-    [],
+    [initialState, setInitialState],
   );
 
   const loading = (

@@ -1,19 +1,18 @@
-import React from 'react';
 import SwaggerUI from 'swagger-ui-react';
 import 'swagger-ui-react/swagger-ui.css';
 import { BasicLayout } from '@ant-design/pro-layout';
-import { getApiBase } from '@/utils/utils';
 
-const Index = () => {
+const index = () => {
   return (
     <BasicLayout
       pageTitleRender={() => {
-        return 'Public API v2';
+        return 'Public Api V2';
       }}
-      pure={true}
+      pure
     >
-      <SwaggerUI url={getApiBase() + '/index/api'} />
+      <SwaggerUI url="/index/api" />
     </BasicLayout>
   );
 };
-export default Index;
+
+export default index;

@@ -8,9 +8,28 @@
 export default {
   dev: {
     '/api/': {
-      target: 'http://www.test.com/',
+      target: 'http://localhost',
       changeOrigin: true,
-      pathRewrite: { '^/api': '' },
+      pathRewrite: { '^': '' },
+    },
+    '/index/': {
+      target: 'http://localhost',
+      changeOrigin: true,
+      pathRewrite: { '^': '' },
+    },
+  },
+  test: {
+    '/api/': {
+      target: 'https://preview.pro.ant.design',
+      changeOrigin: true,
+      pathRewrite: { '^': '' },
+    },
+  },
+  pre: {
+    '/api/': {
+      target: 'your pre url',
+      changeOrigin: true,
+      pathRewrite: { '^': '' },
     },
   },
 };

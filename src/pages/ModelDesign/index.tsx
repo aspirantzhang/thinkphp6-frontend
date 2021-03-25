@@ -1,530 +1,323 @@
-import React, { FC, useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
-import { Card, message, Button, Space, Spin } from 'antd';
-import { request, useRequest, history, useRouteMatch } from 'umi';
-import { getApiBase } from '@/utils/utils';
-import * as helper from '@/pages/BasicList/helper';
-
 import {
-  createFormActions,
   SchemaForm,
   SchemaMarkupField as Field,
-  Submit,
-  Reset,
   FormEffectHooks,
-  FormPath,
-  createEffectHook,
-  IFormEffect,
-  IFormState,
+  createFormActions,
 } from '@formily/antd';
+import { Button, message, Spin } from 'antd';
+import { Input, FormCard, ArrayTable, Select, Checkbox } from '@formily/antd-components';
+import { useSetState } from 'ahooks';
+import { request, useLocation, history, useModel } from 'umi';
+import type { IFormEffect, IFieldState } from '@formily/react/lib';
+import Modal from './Modal';
+import * as enums from './enums';
+import { schemaExample } from './initialValues';
+import 'antd/dist/antd.css';
+import styles from './index.less';
 
-import {
-  Input,
-  ArrayTable,
-  Select,
-  Checkbox,
-  FormCard,
-  FormMegaLayout,
-} from '@formily/antd-components';
-import styles from './style.less';
+const modelDesignAction = createFormActions();
 
-const { onFieldValueChange$ } = FormEffectHooks;
-const setExampleValues$ = createEffectHook('setExampleValues');
-const actions = createFormActions();
+const Index = () => {
+  const [modalVisible, setModalVisible] = useState(false);
+  const [currentFieldPath, setCurrentFieldPath] = useState('');
+  const [modalState, setModalState] = useSetState({
+    type: '',
+    values: {},
+  });
+  const [spinLoading, setSpinLoading] = useState(true);
+  const [submitLoading, setSubmitLoading] = useState(false);
+  const location = useLocation();
+  const { initialState, setInitialState, refresh } = useModel('@@initialState');
 
-interface SinglePageProps {}
-
-const ModelDesign: FC<SinglePageProps> = () => {
-  const [tableToolbarVisible, setTableToolbarVisible] = useState(false);
-  const [batchToolbarVisible, setBatchToolbarVisible] = useState(false);
-  const [formLoading, setFormLoading] = useState(true);
-  const [mainData, setMainData] = useState(undefined);
-
-  const match = useRouteMatch<API.UriMatchState>();
-  const { fullUri } = helper.buildUriMatch(match);
-  const initUri = fullUri;
-
-  const { loading, run } = useRequest(
-    (url: string, method: string, requestData: any) => {
-      return {
-        url: getApiBase() + `/${url}`,
-        method,
-        data: requestData,
-      };
-    },
-    {
-      manual: true,
-      throttleInterval: 1000,
-      onSuccess: (response) => {
-        message.success({ content: response.message, key: 'msg' });
-        history.goBack();
+  const reFetchMenu = async () => {
+    setInitialState({
+      ...initialState,
+      settings: {
+        menu: {
+          loading: true,
+        },
       },
-      onError: (error) => {
-        message.error({ content: error.message, key: 'msg' });
-      },
-      formatResult: (response) => {
-        return response;
-      },
-    },
-  );
+    });
+
+    refresh();
+
+    // const userMenu = await initialState?.fetchMenu?.();
+    // if (userMenu) {
+    //   setInitialState({
+    //     ...initialState,
+    //     currentMenu: userMenu,
+    //   });
+    // }
+  };
 
   useEffect(() => {
     let stopMark = false;
+    if (location.pathname) {
+      const getData = async () => {
+        try {
+          const res = await request(
+            `${location.pathname.replace('/basic-list/api/models/model-design', '')}`,
+          );
+          if (stopMark !== true) {
+            setSpinLoading(false);
+            modelDesignAction.setFormState((state) => {
+              const { routeName, ...rest } = res.data.data;
+              if (Object.keys(rest).length === 0) {
+                state.initialValues = schemaExample;
+              }
 
-    async function fetchMainData(uri: string) {
-      try {
-        const rawData = await request(getApiBase() + `/${uri}`);
-        setFormLoading(false);
-        if (!stopMark) setMainData(rawData.data.data);
-      } catch (error) {
-        setFormLoading(false);
-        history.goBack();
-      }
-    }
-
-    if (initUri) {
-      setMainData(undefined);
-      setFormLoading(true);
-      fetchMainData(initUri as string);
+              state.values = res.data.data;
+            });
+          }
+        } catch (error) {
+          history.goBack();
+        }
+      };
+      getData();
     }
     return () => {
       stopMark = true;
     };
-  }, [initUri]);
+  }, [location.pathname]);
 
-  const submitHandler = (values: any) => {
-    run(initUri as string, 'put', {
-      data: values,
-    });
-  };
-
-  const actionFields = () => {
-    return (
-      <Field type="object">
-        <Field name="name" x-component="Input" title="Name*" />
-        <Field
-          name="type"
-          x-component="Select"
-          title="Type*"
-          default="primary"
-          enum={[
-            { label: 'Primary', value: 'primary' },
-            { label: 'Default', value: 'default' },
-            { label: 'Dashed', value: 'dashed' },
-            { label: 'Danger', value: 'danger' },
-          ]}
-        />
-        <Field
-          name="action"
-          x-component="Select"
-          title="Action*"
-          default="modal"
-          enum={[
-            { label: 'Modal', value: 'modal' },
-            { label: 'Page', value: 'page' },
-            { label: 'Delete', value: 'delete' },
-            { label: 'Delete Permanently', value: 'deletePermanently' },
-            { label: 'Restore', value: 'restore' },
-            { label: 'Reset', value: 'reset' },
-            { label: 'Submit', value: 'submit' },
-            { label: 'Cancel', value: 'cancel' },
-            { label: 'Reload', value: 'reload' },
-          ]}
-        />
-        <Field name="uri" x-component="input" title="Uri" />
-        <Field
-          name="method"
-          x-component="Select"
-          title="Method*"
-          default="get"
-          enum={[
-            { label: 'Get', value: 'get' },
-            { label: 'Post', value: 'post' },
-            { label: 'Put', value: 'put' },
-            { label: 'Delete', value: 'delete' },
-          ]}
-        />
-      </Field>
-    );
-  };
-
-  const formEffects: IFormEffect = ({ setFieldValue, setFormState, setFieldState }) => {
-    onFieldValueChange$('fields.*.listData').subscribe(({ name, value }) => {
-      if (value) {
-        setFieldValue(
-          FormPath.transform(name, /\d/, ($1) => {
-            return `fields.${$1}.addData`;
-          }),
-          true,
-        );
-      }
-    });
-    onFieldValueChange$('haveTableToolbar').subscribe(({ value }) => {
-      setTableToolbarVisible(value);
-    });
-    onFieldValueChange$('haveBatchToolbar').subscribe(({ value }) => {
-      setBatchToolbarVisible(value);
-    });
-    onFieldValueChange$('routeName').subscribe(({ value }) => {
-      if (value) {
-        setFieldState(
-          FormPath.transform(name, /\d/, ($1) => {
-            return `*.*.uri`;
-          }),
-          (state: any) => {
-            if (state.value) {
-              state.value = state.value.replace(/(backend\/)(\w*)(\/.*)?/g, `$1${value}$3`);
-            }
+  const onSubmit = (values: any) => {
+    setSubmitLoading(true);
+    message.loading({ content: 'Processing...', key: 'process', duration: 0 });
+    const updateData = async () => {
+      try {
+        const res = await request(
+          `${location.pathname.replace('/basic-list/api/models/model-design', '')}`,
+          {
+            method: 'put',
+            data: {
+              data: values,
+            },
           },
         );
+        if (res.success === true) {
+          message.success({ content: res.message, key: 'process' });
+          history.goBack();
+          reFetchMenu();
+        }
+      } catch (error) {
+        setSubmitLoading(false);
+      }
+    };
+
+    updateData();
+  };
+
+  const { onFieldValueChange$, onFieldChange$ } = FormEffectHooks;
+
+  useEffect(() => {
+    if (modalState.type) {
+      setModalVisible(true);
+    }
+  }, [modalState.type]);
+
+  const modelDesignEffect: IFormEffect = (_, { setFieldState, getFieldValue }) => {
+    onFieldChange$('fieldsCard.fields.*.data').subscribe(({ path, active, value }) => {
+      if (active === true) {
+        setCurrentFieldPath(path as string);
+        setModalState({
+          values: value,
+          type: getFieldValue(path?.replace('data', 'type')),
+        });
       }
     });
-    setExampleValues$().subscribe(() => {
-      setFormState((state: IFormState) => {
-        const exampleValues = {
-          haveBatchToolbar: true,
-          haveTableToolbar: true,
-          fields: [],
-          listAction: [
-            {
-              name: 'Edit',
-              type: 'default',
-              action: 'modal',
-              uri: '/backend/routeName',
-              method: 'get',
-            },
-            {
-              name: 'Full page edit',
-              type: 'default',
-              action: 'page',
-              uri: '/backend/routeName',
-              method: 'get',
-            },
-            {
-              name: 'Delete',
-              type: 'default',
-              action: 'delete',
-              uri: '/backend/routeName',
-              method: 'delete',
-            },
-          ],
-          addAction: [
-            {
-              name: 'Reset',
-              type: 'dashed',
-              action: 'reset',
-            },
-            {
-              name: 'Cancel',
-              type: 'dashed',
-              action: 'cancel',
-            },
-            {
-              name: 'Submit',
-              type: 'primary',
-              action: 'submit',
-              uri: '/backend/routeName',
-              method: 'post',
-            },
-          ],
-          editAction: [
-            {
-              name: 'Reset',
-              type: 'dashed',
-              action: 'reset',
-            },
-            {
-              name: 'Cancel',
-              type: 'dashed',
-              action: 'cancel',
-            },
-            {
-              name: 'Submit',
-              type: 'primary',
-              action: 'submit',
-              uri: '/backend/routeName/:id',
-              method: 'put',
-            },
-          ],
-          tableToolbar: [
-            {
-              name: 'Add',
-              type: 'primary',
-              action: 'modal',
-              uri: '/backend/routeName/add',
-            },
-            {
-              name: 'Full page add',
-              type: 'primary',
-              action: 'page',
-              uri: '/backend/routeName/add',
-            },
-            {
-              name: 'Reload',
-              type: 'default',
-              action: 'reload',
-            },
-          ],
-          batchToolbar: [
-            {
-              name: 'Delete',
-              type: 'danger',
-              action: 'delete',
-              uri: '/backend/routeName',
-              method: 'delete',
-            },
-          ],
-          batchToolbarTrashed: [
-            {
-              name: 'Delete Permanently',
-              type: 'danger',
-              action: 'deletePermanently',
-              uri: '/backend/routeName',
-              method: 'delete',
-            },
-            {
-              name: 'Restore',
-              type: 'default',
-              action: 'restore',
-              uri: '/backend/routeName/restore',
-              method: 'post',
-            },
-          ],
-        };
-
-        state.initialValues = exampleValues;
+    onFieldValueChange$('fieldsCard.fields.*.type').subscribe(({ value, path }) => {
+      if (value === 'switch' || value === 'radio') {
+        setFieldState(path.replace('type', 'data'), (state: IFieldState) => {
+          state.editable = true;
+          state.required = true;
+        });
+      } else {
+        setFieldState(path.replace('type', 'data'), (state: IFieldState) => {
+          state.editable = false;
+          state.required = false;
+        });
+      }
+    });
+    onFieldValueChange$('basicCard.routeName').subscribe(({ value }) => {
+      setFieldState('*.*.*.uri', (state: IFieldState) => {
+        state.value = state.value?.replace('admins', value);
       });
     });
   };
 
-  return (
-    <>
-      <PageContainer>
-        <Spin
-          spinning={formLoading}
-          tip="Loading, please wait..."
-          className={styles.modalSpin}
-          key="spin"
-        />
-        <SchemaForm
-          actions={actions}
-          components={{ ArrayTable, Input, Select, Checkbox }}
-          onSubmit={submitHandler}
-          effects={formEffects}
-          initialValues={mainData}
-          style={{ width: '100%', display: formLoading ? 'none' : 'block' }}
-        >
-          <Card>
-            <FormCard title="Basic">
-              <FormMegaLayout grid columns={9}>
-                <Field
-                  name="routeName"
-                  type="string"
-                  x-component="Input"
-                  title="Route Name*"
-                  x-mega-props={{ span: 3 }}
-                />
-                <Field
-                  name="haveTableToolbar"
-                  x-component="Checkbox"
-                  title="Table Toolbar?"
-                  x-mega-props={{ span: 3 }}
-                />
-                <Field
-                  name="haveBatchToolbar"
-                  x-component="Checkbox"
-                  title="Batch Toolbar?"
-                  x-mega-props={{ span: 3 }}
-                />
-              </FormMegaLayout>
-            </FormCard>
-            <FormCard title="Fields">
-              <Field
-                name="fields"
-                type="array"
-                default={[]}
-                x-component="ArrayTable"
-                x-component-props={{
-                  operationsWidth: 150,
-                  operations: {
-                    title: '',
-                  },
-                  draggable: true,
-                }}
-              >
-                <Field type="object">
-                  <Field name="name" x-component="Input" title="Name*" />
-                  <Field name="title" x-component="Input" title="Title*" />
-                  <Field
-                    name="type"
-                    x-component="Select"
-                    title="Type*"
-                    default="text"
-                    enum={[
-                      { label: 'Text', value: 'text' },
-                      { label: 'Long Text', value: 'longtext' },
-                      { label: 'Number', value: 'number' },
-                      { label: 'Tag', value: 'tag' },
-                      { label: 'Datetime', value: 'datetime' },
-                    ]}
-                  />
-                  <Field name="listData" x-component="Checkbox" title="List: Data" />
-                  <Field
-                    name="listHideInColumn"
-                    x-component="Checkbox"
-                    title="List: HideInColumn"
-                  />
-                  <Field name="listSorter" x-component="Checkbox" title="List: Sorter" />
-                  <Field name="addData" x-component="Checkbox" title="Add: Data" />
-                  <Field name="editDisabled" x-component="Checkbox" title="Edit: Disabled" />
-                </Field>
-              </Field>
-            </FormCard>
-            <FormCard title="List Action">
-              <Field
-                name="listAction"
-                type="array"
-                default={[]}
-                x-component="ArrayTable"
-                x-component-props={{
-                  operationsWidth: 150,
-                  operations: {
-                    title: 'Action',
-                  },
-                  draggable: true,
-                }}
-              >
-                {actionFields()}
-              </Field>
-            </FormCard>
-            <FormCard title="Add Action">
-              <Field
-                name="addAction"
-                type="array"
-                default={[]}
-                x-component="ArrayTable"
-                x-component-props={{
-                  operationsWidth: 150,
-                  operations: {
-                    title: '',
-                  },
-                  draggable: true,
-                }}
-              >
-                {actionFields()}
-              </Field>
-            </FormCard>
-            <FormCard title="Edit Action">
-              <Field
-                name="editAction"
-                type="array"
-                default={[]}
-                x-component="ArrayTable"
-                x-component-props={{
-                  operationsWidth: 150,
-                  operations: {
-                    title: '',
-                  },
-                  draggable: true,
-                }}
-              >
-                {actionFields()}
-              </Field>
-            </FormCard>
-            <FormCard
-              title="Table Toolbar"
-              style={{ display: tableToolbarVisible ? 'block' : 'none' }}
-            >
-              <Field
-                name="tableToolbar"
-                type="array"
-                default={[]}
-                x-component="ArrayTable"
-                x-component-props={{
-                  operationsWidth: 150,
-                  operations: {
-                    title: '',
-                  },
-                  draggable: true,
-                }}
-              >
-                {actionFields()}
-              </Field>
-            </FormCard>
-            <FormCard
-              title="Batch Toolbar"
-              style={{ display: batchToolbarVisible ? 'block' : 'none' }}
-            >
-              <Field
-                name="batchToolbar"
-                type="array"
-                default={[]}
-                x-component="ArrayTable"
-                x-component-props={{
-                  operationsWidth: 150,
-                  operations: {
-                    title: '',
-                  },
-                  draggable: true,
-                }}
-              >
-                {actionFields()}
-              </Field>
-            </FormCard>
-            <FormCard
-              title="Batch Toolbar - Trashed"
-              style={{ display: batchToolbarVisible ? 'block' : 'none' }}
-            >
-              <Field
-                name="batchToolbarTrashed"
-                type="array"
-                default={[]}
-                x-component="ArrayTable"
-                x-component-props={{
-                  operationsWidth: 150,
-                  operations: {
-                    title: '',
-                  },
-                  draggable: true,
-                }}
-              >
-                {actionFields()}
-              </Field>
-            </FormCard>
-          </Card>
+  const modalSubmitHandler = (values: any) => {
+    setModalVisible(false);
+    modelDesignAction.setFieldValue(currentFieldPath, values.data);
+    setModalState({ type: '', values: {} });
+  };
 
-          <FooterToolbar
-            extra={
-              <>
-                <Space>
-                  <Submit loading={loading}>Submit</Submit>
-                  <Reset loading={loading}>Reset</Reset>
-                  <Button
-                    onClick={() => {
-                      history.goBack();
-                    }}
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    onClick={() => {
-                      if (actions.dispatch) {
-                        actions.dispatch('setExampleValues', null);
-                      }
-                    }}
-                    type="primary"
-                    style={{ marginBottom: '10px' }}
-                  >
-                    Example
-                  </Button>
-                </Space>
-              </>
-            }
-          />
+  return (
+    <PageContainer>
+      {spinLoading ? (
+        <Spin className={styles.formSpin} tip="Loading..." />
+      ) : (
+        <SchemaForm
+          components={{ Input, ArrayTable, Select, Checkbox, Button }}
+          onSubmit={onSubmit}
+          effects={modelDesignEffect}
+          actions={modelDesignAction}
+          className={styles.formilyForm}
+        >
+          <FormCard title="Basic" name="basicCard">
+            <Field title="Route Name" name="routeName" x-component="Input" />
+          </FormCard>
+
+          <FormCard title="Fields" name="fieldsCard">
+            <Field name="fields" type="array" x-component="ArrayTable">
+              <Field type="object">
+                <Field title="Name" name="name" x-component="Input" />
+                <Field title="Title" name="title" x-component="Input" />
+                <Field title="Type" name="type" x-component="Select" enum={enums.fieldType} />
+                <Field
+                  title="Data"
+                  name="data"
+                  x-component="Button"
+                  x-component-props={{
+                    children: 'Data',
+                  }}
+                />
+                <Field title="List Sorter" name="listSorter" x-component="Checkbox" />
+                <Field title="Hide InColumn" name="hideInColumn" x-component="Checkbox" />
+                <Field title="Edit Disabled" name="editDisabled" x-component="Checkbox" />
+              </Field>
+            </Field>
+          </FormCard>
+
+          <FormCard title="List Action">
+            <Field name="listAction" type="array" x-component="ArrayTable">
+              <Field type="object">
+                <Field title="Title" name="title" x-component="Input" />
+                <Field title="Type" name="type" x-component="Select" enum={enums.buttonType} />
+                <Field
+                  title="Action"
+                  name="action"
+                  x-component="Select"
+                  enum={enums.buttonAction}
+                />
+                <Field title="Uri" name="uri" x-component="Input" />
+                <Field title="Method" name="method" x-component="Select" enum={enums.httpMethod} />
+              </Field>
+            </Field>
+          </FormCard>
+
+          <FormCard title="Add Action">
+            <Field name="addAction" type="array" x-component="ArrayTable">
+              <Field type="object">
+                <Field title="Title" name="title" x-component="Input" />
+                <Field title="Type" name="type" x-component="Select" enum={enums.buttonType} />
+                <Field
+                  title="Action"
+                  name="action"
+                  x-component="Select"
+                  enum={enums.buttonAction}
+                />
+                <Field title="Uri" name="uri" x-component="Input" />
+                <Field title="Method" name="method" x-component="Select" enum={enums.httpMethod} />
+              </Field>
+            </Field>
+          </FormCard>
+
+          <FormCard title="Edit Action">
+            <Field name="editAction" type="array" x-component="ArrayTable">
+              <Field type="object">
+                <Field title="Title" name="title" x-component="Input" />
+                <Field title="Type" name="type" x-component="Select" enum={enums.buttonType} />
+                <Field
+                  title="Action"
+                  name="action"
+                  x-component="Select"
+                  enum={enums.buttonAction}
+                />
+                <Field title="Uri" name="uri" x-component="Input" />
+                <Field title="Method" name="method" x-component="Select" enum={enums.httpMethod} />
+              </Field>
+            </Field>
+          </FormCard>
+
+          <FormCard title="Table Toolbar">
+            <Field name="tableToolbar" type="array" x-component="ArrayTable">
+              <Field type="object">
+                <Field title="Title" name="title" x-component="Input" />
+                <Field title="Type" name="type" x-component="Select" enum={enums.buttonType} />
+                <Field
+                  title="Action"
+                  name="action"
+                  x-component="Select"
+                  enum={enums.buttonAction}
+                />
+                <Field title="Uri" name="uri" x-component="Input" />
+                <Field title="Method" name="method" x-component="Select" enum={enums.httpMethod} />
+              </Field>
+            </Field>
+          </FormCard>
+
+          <FormCard title="Batch Toolbar">
+            <Field name="batchToolbar" type="array" x-component="ArrayTable">
+              <Field type="object">
+                <Field title="Title" name="title" x-component="Input" />
+                <Field title="Type" name="type" x-component="Select" enum={enums.buttonType} />
+                <Field
+                  title="Action"
+                  name="action"
+                  x-component="Select"
+                  enum={enums.buttonAction}
+                />
+                <Field title="Uri" name="uri" x-component="Input" />
+                <Field title="Method" name="method" x-component="Select" enum={enums.httpMethod} />
+              </Field>
+            </Field>
+          </FormCard>
+
+          <FormCard title="Batch Toolbar - Trashed">
+            <Field name="batchToolbarTrashed" type="array" x-component="ArrayTable">
+              <Field type="object">
+                <Field title="Title" name="title" x-component="Input" />
+                <Field title="Type" name="type" x-component="Select" enum={enums.buttonType} />
+                <Field
+                  title="Action"
+                  name="action"
+                  x-component="Select"
+                  enum={enums.buttonAction}
+                />
+                <Field title="Uri" name="uri" x-component="Input" />
+                <Field title="Method" name="method" x-component="Select" enum={enums.httpMethod} />
+              </Field>
+            </Field>
+          </FormCard>
         </SchemaForm>
-      </PageContainer>
-    </>
+      )}
+
+      <FooterToolbar
+        extra={
+          <Button
+            type="primary"
+            onClick={() => {
+              modelDesignAction.submit();
+            }}
+            loading={submitLoading}
+          >
+            Submit
+          </Button>
+        }
+      />
+      <Modal
+        modalVisible={modalVisible}
+        hideModal={() => {
+          setModalVisible(false);
+          setModalState({ type: '', values: {} });
+        }}
+        modalSubmitHandler={modalSubmitHandler}
+        modalState={modalState}
+      />
+    </PageContainer>
   );
 };
 
-export default ModelDesign;
+export default Index;

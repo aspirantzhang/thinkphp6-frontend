@@ -1,100 +1,138 @@
 import React from 'react';
-import { BasicLayoutProps, Settings as LayoutSettings } from '@ant-design/pro-layout';
-
-import { Modal, message } from 'antd';
-import { history, RequestConfig } from 'umi';
+import type { Settings as LayoutSettings, MenuDataItem } from '@ant-design/pro-layout';
+import { PageLoading } from '@ant-design/pro-layout';
+import { message } from 'antd';
+import type { RequestConfig, RunTimeLayoutConfig } from 'umi';
+import { history } from 'umi';
 import RightContent from '@/components/RightContent';
 import Footer from '@/components/Footer';
-import { ResponseError } from 'umi-request';
-import { queryCurrent, queryMenu } from './services/user';
-import defaultSettings from '../config/defaultSettings';
+import type { ResponseError } from 'umi-request';
+import {
+  currentUser as queryCurrentUser,
+  currentMenu as queryCurrentMenu,
+} from './services/ant-design-pro/api';
 
+/** 获取用户信息比较慢的时候会展示一个 loading */
+export const initialStateConfig = {
+  loading: <PageLoading />,
+};
+
+/**
+ * @see  https://umijs.org/zh-CN/plugins/plugin-initial-state
+ * */
 export async function getInitialState(): Promise<{
+  settings?: Partial<LayoutSettings>;
   currentUser?: API.CurrentUser;
-  settings?: LayoutSettings;
-  menu?: any;
+  currentMenu?: MenuDataItem[];
+  fetchUserInfo?: () => Promise<API.CurrentUser | undefined>;
+  fetchMenu?: () => Promise<MenuDataItem[] | undefined>;
 }> {
-  // 如果是登录页面，不执行
-  if (history.location.pathname !== '/user/login') {
+  const fetchUserInfo = async () => {
     try {
-      const currentUser = await queryCurrent();
-      const menu = await queryMenu();
-      return {
-        currentUser,
-        settings: defaultSettings,
-        menu,
-      };
+      const currentUser = await queryCurrentUser();
+      return currentUser;
     } catch (error) {
       history.push('/user/login');
     }
+    return undefined;
+  };
+  const fetchMenu = async () => {
+    try {
+      const currentMenu = await queryCurrentMenu();
+      return currentMenu;
+    } catch (error) {
+      message.error('Get menu data failed.', 10);
+    }
+    return undefined;
+  };
+  // 如果是登录页面，不执行
+  if (history.location.pathname !== '/user/login' && history.location.pathname !== '/api') {
+    const currentUser = await fetchUserInfo();
+    const currentMenu = await fetchMenu();
+    return {
+      fetchUserInfo,
+      fetchMenu,
+      currentUser,
+      currentMenu,
+      settings: {},
+    };
   }
   return {
-    settings: defaultSettings,
+    fetchUserInfo,
+    fetchMenu,
+    settings: {},
   };
 }
 
-export const layout = ({
-  initialState,
-}: {
-  initialState: { settings?: LayoutSettings; currentUser?: API.CurrentUser; menu: any };
-}): BasicLayoutProps => {
+// https://umijs.org/zh-CN/plugins/plugin-layout
+export const layout: RunTimeLayoutConfig = ({ initialState }) => {
   return {
-    ...initialState?.settings,
     rightContentRender: () => <RightContent />,
     disableContentMargin: false,
     footerRender: () => <Footer />,
     onPageChange: () => {
+      const { location } = history;
       // 如果没有登录，重定向到 login
       if (
-        !initialState?.currentUser?.userid &&
-        history.location.pathname !== '/user/login' &&
-        history.location.pathname !== '/api' &&
-        history.location.pathname !== '/'
+        !initialState?.currentUser &&
+        location.pathname !== '/user/login' &&
+        location.pathname !== '/api'
       ) {
         history.push('/user/login');
       }
     },
     menuHeaderRender: undefined,
-    iconfontUrl: '//at.alicdn.com/t/font_2112134_uyx998l7ji.js',
-    menuDataRender: () => initialState.menu,
+    menuDataRender: () => {
+      return initialState?.currentMenu || [];
+    },
+    // 自定义 403 页面
+    // unAccessible: <div>unAccessible</div>,
+    ...initialState?.settings,
   };
 };
 
-/**
- * 异常处理程序
+/** 异常处理程序
+ * @see https://beta-pro.ant.design/docs/request-cn
  */
 const errorHandler = (error: ResponseError) => {
-  if (error.name === 'BizError') {
-    message.error(error.message, 6);
-  } else if (!error.response) {
-    Modal.error({
-      title: 'Network Error',
-      content: 'Cannot access the network, please try again.',
-    });
-  } else if (error.response.status < 500) {
-    Modal.error({
-      title: 'Program Error',
-      content: 'Sorry, An error has occurred, Please try again later.',
-    });
-  } else {
-    Modal.error({
-      title: 'Server Error',
-      content: 'Sorry, An error has occurred, Please try again later.',
-    });
+  switch (error.name) {
+    case 'BizError':
+      if (error.data.message) {
+        message.error({
+          content: error.data.message,
+          key: 'process',
+          duration: 20,
+        });
+      } else {
+        message.error({
+          content: 'Business Error, please try again.',
+          key: 'process',
+          duration: 20,
+        });
+      }
+      break;
+    case 'ResponseError':
+      message.error({
+        content: `${error.response.status} ${error.response.statusText}. Please try again.`,
+        key: 'process',
+        duration: 20,
+      });
+      break;
+    case 'TypeError':
+      message.error({
+        content: `Network error. Please try again.`,
+        key: 'process',
+        duration: 20,
+      });
+      break;
+    default:
+      break;
   }
+
   throw error;
 };
 
+// https://umijs.org/zh-CN/plugins/plugin-request
 export const request: RequestConfig = {
   errorHandler,
-  errorConfig: {
-    adaptor: (resData) => {
-      // console.log(resData);
-      return {
-        ...resData,
-        success: resData.success,
-        errorMessage: resData.message,
-      };
-    },
-  },
 };
