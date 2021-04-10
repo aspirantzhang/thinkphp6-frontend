@@ -4,8 +4,8 @@ const FormBuilder = (data: BasicListApi.Field[] | undefined) => {
   return (data || []).map((field) => {
     const basicAttr = {
       label: field.title,
-      name: field.key,
-      key: field.key,
+      name: field.name,
+      key: field.name,
     };
     switch (field.type) {
       case 'text':

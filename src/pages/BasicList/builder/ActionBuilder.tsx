@@ -5,21 +5,21 @@ const ActionBuilder = (
   actions: BasicListApi.Action[] | undefined,
   actionHandler: BasicListApi.ActionHandler,
   loading = false,
-  record = {},
+  record: Record<string, unknown> = {},
 ) => {
   return (actions || []).map((action) => {
     if (action.component === 'button') {
       return (
         <Button
-          key={action.text}
+          key={action.name}
           type={action.type as ButtonType}
           onClick={() => {
             actionHandler(action, record);
           }}
           loading={loading}
-          className={`btn-${action.text.toLowerCase().replace(' ', '-')}`}
+          className={`btn-${action.name}`}
         >
-          {action.text}
+          {action.title}
         </Button>
       );
     }

@@ -23,22 +23,25 @@ const ColumnBuilder = (
           break;
         case 'actions':
           column.render = (_: any, record: any) => {
-            return <Space>{ActionBuilder(column.actions, actionHandler, false, record)}</Space>;
+            return <Space>{ActionBuilder(column.data, actionHandler, false, record)}</Space>;
           };
           break;
 
         default:
           break;
       }
+      column.key = column.name;
+      column.dataIndex = column.name;
       newColumns.push(column);
     }
   });
 
   const idColumn: BasicListApi.Field[] = [
     {
-      title: 'ID',
+      name: 'id',
       dataIndex: 'id',
       key: 'id',
+      title: 'ID',
       sorter: true,
     },
   ];

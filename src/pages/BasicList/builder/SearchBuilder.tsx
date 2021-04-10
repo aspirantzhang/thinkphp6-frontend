@@ -5,13 +5,13 @@ const SearchBuilder = (data: BasicListApi.Field[] | undefined) => {
   return (data || []).map((field) => {
     const basicAttr = {
       label: field.title,
-      name: field.key,
-      key: field.key,
+      name: field.name,
+      key: field.name,
     };
     switch (field.type) {
       case 'text':
         return (
-          <Col sm={6} key={field.key}>
+          <Col sm={6} key={field.name}>
             <Form.Item {...basicAttr}>
               <Input disabled={field.disabled} />
             </Form.Item>
@@ -19,7 +19,7 @@ const SearchBuilder = (data: BasicListApi.Field[] | undefined) => {
         );
       case 'datetime':
         return (
-          <Col sm={12} key={field.key}>
+          <Col sm={12} key={field.name}>
             <Form.Item {...basicAttr}>
               <DatePicker.RangePicker
                 showTime
@@ -40,7 +40,7 @@ const SearchBuilder = (data: BasicListApi.Field[] | undefined) => {
         );
       case 'tree':
         return (
-          <Col sm={6} key={field.key}>
+          <Col sm={6} key={field.name}>
             <Form.Item {...basicAttr}>
               <TreeSelect treeData={field.data} disabled={field.disabled} treeCheckable />
             </Form.Item>
@@ -49,7 +49,7 @@ const SearchBuilder = (data: BasicListApi.Field[] | undefined) => {
       case 'select':
       case 'switch':
         return (
-          <Col sm={6} key={field.key}>
+          <Col sm={6} key={field.name}>
             <Form.Item {...basicAttr} valuePropName="checked">
               <Select>
                 {(field.data || []).map((option: any) => {

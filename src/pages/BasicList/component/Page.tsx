@@ -56,7 +56,7 @@ const Page = () => {
   }, [init.data]);
 
   function actionHandler(action: BasicListApi.Action) {
-    switch (action.action) {
+    switch (action.call) {
       case 'submit':
         form.setFieldsValue({ uri: action.uri, method: action.method });
         form.submit();

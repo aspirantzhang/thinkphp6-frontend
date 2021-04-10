@@ -104,7 +104,7 @@ const Index = () => {
   }, [modalUri]);
 
   function actionHandler(action: BasicListApi.Action, record: BasicListApi.Field) {
-    switch (action.action) {
+    switch (action.call) {
       case 'modal':
         setModalUri(
           (action.uri || '').replace(/:\w+/g, (field) => {
@@ -133,7 +133,7 @@ const Index = () => {
       case 'deletePermanently':
       case 'restore': {
         const operationName = lang.formatMessage({
-          id: `basic-list.list.actionHandler.operation.${action.action}`,
+          id: `basic-list.list.actionHandler.operation.${action.call}`,
         });
         confirm({
           title: lang.formatMessage(
@@ -146,14 +146,14 @@ const Index = () => {
           ),
           icon: <ExclamationCircleOutlined />,
           content: batchOverview(Object.keys(record).length ? [record] : selectedRows),
-          okText: `Sure to ${action.action}!!!`,
+          okText: `Sure to ${action.call}!!!`,
           okType: 'danger',
           cancelText: 'Cancel',
           onOk() {
             return request.run({
               uri: action.uri,
               method: action.method,
-              type: action.action,
+              type: action.call,
               ids: Object.keys(record).length ? [record.id] : selectedRowKeys,
             });
           },

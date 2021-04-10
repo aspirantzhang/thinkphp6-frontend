@@ -7,21 +7,21 @@ export const setFieldsAdaptor = (data: BasicListApi.PageData) => {
       tab.data.forEach((field) => {
         switch (field.type) {
           case 'datetime':
-            result[field.key] = moment(data.dataSource[field.key]);
+            result[field.name] = moment(data.dataSource[field.name]);
             break;
           case 'textarea':
             if (
-              typeof data.dataSource[field.key] === 'object' &&
-              data.dataSource[field.key] !== null
+              typeof data.dataSource[field.name] === 'object' &&
+              data.dataSource[field.name] !== null
             ) {
-              result[field.key] = JSON.stringify(data.dataSource[field.key]);
+              result[field.name] = JSON.stringify(data.dataSource[field.name]);
             } else {
-              result[field.key] = data.dataSource[field.key];
+              result[field.name] = data.dataSource[field.name];
             }
             break;
 
           default:
-            result[field.key] = data.dataSource[field.key];
+            result[field.name] = data.dataSource[field.name];
             break;
         }
       });

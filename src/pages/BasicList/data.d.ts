@@ -10,23 +10,21 @@ declare module BasicListApi {
 
   type Action = {
     component: string;
-    text: string;
+    name: string;
+    title: string;
     type: string;
-    action: string;
+    call: string;
     uri?: string;
     method?: string;
   };
 
   type Field = {
+    name: string;
     title: string;
-    dataIndex: string;
-    key: string;
     [key: string]: any;
   };
 
-  type DataSource = {
-    [key: string]: any;
-  };
+  type DataSource = Record<string, any>;
 
   type Meta = {
     total: number;
