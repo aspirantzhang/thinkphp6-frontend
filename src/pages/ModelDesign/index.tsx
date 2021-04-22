@@ -1,23 +1,27 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
-import {
-  SchemaForm,
-  SchemaMarkupField as Field,
-  FormEffectHooks,
-  createFormActions,
-} from '@formily/antd';
-import { Button, message, Spin } from 'antd';
-import { Input, FormCard, ArrayTable, Select, Checkbox } from '@formily/antd-components';
+import { createForm, onFieldChange, onFieldReact, isField } from '@formily/core';
+import { createSchemaField } from '@formily/react';
+import { Form, FormItem, Input, ArrayTable, Switch, Space, Select, Checkbox } from '@formily/antd';
+import { Card, Spin, Button, message } from 'antd';
+import * as enums from './enums';
 import { useSetState } from 'ahooks';
 import { request, useLocation, history, useModel } from 'umi';
-import type { IFormEffect, IFieldState } from '@formily/react/lib';
 import Modal from './Modal';
-import * as enums from './enums';
-import { schemaExample } from './initialValues';
-import 'antd/dist/antd.css';
 import styles from './index.less';
+import { schemaExample } from './initialValues';
 
-const modelDesignAction = createFormActions();
+const SchemaField = createSchemaField({
+  components: {
+    Input,
+    FormItem,
+    ArrayTable,
+    Switch,
+    Select,
+    Checkbox,
+    Button,
+  },
+});
 
 const Index = () => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -30,6 +34,71 @@ const Index = () => {
   const [submitLoading, setSubmitLoading] = useState(false);
   const location = useLocation();
   const { initialState, setInitialState, refresh } = useModel('@@initialState');
+
+  const form = useMemo(
+    () =>
+      createForm({
+        effects: () => {
+          onFieldReact('*.*.uri', (field) => {
+            if (isField(field)) {
+              field.value = field.value?.replace('admins', field.query('routeName').get('value'));
+            }
+          });
+          onFieldReact('fields.*.data', (field) => {
+            if (isField(field)) {
+              const typeValue = field.query('.type').get('value');
+              field.editable = typeValue === 'switch' || typeValue === 'radio';
+            }
+          });
+          onFieldChange('fields.*.data', ['active'], (field) => {
+            if (isField(field) && field.active === true) {
+              setCurrentFieldPath(field.path.toString());
+              setModalState({
+                values: field.value,
+                type: field.query('.type').get('value'),
+              });
+              field.active = false;
+            }
+          });
+        },
+      }),
+    [],
+  );
+
+  useEffect(() => {
+    if (modalState.type) {
+      setModalVisible(true);
+    }
+  }, [modalState.type]);
+
+  useEffect(() => {
+    let stopMark = false;
+    if (location.pathname) {
+      const getData = async () => {
+        try {
+          const res = await request(
+            `${location.pathname.replace('/basic-list/api/models/model-design', '')}`,
+          );
+          if (stopMark !== true) {
+            setSpinLoading(false);
+            form.setState((state) => {
+              const { routeName, ...rest } = res.data.data;
+              if (Object.keys(rest).length === 0) {
+                state.initialValues = schemaExample;
+              }
+              state.initialValues = res.data.data;
+            });
+          }
+        } catch (error) {
+          history.goBack();
+        }
+      };
+      getData();
+    }
+    return () => {
+      stopMark = true;
+    };
+  }, [location.pathname]);
 
   const reFetchMenu = async () => {
     setInitialState({
@@ -52,37 +121,15 @@ const Index = () => {
     // }
   };
 
-  useEffect(() => {
-    let stopMark = false;
-    if (location.pathname) {
-      const getData = async () => {
-        try {
-          const res = await request(
-            `${location.pathname.replace('/basic-list/api/models/model-design', '')}`,
-          );
-          if (stopMark !== true) {
-            setSpinLoading(false);
-            modelDesignAction.setFormState((state) => {
-              const { routeName, ...rest } = res.data.data;
-              if (Object.keys(rest).length === 0) {
-                state.initialValues = schemaExample;
-              }
+  const modalSubmitHandler = (values: any) => {
+    setModalVisible(false);
+    form.setFieldState(currentFieldPath, (state) => {
+      state.value = values.data;
+    });
+    setModalState({ type: '', values: {} });
+  };
 
-              state.values = res.data.data;
-            });
-          }
-        } catch (error) {
-          history.goBack();
-        }
-      };
-      getData();
-    }
-    return () => {
-      stopMark = true;
-    };
-  }, [location.pathname]);
-
-  const onSubmit = (values: any) => {
+  const pageSubmitHandler = (values: any) => {
     setSubmitLoading(true);
     message.loading({ content: 'Processing...', key: 'process', duration: 0 });
     const updateData = async () => {
@@ -109,197 +156,695 @@ const Index = () => {
     updateData();
   };
 
-  const { onFieldValueChange$, onFieldChange$ } = FormEffectHooks;
-
-  useEffect(() => {
-    if (modalState.type) {
-      setModalVisible(true);
-    }
-  }, [modalState.type]);
-
-  const modelDesignEffect: IFormEffect = (_, { setFieldState, getFieldValue }) => {
-    onFieldChange$('fieldsCard.fields.*.data').subscribe(({ path, active, value }) => {
-      if (active === true) {
-        setCurrentFieldPath(path as string);
-        setModalState({
-          values: value,
-          type: getFieldValue(path?.replace('data', 'type')),
-        });
-      }
-    });
-    onFieldValueChange$('fieldsCard.fields.*.type').subscribe(({ value, path }) => {
-      if (value === 'switch' || value === 'radio') {
-        setFieldState(path.replace('type', 'data'), (state: IFieldState) => {
-          state.editable = true;
-          state.required = true;
-        });
-      } else {
-        setFieldState(path.replace('type', 'data'), (state: IFieldState) => {
-          state.editable = false;
-          state.required = false;
-        });
-      }
-    });
-    onFieldValueChange$('basicCard.routeName').subscribe(({ value }) => {
-      setFieldState('*.*.*.uri', (state: IFieldState) => {
-        state.value = state.value?.replace('admins', value);
-      });
-    });
-  };
-
-  const modalSubmitHandler = (values: any) => {
-    setModalVisible(false);
-    modelDesignAction.setFieldValue(currentFieldPath, values.data);
-    setModalState({ type: '', values: {} });
-  };
-
   return (
     <PageContainer>
       {spinLoading ? (
         <Spin className={styles.formSpin} tip="Loading..." />
       ) : (
-        <SchemaForm
-          components={{ Input, ArrayTable, Select, Checkbox, Button }}
-          onSubmit={onSubmit}
-          effects={modelDesignEffect}
-          actions={modelDesignAction}
-          className={styles.formilyForm}
-        >
-          <FormCard title="Basic" name="basicCard">
-            <Field title="Route Name" name="routeName" x-component="Input" />
-          </FormCard>
-
-          <FormCard title="Fields" name="fieldsCard">
-            <Field name="fields" type="array" x-component="ArrayTable">
-              <Field type="object">
-                <Field title="Name" name="name" x-component="Input" />
-                <Field title="Title" name="title" x-component="Input" />
-                <Field title="Type" name="type" x-component="Select" enum={enums.fieldType} />
-                <Field
-                  title="Data"
-                  name="data"
-                  x-component="Button"
-                  x-component-props={{
-                    children: 'Data',
-                  }}
+        <Form form={form}>
+          <Space direction="vertical" style={{ width: '100%' }}>
+            <Card title="Basic" size="small">
+              <SchemaField>
+                <SchemaField.String
+                  name="routeName"
+                  title="Route Name"
+                  x-component="Input"
+                  x-decorator="FormItem"
                 />
-                <Field title="List Sorter" name="listSorter" x-component="Checkbox" />
-                <Field title="Hide InColumn" name="hideInColumn" x-component="Checkbox" />
-                <Field title="Edit Disabled" name="editDisabled" x-component="Checkbox" />
-              </Field>
-            </Field>
-          </FormCard>
+              </SchemaField>
+            </Card>
+            <Card title="Fields" size="small">
+              <SchemaField>
+                <SchemaField.Array x-component="ArrayTable" name="fields" x-decorator="FormItem">
+                  <SchemaField.Object>
+                    <SchemaField.Void
+                      x-component="ArrayTable.Column"
+                      x-component-props={{ title: 'Sort', width: 60, align: 'center' }}
+                    >
+                      <SchemaField.Void
+                        x-component="ArrayTable.SortHandle"
+                        x-decorator="FormItem"
+                      />
+                    </SchemaField.Void>
 
-          <FormCard title="List Action">
-            <Field name="listAction" type="array" x-component="ArrayTable">
-              <Field type="object">
-                <Field title="Title" name="title" x-component="Input" />
-                <Field title="Type" name="type" x-component="Select" enum={enums.buttonType} />
-                <Field
-                  title="Action"
-                  name="action"
-                  x-component="Select"
-                  enum={enums.buttonAction}
-                />
-                <Field title="Uri" name="uri" x-component="Input" />
-                <Field title="Method" name="method" x-component="Select" enum={enums.httpMethod} />
-              </Field>
-            </Field>
-          </FormCard>
+                    <SchemaField.Void
+                      x-component="ArrayTable.Column"
+                      x-component-props={{ title: 'Name' }}
+                    >
+                      <SchemaField.String name="name" x-component="Input" x-decorator="FormItem" />
+                    </SchemaField.Void>
 
-          <FormCard title="Add Action">
-            <Field name="addAction" type="array" x-component="ArrayTable">
-              <Field type="object">
-                <Field title="Title" name="title" x-component="Input" />
-                <Field title="Type" name="type" x-component="Select" enum={enums.buttonType} />
-                <Field
-                  title="Action"
-                  name="action"
-                  x-component="Select"
-                  enum={enums.buttonAction}
-                />
-                <Field title="Uri" name="uri" x-component="Input" />
-                <Field title="Method" name="method" x-component="Select" enum={enums.httpMethod} />
-              </Field>
-            </Field>
-          </FormCard>
+                    <SchemaField.Void
+                      x-component="ArrayTable.Column"
+                      x-component-props={{ title: 'Title' }}
+                    >
+                      <SchemaField.String name="title" x-component="Input" x-decorator="FormItem" />
+                    </SchemaField.Void>
 
-          <FormCard title="Edit Action">
-            <Field name="editAction" type="array" x-component="ArrayTable">
-              <Field type="object">
-                <Field title="Title" name="title" x-component="Input" />
-                <Field title="Type" name="type" x-component="Select" enum={enums.buttonType} />
-                <Field
-                  title="Action"
-                  name="action"
-                  x-component="Select"
-                  enum={enums.buttonAction}
-                />
-                <Field title="Uri" name="uri" x-component="Input" />
-                <Field title="Method" name="method" x-component="Select" enum={enums.httpMethod} />
-              </Field>
-            </Field>
-          </FormCard>
+                    <SchemaField.Void
+                      x-component="ArrayTable.Column"
+                      x-component-props={{ title: 'Type' }}
+                    >
+                      <SchemaField.String
+                        name="type"
+                        x-component="Select"
+                        x-decorator="FormItem"
+                        enum={enums.fieldType}
+                      />
+                    </SchemaField.Void>
 
-          <FormCard title="Table Toolbar">
-            <Field name="tableToolbar" type="array" x-component="ArrayTable">
-              <Field type="object">
-                <Field title="Title" name="title" x-component="Input" />
-                <Field title="Type" name="type" x-component="Select" enum={enums.buttonType} />
-                <Field
-                  title="Action"
-                  name="action"
-                  x-component="Select"
-                  enum={enums.buttonAction}
-                />
-                <Field title="Uri" name="uri" x-component="Input" />
-                <Field title="Method" name="method" x-component="Select" enum={enums.httpMethod} />
-              </Field>
-            </Field>
-          </FormCard>
+                    <SchemaField.Void
+                      x-component="ArrayTable.Column"
+                      x-component-props={{ title: 'Data', width: 60, align: 'center' }}
+                    >
+                      <SchemaField.String
+                        name="data"
+                        x-component="Button"
+                        x-decorator="FormItem"
+                        x-content="Data"
+                      />
+                    </SchemaField.Void>
 
-          <FormCard title="Batch Toolbar">
-            <Field name="batchToolbar" type="array" x-component="ArrayTable">
-              <Field type="object">
-                <Field title="Title" name="title" x-component="Input" />
-                <Field title="Type" name="type" x-component="Select" enum={enums.buttonType} />
-                <Field
-                  title="Action"
-                  name="action"
-                  x-component="Select"
-                  enum={enums.buttonAction}
-                />
-                <Field title="Uri" name="uri" x-component="Input" />
-                <Field title="Method" name="method" x-component="Select" enum={enums.httpMethod} />
-              </Field>
-            </Field>
-          </FormCard>
+                    <SchemaField.Void
+                      x-component="ArrayTable.Column"
+                      x-component-props={{
+                        title: 'List Sorter',
+                        width: 90,
+                        align: 'center',
+                      }}
+                    >
+                      <SchemaField.Boolean
+                        name="listSorter"
+                        x-component="Checkbox"
+                        x-decorator="FormItem"
+                      />
+                    </SchemaField.Void>
 
-          <FormCard title="Batch Toolbar - Trashed">
-            <Field name="batchToolbarTrashed" type="array" x-component="ArrayTable">
-              <Field type="object">
-                <Field title="Title" name="title" x-component="Input" />
-                <Field title="Type" name="type" x-component="Select" enum={enums.buttonType} />
-                <Field
-                  title="Action"
-                  name="action"
-                  x-component="Select"
-                  enum={enums.buttonAction}
-                />
-                <Field title="Uri" name="uri" x-component="Input" />
-                <Field title="Method" name="method" x-component="Select" enum={enums.httpMethod} />
-              </Field>
-            </Field>
-          </FormCard>
-        </SchemaForm>
+                    <SchemaField.Void
+                      x-component="ArrayTable.Column"
+                      x-component-props={{
+                        title: 'Hide in Column',
+                        dataIndex: 'hideInColumn',
+                        width: 90,
+                        align: 'center',
+                      }}
+                    >
+                      <SchemaField.Boolean
+                        name="hideInColumn"
+                        x-component="Checkbox"
+                        x-decorator="FormItem"
+                      />
+                    </SchemaField.Void>
+
+                    <SchemaField.Void
+                      x-component="ArrayTable.Column"
+                      x-component-props={{
+                        title: 'Edit Disabled',
+                        dataIndex: 'editDisabled',
+                        width: 90,
+                        align: 'center',
+                      }}
+                    >
+                      <SchemaField.Boolean
+                        name="editDisabled"
+                        x-component="Checkbox"
+                        x-decorator="FormItem"
+                      />
+                    </SchemaField.Void>
+
+                    <SchemaField.Void
+                      x-component="ArrayTable.Column"
+                      x-component-props={{ title: 'Operations', width: 100, align: 'center' }}
+                    >
+                      <SchemaField.Void x-component="ArrayTable.Remove" />
+                      <SchemaField.Void x-component="ArrayTable.MoveUp" />
+                      <SchemaField.Void x-component="ArrayTable.MoveDown" />
+                    </SchemaField.Void>
+                  </SchemaField.Object>
+                  <SchemaField.Void
+                    x-component="ArrayTable.Addition"
+                    x-component-props={{ title: 'Add' }}
+                  />
+                </SchemaField.Array>
+              </SchemaField>
+            </Card>
+
+            <Card title="List Action" size="small">
+              <SchemaField>
+                <SchemaField.Array
+                  x-component="ArrayTable"
+                  name="listAction"
+                  x-decorator="FormItem"
+                >
+                  <SchemaField.Object>
+                    <SchemaField.Void
+                      x-component="ArrayTable.Column"
+                      x-component-props={{ title: 'Sort', width: 60, align: 'center' }}
+                    >
+                      <SchemaField.Void
+                        x-component="ArrayTable.SortHandle"
+                        x-decorator="FormItem"
+                      />
+                    </SchemaField.Void>
+
+                    <SchemaField.Void
+                      x-component="ArrayTable.Column"
+                      x-component-props={{ title: 'Name' }}
+                    >
+                      <SchemaField.String name="name" x-component="Input" x-decorator="FormItem" />
+                    </SchemaField.Void>
+
+                    <SchemaField.Void
+                      x-component="ArrayTable.Column"
+                      x-component-props={{ title: 'Title' }}
+                    >
+                      <SchemaField.String name="title" x-component="Input" x-decorator="FormItem" />
+                    </SchemaField.Void>
+
+                    <SchemaField.Void
+                      x-component="ArrayTable.Column"
+                      x-component-props={{ title: 'Type' }}
+                    >
+                      <SchemaField.String
+                        name="type"
+                        x-component="Select"
+                        x-decorator="FormItem"
+                        enum={enums.buttonType}
+                      />
+                    </SchemaField.Void>
+
+                    <SchemaField.Void
+                      x-component="ArrayTable.Column"
+                      x-component-props={{ title: 'Call', width: 200 }}
+                    >
+                      <SchemaField.String
+                        name="call"
+                        x-component="Select"
+                        x-decorator="FormItem"
+                        enum={enums.callType}
+                      />
+                    </SchemaField.Void>
+
+                    <SchemaField.Void
+                      x-component="ArrayTable.Column"
+                      x-component-props={{ title: 'Uri' }}
+                    >
+                      <SchemaField.String name="uri" x-component="Input" x-decorator="FormItem" />
+                    </SchemaField.Void>
+
+                    <SchemaField.Void
+                      x-component="ArrayTable.Column"
+                      x-component-props={{ title: 'Method' }}
+                    >
+                      <SchemaField.String
+                        name="method"
+                        x-component="Select"
+                        x-decorator="FormItem"
+                        enum={enums.httpMethod}
+                      />
+                    </SchemaField.Void>
+
+                    <SchemaField.Void
+                      x-component="ArrayTable.Column"
+                      x-component-props={{ title: 'Operations', width: 100, align: 'center' }}
+                    >
+                      <SchemaField.Void x-component="ArrayTable.Remove" />
+                      <SchemaField.Void x-component="ArrayTable.MoveUp" />
+                      <SchemaField.Void x-component="ArrayTable.MoveDown" />
+                    </SchemaField.Void>
+                  </SchemaField.Object>
+                  <SchemaField.Void
+                    x-component="ArrayTable.Addition"
+                    x-component-props={{ title: 'Add' }}
+                  />
+                </SchemaField.Array>
+              </SchemaField>
+            </Card>
+
+            <Card title="Add Action" size="small">
+              <SchemaField>
+                <SchemaField.Array x-component="ArrayTable" name="addAction" x-decorator="FormItem">
+                  <SchemaField.Object>
+                    <SchemaField.Void
+                      x-component="ArrayTable.Column"
+                      x-component-props={{ title: 'Sort', width: 60, align: 'center' }}
+                    >
+                      <SchemaField.Void
+                        x-component="ArrayTable.SortHandle"
+                        x-decorator="FormItem"
+                      />
+                    </SchemaField.Void>
+
+                    <SchemaField.Void
+                      x-component="ArrayTable.Column"
+                      x-component-props={{ title: 'Name' }}
+                    >
+                      <SchemaField.String name="name" x-component="Input" x-decorator="FormItem" />
+                    </SchemaField.Void>
+
+                    <SchemaField.Void
+                      x-component="ArrayTable.Column"
+                      x-component-props={{ title: 'Title' }}
+                    >
+                      <SchemaField.String name="title" x-component="Input" x-decorator="FormItem" />
+                    </SchemaField.Void>
+
+                    <SchemaField.Void
+                      x-component="ArrayTable.Column"
+                      x-component-props={{ title: 'Type' }}
+                    >
+                      <SchemaField.String
+                        name="type"
+                        x-component="Select"
+                        x-decorator="FormItem"
+                        enum={enums.buttonType}
+                      />
+                    </SchemaField.Void>
+
+                    <SchemaField.Void
+                      x-component="ArrayTable.Column"
+                      x-component-props={{ title: 'Call', width: 200 }}
+                    >
+                      <SchemaField.String
+                        name="call"
+                        x-component="Select"
+                        x-decorator="FormItem"
+                        enum={enums.callType}
+                      />
+                    </SchemaField.Void>
+
+                    <SchemaField.Void
+                      x-component="ArrayTable.Column"
+                      x-component-props={{ title: 'Uri' }}
+                    >
+                      <SchemaField.String name="uri" x-component="Input" x-decorator="FormItem" />
+                    </SchemaField.Void>
+
+                    <SchemaField.Void
+                      x-component="ArrayTable.Column"
+                      x-component-props={{ title: 'Method' }}
+                    >
+                      <SchemaField.String
+                        name="method"
+                        x-component="Select"
+                        x-decorator="FormItem"
+                        enum={enums.httpMethod}
+                      />
+                    </SchemaField.Void>
+
+                    <SchemaField.Void
+                      x-component="ArrayTable.Column"
+                      x-component-props={{ title: 'Operations', width: 100, align: 'center' }}
+                    >
+                      <SchemaField.Void x-component="ArrayTable.Remove" />
+                      <SchemaField.Void x-component="ArrayTable.MoveUp" />
+                      <SchemaField.Void x-component="ArrayTable.MoveDown" />
+                    </SchemaField.Void>
+                  </SchemaField.Object>
+                  <SchemaField.Void
+                    x-component="ArrayTable.Addition"
+                    x-component-props={{ title: 'Add' }}
+                  />
+                </SchemaField.Array>
+              </SchemaField>
+            </Card>
+
+            <Card title="Edit Action" size="small">
+              <SchemaField>
+                <SchemaField.Array
+                  x-component="ArrayTable"
+                  name="editAction"
+                  x-decorator="FormItem"
+                >
+                  <SchemaField.Object>
+                    <SchemaField.Void
+                      x-component="ArrayTable.Column"
+                      x-component-props={{ title: 'Sort', width: 60, align: 'center' }}
+                    >
+                      <SchemaField.Void
+                        x-component="ArrayTable.SortHandle"
+                        x-decorator="FormItem"
+                      />
+                    </SchemaField.Void>
+
+                    <SchemaField.Void
+                      x-component="ArrayTable.Column"
+                      x-component-props={{ title: 'Name' }}
+                    >
+                      <SchemaField.String name="name" x-component="Input" x-decorator="FormItem" />
+                    </SchemaField.Void>
+
+                    <SchemaField.Void
+                      x-component="ArrayTable.Column"
+                      x-component-props={{ title: 'Title' }}
+                    >
+                      <SchemaField.String name="title" x-component="Input" x-decorator="FormItem" />
+                    </SchemaField.Void>
+
+                    <SchemaField.Void
+                      x-component="ArrayTable.Column"
+                      x-component-props={{ title: 'Type' }}
+                    >
+                      <SchemaField.String
+                        name="type"
+                        x-component="Select"
+                        x-decorator="FormItem"
+                        enum={enums.buttonType}
+                      />
+                    </SchemaField.Void>
+
+                    <SchemaField.Void
+                      x-component="ArrayTable.Column"
+                      x-component-props={{ title: 'Call', width: 200 }}
+                    >
+                      <SchemaField.String
+                        name="call"
+                        x-component="Select"
+                        x-decorator="FormItem"
+                        enum={enums.callType}
+                      />
+                    </SchemaField.Void>
+
+                    <SchemaField.Void
+                      x-component="ArrayTable.Column"
+                      x-component-props={{ title: 'Uri' }}
+                    >
+                      <SchemaField.String name="uri" x-component="Input" x-decorator="FormItem" />
+                    </SchemaField.Void>
+
+                    <SchemaField.Void
+                      x-component="ArrayTable.Column"
+                      x-component-props={{ title: 'Method' }}
+                    >
+                      <SchemaField.String
+                        name="method"
+                        x-component="Select"
+                        x-decorator="FormItem"
+                        enum={enums.httpMethod}
+                      />
+                    </SchemaField.Void>
+
+                    <SchemaField.Void
+                      x-component="ArrayTable.Column"
+                      x-component-props={{ title: 'Operations', width: 100, align: 'center' }}
+                    >
+                      <SchemaField.Void x-component="ArrayTable.Remove" />
+                      <SchemaField.Void x-component="ArrayTable.MoveUp" />
+                      <SchemaField.Void x-component="ArrayTable.MoveDown" />
+                    </SchemaField.Void>
+                  </SchemaField.Object>
+                  <SchemaField.Void
+                    x-component="ArrayTable.Addition"
+                    x-component-props={{ title: 'Add' }}
+                  />
+                </SchemaField.Array>
+              </SchemaField>
+            </Card>
+
+            <Card title="Table Toolbar" size="small">
+              <SchemaField>
+                <SchemaField.Array
+                  x-component="ArrayTable"
+                  name="tableToolbar"
+                  x-decorator="FormItem"
+                >
+                  <SchemaField.Object>
+                    <SchemaField.Void
+                      x-component="ArrayTable.Column"
+                      x-component-props={{ title: 'Sort', width: 60, align: 'center' }}
+                    >
+                      <SchemaField.Void
+                        x-component="ArrayTable.SortHandle"
+                        x-decorator="FormItem"
+                      />
+                    </SchemaField.Void>
+
+                    <SchemaField.Void
+                      x-component="ArrayTable.Column"
+                      x-component-props={{ title: 'Name' }}
+                    >
+                      <SchemaField.String name="name" x-component="Input" x-decorator="FormItem" />
+                    </SchemaField.Void>
+
+                    <SchemaField.Void
+                      x-component="ArrayTable.Column"
+                      x-component-props={{ title: 'Title' }}
+                    >
+                      <SchemaField.String name="title" x-component="Input" x-decorator="FormItem" />
+                    </SchemaField.Void>
+
+                    <SchemaField.Void
+                      x-component="ArrayTable.Column"
+                      x-component-props={{ title: 'Type' }}
+                    >
+                      <SchemaField.String
+                        name="type"
+                        x-component="Select"
+                        x-decorator="FormItem"
+                        enum={enums.buttonType}
+                      />
+                    </SchemaField.Void>
+
+                    <SchemaField.Void
+                      x-component="ArrayTable.Column"
+                      x-component-props={{ title: 'Call', width: 200 }}
+                    >
+                      <SchemaField.String
+                        name="call"
+                        x-component="Select"
+                        x-decorator="FormItem"
+                        enum={enums.callType}
+                      />
+                    </SchemaField.Void>
+
+                    <SchemaField.Void
+                      x-component="ArrayTable.Column"
+                      x-component-props={{ title: 'Uri' }}
+                    >
+                      <SchemaField.String name="uri" x-component="Input" x-decorator="FormItem" />
+                    </SchemaField.Void>
+
+                    <SchemaField.Void
+                      x-component="ArrayTable.Column"
+                      x-component-props={{ title: 'Method' }}
+                    >
+                      <SchemaField.String
+                        name="method"
+                        x-component="Select"
+                        x-decorator="FormItem"
+                        enum={enums.httpMethod}
+                      />
+                    </SchemaField.Void>
+
+                    <SchemaField.Void
+                      x-component="ArrayTable.Column"
+                      x-component-props={{ title: 'Operations', width: 100, align: 'center' }}
+                    >
+                      <SchemaField.Void x-component="ArrayTable.Remove" />
+                      <SchemaField.Void x-component="ArrayTable.MoveUp" />
+                      <SchemaField.Void x-component="ArrayTable.MoveDown" />
+                    </SchemaField.Void>
+                  </SchemaField.Object>
+                  <SchemaField.Void
+                    x-component="ArrayTable.Addition"
+                    x-component-props={{ title: 'Add' }}
+                  />
+                </SchemaField.Array>
+              </SchemaField>
+            </Card>
+
+            <Card title="Batch Toolbar" size="small">
+              <SchemaField>
+                <SchemaField.Array
+                  x-component="ArrayTable"
+                  name="batchToolbar"
+                  x-decorator="FormItem"
+                >
+                  <SchemaField.Object>
+                    <SchemaField.Void
+                      x-component="ArrayTable.Column"
+                      x-component-props={{ title: 'Sort', width: 60, align: 'center' }}
+                    >
+                      <SchemaField.Void
+                        x-component="ArrayTable.SortHandle"
+                        x-decorator="FormItem"
+                      />
+                    </SchemaField.Void>
+
+                    <SchemaField.Void
+                      x-component="ArrayTable.Column"
+                      x-component-props={{ title: 'Name' }}
+                    >
+                      <SchemaField.String name="name" x-component="Input" x-decorator="FormItem" />
+                    </SchemaField.Void>
+
+                    <SchemaField.Void
+                      x-component="ArrayTable.Column"
+                      x-component-props={{ title: 'Title' }}
+                    >
+                      <SchemaField.String name="title" x-component="Input" x-decorator="FormItem" />
+                    </SchemaField.Void>
+
+                    <SchemaField.Void
+                      x-component="ArrayTable.Column"
+                      x-component-props={{ title: 'Type' }}
+                    >
+                      <SchemaField.String
+                        name="type"
+                        x-component="Select"
+                        x-decorator="FormItem"
+                        enum={enums.buttonType}
+                      />
+                    </SchemaField.Void>
+
+                    <SchemaField.Void
+                      x-component="ArrayTable.Column"
+                      x-component-props={{ title: 'Call', width: 200 }}
+                    >
+                      <SchemaField.String
+                        name="call"
+                        x-component="Select"
+                        x-decorator="FormItem"
+                        enum={enums.callType}
+                      />
+                    </SchemaField.Void>
+
+                    <SchemaField.Void
+                      x-component="ArrayTable.Column"
+                      x-component-props={{ title: 'Uri' }}
+                    >
+                      <SchemaField.String name="uri" x-component="Input" x-decorator="FormItem" />
+                    </SchemaField.Void>
+
+                    <SchemaField.Void
+                      x-component="ArrayTable.Column"
+                      x-component-props={{ title: 'Method' }}
+                    >
+                      <SchemaField.String
+                        name="method"
+                        x-component="Select"
+                        x-decorator="FormItem"
+                        enum={enums.httpMethod}
+                      />
+                    </SchemaField.Void>
+
+                    <SchemaField.Void
+                      x-component="ArrayTable.Column"
+                      x-component-props={{ title: 'Operations', width: 100, align: 'center' }}
+                    >
+                      <SchemaField.Void x-component="ArrayTable.Remove" />
+                      <SchemaField.Void x-component="ArrayTable.MoveUp" />
+                      <SchemaField.Void x-component="ArrayTable.MoveDown" />
+                    </SchemaField.Void>
+                  </SchemaField.Object>
+                  <SchemaField.Void
+                    x-component="ArrayTable.Addition"
+                    x-component-props={{ title: 'Add' }}
+                  />
+                </SchemaField.Array>
+              </SchemaField>
+            </Card>
+
+            <Card title="Batch Toolbar - Trashed" size="small">
+              <SchemaField>
+                <SchemaField.Array
+                  x-component="ArrayTable"
+                  name="batchToolbarTrashed"
+                  x-decorator="FormItem"
+                >
+                  <SchemaField.Object>
+                    <SchemaField.Void
+                      x-component="ArrayTable.Column"
+                      x-component-props={{ title: 'Sort', width: 60, align: 'center' }}
+                    >
+                      <SchemaField.Void
+                        x-component="ArrayTable.SortHandle"
+                        x-decorator="FormItem"
+                      />
+                    </SchemaField.Void>
+
+                    <SchemaField.Void
+                      x-component="ArrayTable.Column"
+                      x-component-props={{ title: 'Name' }}
+                    >
+                      <SchemaField.String name="name" x-component="Input" x-decorator="FormItem" />
+                    </SchemaField.Void>
+
+                    <SchemaField.Void
+                      x-component="ArrayTable.Column"
+                      x-component-props={{ title: 'Title' }}
+                    >
+                      <SchemaField.String name="title" x-component="Input" x-decorator="FormItem" />
+                    </SchemaField.Void>
+
+                    <SchemaField.Void
+                      x-component="ArrayTable.Column"
+                      x-component-props={{ title: 'Type' }}
+                    >
+                      <SchemaField.String
+                        name="type"
+                        x-component="Select"
+                        x-decorator="FormItem"
+                        enum={enums.buttonType}
+                      />
+                    </SchemaField.Void>
+
+                    <SchemaField.Void
+                      x-component="ArrayTable.Column"
+                      x-component-props={{ title: 'Call', width: 200 }}
+                    >
+                      <SchemaField.String
+                        name="call"
+                        x-component="Select"
+                        x-decorator="FormItem"
+                        enum={enums.callType}
+                      />
+                    </SchemaField.Void>
+
+                    <SchemaField.Void
+                      x-component="ArrayTable.Column"
+                      x-component-props={{ title: 'Uri' }}
+                    >
+                      <SchemaField.String name="uri" x-component="Input" x-decorator="FormItem" />
+                    </SchemaField.Void>
+
+                    <SchemaField.Void
+                      x-component="ArrayTable.Column"
+                      x-component-props={{ title: 'Method' }}
+                    >
+                      <SchemaField.String
+                        name="method"
+                        x-component="Select"
+                        x-decorator="FormItem"
+                        enum={enums.httpMethod}
+                      />
+                    </SchemaField.Void>
+
+                    <SchemaField.Void
+                      x-component="ArrayTable.Column"
+                      x-component-props={{ title: 'Operations', width: 100, align: 'center' }}
+                    >
+                      <SchemaField.Void x-component="ArrayTable.Remove" />
+                      <SchemaField.Void x-component="ArrayTable.MoveUp" />
+                      <SchemaField.Void x-component="ArrayTable.MoveDown" />
+                    </SchemaField.Void>
+                  </SchemaField.Object>
+                  <SchemaField.Void
+                    x-component="ArrayTable.Addition"
+                    x-component-props={{ title: 'Add' }}
+                  />
+                </SchemaField.Array>
+              </SchemaField>
+            </Card>
+          </Space>
+        </Form>
       )}
-
       <FooterToolbar
         extra={
           <Button
             type="primary"
             onClick={() => {
-              modelDesignAction.submit();
+              form.submit(pageSubmitHandler);
             }}
             loading={submitLoading}
           >

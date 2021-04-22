@@ -1,10 +1,21 @@
 import { useEffect } from 'react';
-import { SchemaForm, SchemaMarkupField as Field, createFormActions } from '@formily/antd';
-import { Input, ArrayTable, Select, Checkbox } from '@formily/antd-components';
+import { createForm } from '@formily/core';
+import { createSchemaField } from '@formily/react';
+import { Form, FormItem, Input, ArrayTable, Switch, Select, Checkbox } from '@formily/antd';
 import { Modal as AntdModal } from 'antd';
 import styles from './index.less';
 
-const modalAction = createFormActions();
+const form = createForm();
+const SchemaField = createSchemaField({
+  components: {
+    Input,
+    FormItem,
+    ArrayTable,
+    Switch,
+    Select,
+    Checkbox,
+  },
+});
 
 const Modal = ({
   modalVisible,
@@ -18,23 +29,21 @@ const Modal = ({
   modalState: { type: string; values: Record<string, unknown> };
 }) => {
   useEffect(() => {
-    modalAction.reset();
-    if (modalState.values) {
-      modalAction.setFormState((state) => {
-        state.values = {
-          data: modalState.values,
-        };
-      });
-    }
+    form.reset('*', {
+      forceClear: true,
+    });
     if (modalState.type === 'switch') {
-      modalAction.setFieldState('data', (state) => {
-        state.props['x-component-props'] = {
-          operations: false,
-          renderAddition: () => null,
-        };
+      form.setFieldState('data.sortColumn', (state) => {
+        state.visible = false;
       });
-      modalAction.setFormState((state) => {
-        state.values = {
+      form.setFieldState('data.operationColumn', (state) => {
+        state.visible = false;
+      });
+      form.setFieldState('data.addition', (state) => {
+        state.visible = false;
+      });
+      form.setFormState((state) => {
+        state.initialValues = {
           data: [
             {
               title: 'Enabled',
@@ -48,8 +57,22 @@ const Modal = ({
         };
       });
     } else {
-      modalAction.setFieldState('data', (state) => {
-        state.props['x-component-props'] = {};
+      form.setFieldState('data.sortColumn', (state) => {
+        state.visible = true;
+      });
+      form.setFieldState('data.operationColumn', (state) => {
+        state.visible = true;
+      });
+      form.setFieldState('data.addition', (state) => {
+        state.visible = true;
+      });
+    }
+
+    if (modalState.values && Object.keys(modalState.values).length > 0) {
+      form.setFormState((state) => {
+        state.values = {
+          data: modalState.values,
+        };
       });
     }
   }, [modalState]);
@@ -62,25 +85,52 @@ const Modal = ({
           hideModal();
         }}
         onOk={() => {
-          modalAction.submit();
+          form.submit(modalSubmitHandler);
         }}
         maskClosable={false}
         forceRender
         focusTriggerAfterClose={false}
       >
-        <SchemaForm
-          components={{ Input, ArrayTable, Select, Checkbox }}
-          className={styles.formilyForm}
-          actions={modalAction}
-          onSubmit={modalSubmitHandler}
-        >
-          <Field name="data" type="array" x-component="ArrayTable">
-            <Field type="object">
-              <Field title="Title" name="title" x-component="Input" />
-              <Field title="Value" name="value" x-component="Input" />
-            </Field>
-          </Field>
-        </SchemaForm>
+        <Form className={styles.formilyForm} form={form}>
+          <SchemaField>
+            <SchemaField.Array x-component="ArrayTable" name="data" x-decorator="FormItem">
+              <SchemaField.Object>
+                <SchemaField.Void
+                  x-component="ArrayTable.Column"
+                  x-component-props={{ title: 'Sort', width: 60, align: 'center' }}
+                  name="sortColumn"
+                >
+                  <SchemaField.Void x-component="ArrayTable.SortHandle" x-decorator="FormItem" />
+                </SchemaField.Void>
+                <SchemaField.Void
+                  x-component="ArrayTable.Column"
+                  x-component-props={{ title: 'Title' }}
+                >
+                  <SchemaField.String name="title" x-component="Input" x-decorator="FormItem" />
+                </SchemaField.Void>
+                <SchemaField.Void
+                  x-component="ArrayTable.Column"
+                  x-component-props={{ title: 'Value' }}
+                >
+                  <SchemaField.String name="value" x-component="Input" x-decorator="FormItem" />
+                </SchemaField.Void>
+                <SchemaField.Void
+                  x-component="ArrayTable.Column"
+                  x-component-props={{ title: 'Operations', width: 100, align: 'center' }}
+                  name="operationColumn"
+                >
+                  <SchemaField.Void x-component="ArrayTable.Remove" />
+                  <SchemaField.Void x-component="ArrayTable.MoveUp" />
+                  <SchemaField.Void x-component="ArrayTable.MoveDown" />
+                </SchemaField.Void>
+              </SchemaField.Object>
+              <SchemaField.Void
+                x-component="ArrayTable.Addition"
+                x-component-props={{ title: 'Add' }}
+              />
+            </SchemaField.Array>
+          </SchemaField>
+        </Form>
       </AntdModal>
     </div>
   );

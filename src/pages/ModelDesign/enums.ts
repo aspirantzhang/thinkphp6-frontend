@@ -13,7 +13,7 @@ export const buttonType = [
   { label: 'Dashed', value: 'dashed' },
 ];
 
-export const buttonAction = [
+export const callType = [
   { label: 'Modal', value: 'modal' },
   { label: 'Page', value: 'page' },
   { label: 'Reload', value: 'reload' },
