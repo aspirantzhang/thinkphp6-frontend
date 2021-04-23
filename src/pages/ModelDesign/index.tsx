@@ -33,7 +33,7 @@ const Index = () => {
   const [spinLoading, setSpinLoading] = useState(true);
   const [submitLoading, setSubmitLoading] = useState(false);
   const location = useLocation();
-  const { initialState, setInitialState, refresh } = useModel('@@initialState');
+  const { initialState, setInitialState } = useModel('@@initialState');
 
   const form = useMemo(
     () =>
@@ -47,7 +47,9 @@ const Index = () => {
           onFieldReact('fields.*.data', (field) => {
             if (isField(field)) {
               const typeValue = field.query('.type').get('value');
-              field.editable = typeValue === 'switch' || typeValue === 'radio';
+              const attrValue = typeValue === 'switch' || typeValue === 'radio';
+              field.editable = attrValue;
+              field.required = attrValue;
             }
           });
           onFieldChange('fields.*.data', ['active'], (field) => {
@@ -110,15 +112,13 @@ const Index = () => {
       },
     });
 
-    refresh();
-
-    // const userMenu = await initialState?.fetchMenu?.();
-    // if (userMenu) {
-    //   setInitialState({
-    //     ...initialState,
-    //     currentMenu: userMenu,
-    //   });
-    // }
+    const userMenu = await initialState?.fetchMenu?.();
+    if (userMenu) {
+      setInitialState({
+        ...initialState,
+        currentMenu: userMenu,
+      });
+    }
   };
 
   const modalSubmitHandler = (values: any) => {
