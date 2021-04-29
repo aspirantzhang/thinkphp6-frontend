@@ -83,7 +83,12 @@ const Page = () => {
   };
 
   return (
-    <PageContainer>
+    <PageContainer
+      header={{
+        title: init.data?.page?.title,
+        breadcrumb: {},
+      }}
+    >
       {init?.loading ? (
         <Spin className={styles.formSpin} tip="Loading..." />
       ) : (

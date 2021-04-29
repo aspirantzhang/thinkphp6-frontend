@@ -303,7 +303,11 @@ const Index = () => {
   };
 
   return (
-    <PageContainer>
+    <PageContainer
+      header={{
+        title: init.data?.page?.title,
+      }}
+    >
       {searchLayout()}
       <Card>
         {beforeTableLayout()}
