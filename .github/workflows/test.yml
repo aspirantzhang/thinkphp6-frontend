@@ -26,8 +26,11 @@ jobs:
       - name: checkout
         uses: actions/checkout@master
 
+      - name: start
+        run: npm run start
+        
       - name: test
-        run: npm run start & npm test -- -w 1 --coverage
+        run: npm test -- -w 1 --coverage
 
       - name: coverage
         run: bash <(curl -s https://codecov.io/bash)
