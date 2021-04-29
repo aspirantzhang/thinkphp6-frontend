@@ -28,4 +28,3 @@ jobs:
 
       - name: coverage
         run: bash <(curl -s https://codecov.io/bash)
-    needs: setup
