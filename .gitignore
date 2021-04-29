@@ -21,6 +21,7 @@ yarn.lock
 package-lock.json
 *bak
 .vscode
+/.nyc_output
 
 # visual studio code
 .history
