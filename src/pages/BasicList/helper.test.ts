@@ -11,20 +11,20 @@ const setFieldsAdaptorParams = {
           {
             title: 'Username',
             dataIndex: 'username',
-            key: 'username',
+            name: 'username',
             type: 'text',
             disabled: true,
           },
           {
             title: 'Display Name',
             dataIndex: 'display_name',
-            key: 'display_name',
+            name: 'display_name',
             type: 'text',
           },
           {
             title: 'Group',
             dataIndex: 'groups',
-            key: 'groups',
+            name: 'groups',
             type: 'tree',
             data: [
               {
@@ -65,19 +65,19 @@ const setFieldsAdaptorParams = {
           {
             title: 'Create Time',
             dataIndex: 'create_time',
-            key: 'create_time',
+            name: 'create_time',
             type: 'datetime',
           },
           {
             title: 'Update Time',
             dataIndex: 'update_time',
-            key: 'update_time',
+            name: 'update_time',
             type: 'datetime',
           },
           {
             title: 'Status',
             dataIndex: 'status',
-            key: 'status',
+            name: 'status',
             type: 'switch',
             data: [
               {
@@ -93,7 +93,7 @@ const setFieldsAdaptorParams = {
           {
             title: 'TextArea',
             dataIndex: 'textarea',
-            key: 'textarea',
+            name: 'textarea',
             type: 'textarea',
           },
         ],

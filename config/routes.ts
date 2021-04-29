@@ -37,12 +37,6 @@
     ],
   },
   {
-    name: 'list.table-list',
-    icon: 'table',
-    path: '/list',
-    component: './TableList',
-  },
-  {
     name: 'model-design',
     icon: 'table',
     path: '/basic-list/api/models/model-design/*',
