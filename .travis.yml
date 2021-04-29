@@ -1,0 +1,10 @@
+language: node_js
+node_js:
+  - 15
+scripts:
+  - yarn start
+  - yarn test
+  - npm install codecov -g
+after_success:
+  - nyc report --reporter=json > coverage/coverage.json
+  - codecov
