@@ -1,0 +1,34 @@
+# This is a basic workflow to help you get started with Actions
+
+name: 🧪 test
+
+# Controls when the action will run. 
+on: [push, pull_request]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@master
+
+      - name: create package-lock.json
+        run: npm i --package-lock-only
+
+      - name: install
+        run: npm ci
+        
+  test:
+    name: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@master
+
+      - name: test
+        run: npm test -- -w 1 --coverage
+
+      - name: coverage
+        run: bash <(curl -s https://codecov.io/bash)
+    needs: setup
