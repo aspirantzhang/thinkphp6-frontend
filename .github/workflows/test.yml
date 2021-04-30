@@ -25,9 +25,6 @@ jobs:
       - name: plugins
         run: npm install umi-plugin-antd-theme umi-plugin-pro
 
-      - name: start
-        run: npm run start
-
       - name: lint
         run: npm run lint
         
