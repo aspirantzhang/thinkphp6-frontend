@@ -76,7 +76,7 @@ const Login: React.FC = () => {
     }
     setSubmitting(false);
   };
-  const { status, type: loginType } = userLoginState;
+  const { success, type: loginType } = userLoginState;
 
   return (
     <div className={styles.container}>
@@ -134,7 +134,7 @@ const Login: React.FC = () => {
               />
             </Tabs>
 
-            {status === 'error' && loginType === 'account' && (
+            {success === false && loginType === 'account' && (
               <LoginMessage
                 content={intl.formatMessage({
                   id: 'pages.login.accountLogin.errorMessage',

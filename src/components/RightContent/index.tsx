@@ -72,7 +72,9 @@ const GlobalHeaderRight: React.FC = () => {
         className={styles.action}
         onItemClick={({ key }) => {
           setLocale(key);
-          setLangCookie(key.toLowerCase());
+          if (langCookie !== key.toLowerCase()) {
+            setLangCookie(key.toLowerCase());
+          }
         }}
       />
     </Space>

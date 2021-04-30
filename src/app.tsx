@@ -1,4 +1,3 @@
-import React from 'react';
 import type { Settings as LayoutSettings, MenuDataItem } from '@ant-design/pro-layout';
 import { PageLoading } from '@ant-design/pro-layout';
 import { message } from 'antd';
