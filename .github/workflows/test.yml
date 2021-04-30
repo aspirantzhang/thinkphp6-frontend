@@ -15,13 +15,13 @@ jobs:
         uses: actions/checkout@master
 
       - name: install
-        run: npm install
+        run: yarn
 
       - name: start
-        run: npm run start
+        run: yarn start
         
       - name: test
-        run: npm test -- -w 1 --coverage
+        run: yarn test -- -w 1 --coverage
 
       - name: coverage
         run: bash <(curl -s https://codecov.io/bash)
