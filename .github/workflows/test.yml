@@ -1,34 +1,26 @@
-# This is a basic workflow to help you get started with Actions
+name: Node CI
 
-name: 🧪 test
-
-# Controls when the action will run. 
 on: [push, pull_request]
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  setup:
-    runs-on: ubuntu-latest
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        node_version: [14.x]
+        os: [ubuntu-latest]
     steps:
-      - name: checkout
-        uses: actions/checkout@master
-
-      - name: create package-lock.json
-        run: npm i --package-lock-only
-
-      - name: install
-        run: npm ci
-        
-  test:
-    name: test
-    runs-on: ubuntu-latest
-    steps:
-      - name: checkout
-        uses: actions/checkout@master
-
-      - name: test
-        run: npm test -- -w 1 --coverage
-
-      - name: coverage
-        run: bash <(curl -s https://codecov.io/bash)
-    needs: setup
+      - uses: actions/checkout@v1
+      - name: Use Node.js ${{ matrix.node_version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node_version }}
+      - run: echo ${{github.ref}}
+      - run: npm install
+      - run: yarn run build
+      - run: yarn run test:all
+        env:
+          CI: true
+          PROGRESS: none
+          NODE_ENV: test
+          NODE_OPTIONS: --max_old_space_size=4096
