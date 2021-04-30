@@ -1,35 +1,23 @@
-# This is a basic workflow to help you get started with Actions
-
 name: 🧪 test
 
-# Controls when the action will run. 
 on: [push, pull_request]
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   test:
     name: test
     runs-on: ubuntu-latest
     steps:
-      - name: setup node
+      - name: test
         uses: actions/setup-node@v2.1.5
         with:
           node-version: 14.x
-
-      - name: checkout
-        uses: actions/checkout@master
-
-      - name: install
-        run: npm install
-        
-      - name: plugins
-        run: yarn add umi-plugin-antd-theme umi-plugin-pro
-
-      - name: start
-        run: npm run start
-        
-      - name: test
-        run: npm run test -- -w 1 --coverage
-
-      - name: coverage
-        run: bash <(curl -s https://codecov.io/bash)
+      - run: npm install
+      - run: yarn run lint
+      - run: yarn run tsc
+      - run: yarn run build
+      - run: yarn run test:all
+        env:
+          CI: true
+          PROGRESS: none
+          NODE_ENV: test
+          NODE_OPTIONS: --max_old_space_size=4096
