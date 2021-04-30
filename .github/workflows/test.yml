@@ -6,22 +6,27 @@ name: 🧪 test
 on: [push, pull_request]
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
-jobs:       
+jobs:
   test:
     name: test
     runs-on: ubuntu-latest
     steps:
+      - name: setup node
+        uses: actions/setup-node@v2.1.5
+        with:
+          node-version: 14.x
+
       - name: checkout
         uses: actions/checkout@master
 
       - name: install
-        run: yarn
+        run: npm install
 
       - name: start
-        run: yarn start
+        run: npm run start
         
       - name: test
-        run: yarn test -- -w 1 --coverage
+        run: npm run test -- -w 1 --coverage
 
       - name: coverage
         run: bash <(curl -s https://codecov.io/bash)
