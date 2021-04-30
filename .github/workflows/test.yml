@@ -17,7 +17,6 @@ jobs:
           node-version: ${{ matrix.node_version }}
       - run: echo ${{github.ref}}
       - run: npm install
-      - run: yarn run build
       - run: yarn run test:all
         env:
           CI: true
