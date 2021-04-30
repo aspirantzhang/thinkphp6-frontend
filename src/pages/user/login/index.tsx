@@ -38,7 +38,7 @@ const goto = () => {
   }, 10);
 };
 
-const Index: React.FC = () => {
+const Login: React.FC = () => {
   const [submitting, setSubmitting] = useState(false);
   const [userLoginState, setUserLoginState] = useState<API.LoginResult>({});
   const [type, setType] = useState<string>('account');
@@ -303,4 +303,4 @@ const Index: React.FC = () => {
   );
 };
 
-export default Index;
+export default Login;
