@@ -2,7 +2,7 @@ import SwaggerUI from 'swagger-ui-react';
 import 'swagger-ui-react/swagger-ui.css';
 import { BasicLayout } from '@ant-design/pro-layout';
 
-const index = () => {
+const Index = () => {
   return (
     <BasicLayout
       pageTitleRender={() => {
@@ -15,4 +15,4 @@ const index = () => {
   );
 };
 
-export default index;
+export default Index;

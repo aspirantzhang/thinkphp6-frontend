@@ -38,7 +38,7 @@ const goto = () => {
   }, 10);
 };
 
-const Login: React.FC = () => {
+const Index: React.FC = () => {
   const [submitting, setSubmitting] = useState(false);
   const [userLoginState, setUserLoginState] = useState<API.LoginResult>({});
   const [type, setType] = useState<string>('account');
@@ -191,7 +191,7 @@ const Login: React.FC = () => {
               </>
             )}
 
-            {status === 'error' && loginType === 'mobile' && <LoginMessage content="验证码错误" />}
+            {success === false && loginType === 'mobile' && <LoginMessage content="验证码错误" />}
             {type === 'mobile' && (
               <>
                 <ProFormText
@@ -303,4 +303,4 @@ const Login: React.FC = () => {
   );
 };
 
-export default Login;
+export default Index;
