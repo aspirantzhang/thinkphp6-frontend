@@ -11,11 +11,11 @@ jobs:
         uses: actions/setup-node@v2.1.5
         with:
           node-version: 14.x
-      - run: yarn
-      - run: yarn run lint
-      - run: yarn run tsc
-      - run: yarn run build
-      - run: yarn run test:all
+      - run: npm install
+      - run: npm run lint
+      - run: npm run tsc
+      - run: npm run build
+      - run: npm run test:all
         env:
           CI: true
           PROGRESS: none
