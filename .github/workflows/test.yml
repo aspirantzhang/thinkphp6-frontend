@@ -21,6 +21,9 @@ jobs:
 
       - name: install
         run: npm install
+        
+      - name: plugins
+        run: yarn add umi-plugin-antd-theme umi-plugin-pro
 
       - name: start
         run: npm run start
