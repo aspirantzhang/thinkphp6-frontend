@@ -80,8 +80,11 @@ const submitFieldsAdaptorResult = {
   number: 1,
   array: [53],
   stringTime: '2021-04-29T17:34:15+08:00',
-  momentTime: '2021-05-01T20:19:57+08:00',
-  innerTime: ['2021-05-01T20:19:57+08:00', '2021-05-02T20:19:57+08:00'],
+  momentTime: moment('2021-05-01T20:19:57+08:00').format(),
+  innerTime: [
+    moment('2021-05-01T20:19:57+08:00').format,
+    moment('2021-05-02T20:19:57+08:00').format,
+  ],
 };
 
 describe('submitFieldsAdaptor', () => {
