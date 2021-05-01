@@ -1,6 +1,8 @@
 import puppeteer from 'puppeteer';
 import * as pti from 'puppeteer-to-istanbul';
 
+const BASE_URL = `http://localhost:${process.env.PORT || 8000}`;
+
 test('BasicList', async () => {
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
@@ -9,13 +11,13 @@ test('BasicList', async () => {
   await Promise.all([page.coverage.startJSCoverage(), page.coverage.startCSSCoverage()]);
 
   // login
-  await page.goto('http://localhost:8000/user/login');
+  await page.goto(`${BASE_URL}/user/login`);
   await page.waitForSelector('#username');
   await page.type('#username', 'admin');
   await page.type('#password', 'admin');
   await page.click("button[class='ant-btn ant-btn-primary ant-btn-lg']");
   await page.waitForNavigation();
-  await page.goto('http://localhost:8000/basic-list/api/admins');
+  await page.goto(`${BASE_URL}/basic-list/api/admins`);
 
   // add
   await page.waitForSelector("button[class='ant-btn ant-btn-primary btn-add'] span");
