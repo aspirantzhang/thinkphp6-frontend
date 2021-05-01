@@ -33,7 +33,8 @@
     "test:component": "umi test ./src/components",
     "tsc": "tsc --noEmit",
     "coverage:html": "nyc report --reporter=html",
-    "coverage:cov": "nyc report --reporter=text-lcov > coverage.lcov"
+    "coverage:cov": "nyc report --reporter=text-lcov > coverage.lcov",
+    "all": "yarn lint && yarn tsc && yarn test:all"
   },
   "lint-staged": {
     "**/*.less": "stylelint --syntax less",
