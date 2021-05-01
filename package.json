@@ -34,7 +34,6 @@
     "tsc": "tsc --noEmit",
     "coverage:html": "nyc report --reporter=html",
     "coverage:cov": "nyc report --reporter=text-lcov > coverage.lcov"
-
   },
   "lint-staged": {
     "**/*.less": "stylelint --syntax less",
@@ -66,7 +65,7 @@
     "moment": "^2.25.3",
     "omit.js": "^2.0.2",
     "qs": "^6.9.0",
-    "query-string": "^6.14.1",
+    "query-string": "^7.0.0",
     "rc-queue-anim": "^1.8.5",
     "react": "^17.0.0",
     "react-dev-inspector": "^1.1.1",
@@ -112,6 +111,7 @@
     "prettier": "^2.0.1",
     "puppeteer": "^8.0.0",
     "puppeteer-to-istanbul": "^1.4.0",
+    "standard": "^16.0.3",
     "stylelint": "^13.0.0",
     "typescript": "^4.2.2"
   },
