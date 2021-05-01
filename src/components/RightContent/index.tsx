@@ -1,7 +1,8 @@
 import { Tag, Space } from 'antd';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import React from 'react';
-import { useModel, SelectLang } from 'umi';
+import { useModel, SelectLang, setLocale } from 'umi';
+import { useCookieState } from 'ahooks';
 import Avatar from './AvatarDropdown';
 import HeaderSearch from '../HeaderSearch';
 import styles from './index.less';
@@ -15,6 +16,7 @@ const ENVTagColor = {
 };
 
 const GlobalHeaderRight: React.FC = () => {
+  const [langCookie, setLangCookie] = useCookieState('octopus_lang');
   const { initialState } = useModel('@@initialState');
 
   if (!initialState || !initialState.settings) {
@@ -66,7 +68,15 @@ const GlobalHeaderRight: React.FC = () => {
           <Tag color={ENVTagColor[REACT_APP_ENV]}>{REACT_APP_ENV}</Tag>
         </span>
       )}
-      <SelectLang className={styles.action} />
+      <SelectLang
+        className={styles.action}
+        onItemClick={({ key }) => {
+          setLocale(key);
+          if (langCookie !== key.toLowerCase()) {
+            setLangCookie(key.toLowerCase());
+          }
+        }}
+      />
     </Space>
   );
 };
