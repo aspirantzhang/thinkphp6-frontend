@@ -1,4 +1,4 @@
-name: 🧪 test
+name: CI
 
 on: [push, pull_request]
 
@@ -17,13 +17,15 @@ jobs:
           node-version: ${{ matrix.node_version }}
       - run: echo ${{github.ref}}
       - run: npm install
-      - run: yarn run test:all
+      - run: npm run lint
+      - run: npm run tsc
+      - run: npm run test:all
         env:
           CI: true
           PROGRESS: none
           NODE_ENV: test
           NODE_OPTIONS: --max_old_space_size=4096
+      - run: npm run coverage:cov
       - uses: codecov/codecov-action@v1
         with:
-          files: ./coverage/coverage-final.json,./.nyc_output/out.json
-          
+          files: ./coverage/coverage-final.json,./coverage.lcov

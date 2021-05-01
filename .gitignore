@@ -20,6 +20,7 @@ yarn-error.log
 *bak
 .vscode
 /.nyc_output
+*.lcov
 
 # visual studio code
 .history
