@@ -1,4 +1,4 @@
-name: Node CI
+name: 🧪 test
 
 on: [push, pull_request]
 
@@ -23,3 +23,5 @@ jobs:
           PROGRESS: none
           NODE_ENV: test
           NODE_OPTIONS: --max_old_space_size=4096
+      - uses: codecov/codecov-action@v1
+          
