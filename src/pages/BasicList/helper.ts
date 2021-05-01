@@ -32,19 +32,22 @@ export const setFieldsAdaptor = (data: BasicListApi.PageData) => {
 };
 
 export const submitFieldsAdaptor = (formValues: any) => {
-  const result = formValues;
-  Object.keys(formValues).forEach((key) => {
-    if (moment.isMoment(formValues[key])) {
-      result[key] = moment(formValues[key]).format();
-    }
-    if (Array.isArray(formValues[key])) {
-      result[key] = formValues[key].map((innerValue: any) => {
-        if (moment.isMoment(innerValue)) {
-          return moment(innerValue).format();
-        }
-        return innerValue;
-      });
-    }
-  });
-  return result;
+  if (typeof formValues === 'object' && formValues !== null && Object.keys(formValues).length) {
+    const result = formValues;
+    Object.keys(formValues).forEach((key) => {
+      if (moment.isMoment(formValues[key])) {
+        result[key] = moment(formValues[key]).format();
+      }
+      if (Array.isArray(formValues[key])) {
+        result[key] = formValues[key].map((innerValue: any) => {
+          if (moment.isMoment(innerValue)) {
+            return moment(innerValue).format();
+          }
+          return innerValue;
+        });
+      }
+    });
+    return result;
+  }
+  return {};
 };

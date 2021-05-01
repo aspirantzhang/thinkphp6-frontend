@@ -1,4 +1,4 @@
-import { setFieldsAdaptor } from './helper';
+import { setFieldsAdaptor, submitFieldsAdaptor } from './helper';
 import moment from 'moment';
 
 const setFieldsAdaptorParams = {
@@ -9,91 +9,23 @@ const setFieldsAdaptorParams = {
         title: 'Basic',
         data: [
           {
-            title: 'Username',
-            dataIndex: 'username',
-            name: 'username',
-            type: 'text',
-            disabled: true,
-          },
-          {
-            title: 'Display Name',
-            dataIndex: 'display_name',
-            name: 'display_name',
+            dataIndex: 'string',
+            name: 'string',
             type: 'text',
           },
           {
-            title: 'Group',
-            dataIndex: 'groups',
-            name: 'groups',
-            type: 'tree',
-            data: [
-              {
-                id: 69,
-                parent_id: 0,
-                name: 'Group 001',
-                create_time: '2020-11-24T15:25:11+08:00',
-                delete_time: null,
-                status: 1,
-                value: 69,
-                title: 'Group 001',
-                depth: 1,
-              },
-              {
-                id: 68,
-                parent_id: 0,
-                name: 'Group 0033',
-                create_time: '2020-11-02T16:11:24+08:00',
-                delete_time: null,
-                status: 1,
-                value: 68,
-                title: 'Group 0033',
-                depth: 1,
-              },
-              {
-                id: 53,
-                parent_id: 0,
-                name: 'Admin Group',
-                create_time: '2020-09-21T00:10:30+08:00',
-                delete_time: null,
-                status: 1,
-                value: 53,
-                title: 'Admin Group',
-                depth: 1,
-              },
-            ],
-          },
-          {
-            title: 'Create Time',
-            dataIndex: 'create_time',
-            name: 'create_time',
+            dataIndex: 'momentTime',
+            name: 'momentTime',
             type: 'datetime',
           },
           {
-            title: 'Update Time',
-            dataIndex: 'update_time',
-            name: 'update_time',
-            type: 'datetime',
+            title: 'objectTextarea',
+            name: 'objectTextarea',
+            type: 'textarea',
           },
           {
-            title: 'Status',
-            dataIndex: 'status',
-            name: 'status',
-            type: 'switch',
-            data: [
-              {
-                title: 'Enabled',
-                value: 1,
-              },
-              {
-                title: 'Disabled',
-                value: 0,
-              },
-            ],
-          },
-          {
-            title: 'TextArea',
-            dataIndex: 'textarea',
-            name: 'textarea',
+            title: 'stringTextarea',
+            name: 'stringTextarea',
             type: 'textarea',
           },
         ],
@@ -101,31 +33,25 @@ const setFieldsAdaptorParams = {
     ],
   },
   dataSource: {
-    id: 206,
-    username: 'admin0',
-    display_name: '',
-    create_time: moment('2020-10-22T15:38:51+08:00'),
-    update_time: '2020-10-31T13:28:21+08:00',
-    status: 1,
-    groups: [53],
-    textarea: {
+    string: 'unitTest',
+    notExistField: 1,
+    momentTime: '2020-10-22T15:38:51+08:00',
+    objectTextarea: {
       routeName: 'users',
       number: 100,
     },
+    stringTextarea: 'stringTextarea',
   },
 };
 
 const setFieldsAdaptorResult = {
-  username: 'admin0',
-  display_name: '',
-  create_time: moment('2020-10-22T15:38:51+08:00'),
-  update_time: moment('2020-10-31T13:28:21+08:00'),
-  status: 1,
-  groups: [53],
-  textarea: JSON.stringify({
+  string: 'unitTest',
+  momentTime: moment('2020-10-22T15:38:51+08:00'),
+  objectTextarea: JSON.stringify({
     routeName: 'users',
     number: 100,
   }),
+  stringTextarea: 'stringTextarea',
 };
 
 describe('setFieldsAdaptor', () => {
@@ -137,5 +63,37 @@ describe('setFieldsAdaptor', () => {
   });
   test('Valid parameter should return correct object', () => {
     expect(setFieldsAdaptor(setFieldsAdaptorParams as any)).toEqual(setFieldsAdaptorResult);
+  });
+});
+
+const submitFieldsAdaptorParams = {
+  string: 'unitTest',
+  number: 1,
+  array: [53],
+  stringTime: '2021-04-29T17:34:15+08:00',
+  momentTime: moment('2021-05-01T20:19:57+08:00'),
+  innerTime: [moment('2021-05-01T20:19:57+08:00'), moment('2021-05-02T20:19:57+08:00')],
+};
+
+const submitFieldsAdaptorResult = {
+  string: 'unitTest',
+  number: 1,
+  array: [53],
+  stringTime: '2021-04-29T17:34:15+08:00',
+  momentTime: '2021-05-01T20:19:57+08:00',
+  innerTime: ['2021-05-01T20:19:57+08:00', '2021-05-02T20:19:57+08:00'],
+};
+
+describe('submitFieldsAdaptor', () => {
+  test('Invalid parameter should return empty object', () => {
+    expect(submitFieldsAdaptor(null as any)).toEqual({});
+    expect(submitFieldsAdaptor([] as any)).toEqual({});
+    expect(submitFieldsAdaptor({} as any)).toEqual({});
+    expect(submitFieldsAdaptor(undefined as any)).toEqual({});
+  });
+  test('Valid parameter should return correct object', () => {
+    expect(submitFieldsAdaptor(submitFieldsAdaptorParams as any)).toEqual(
+      submitFieldsAdaptorResult,
+    );
   });
 });
