@@ -100,13 +100,15 @@ const errorHandler = (error: ResponseError) => {
         message.error({
           content: error.data.message,
           key: 'process',
-          duration: 20,
+          duration: 30,
+          className: 'process-loading',
         });
       } else {
         message.error({
           content: 'Business Error, please try again.',
           key: 'process',
-          duration: 20,
+          duration: 30,
+          className: 'process-loading',
         });
       }
       break;
@@ -114,14 +116,16 @@ const errorHandler = (error: ResponseError) => {
       message.error({
         content: `${error.response.status} ${error.response.statusText}. Please try again.`,
         key: 'process',
-        duration: 20,
+        duration: 30,
+        className: 'process-loading',
       });
       break;
     case 'TypeError':
       message.error({
         content: `Network error. Please try again.`,
         key: 'process',
-        duration: 20,
+        duration: 30,
+        className: 'process-loading',
       });
       break;
     default:

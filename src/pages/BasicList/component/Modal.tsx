@@ -26,7 +26,12 @@ const Modal = ({
   });
   const request = useRequest(
     (values: any) => {
-      message.loading({ content: 'Processing...', key: 'process', duration: 0 });
+      message.loading({
+        content: 'Processing...',
+        key: 'process',
+        duration: 0,
+        className: 'process-loading',
+      });
       const { uri, method, ...formValues } = values;
       return {
         url: `${uri}`,

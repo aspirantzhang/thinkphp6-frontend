@@ -751,15 +751,6 @@ export default {
         },
         dataSource: [
           {
-            id: 2,
-            admin_name: 'e2eUser',
-            display_name: '',
-            create_time: '2021-04-29T17:34:15+08:00',
-            delete_time: null,
-            status: 1,
-            groups: [],
-          },
-          {
             id: 1,
             admin_name: 'admin',
             display_name: 'Admin',
@@ -796,7 +787,17 @@ export default {
       },
     });
   },
-  'POST /api/admins': (req: Request, res: Response) => {
+  'POST /api/admins': async (req: Request, res: Response) => {
+    const { admin_name, password } = req.body;
+    await waitTime(1000);
+    if (admin_name === 'invalid' && password === 'invalid') {
+      res.send({
+        success: false,
+        message: 'Error Message.',
+        data: [],
+      });
+      return;
+    }
     res.send({
       success: true,
       message: 'Add successfully.',
