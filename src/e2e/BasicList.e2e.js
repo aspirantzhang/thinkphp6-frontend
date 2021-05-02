@@ -3,6 +3,8 @@ import * as pti from 'puppeteer-to-istanbul';
 
 const BASE_URL = `http://localhost:${process.env.PORT || 8000}`;
 
+console.log(process.env);
+
 const { HEADLESS } = process.env;
 let puppeteerOption = {
   headless: false,
