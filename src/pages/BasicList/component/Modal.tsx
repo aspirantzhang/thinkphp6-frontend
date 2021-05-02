@@ -30,7 +30,7 @@ const Modal = ({
         content: 'Processing...',
         key: 'process',
         duration: 0,
-        className: 'process-loading',
+        className: 'process-message',
       });
       const { uri, method, ...formValues } = values;
       return {
@@ -47,6 +47,8 @@ const Modal = ({
         message.success({
           content: data.message,
           key: 'process',
+          className: 'process-message',
+          duration: 30000,
         });
         hideModal(true);
       },
@@ -108,6 +110,7 @@ const Modal = ({
         footer={ActionBuilder(init?.data?.layout?.actions[0]?.data, actionHandler, request.loading)}
         maskClosable={false}
         forceRender
+        className="basic-list-modal"
       >
         {init?.loading ? (
           <Spin className={styles.formSpin} tip="Loading..." />
