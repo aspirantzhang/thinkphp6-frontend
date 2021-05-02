@@ -1,5 +1,13 @@
 import { Request, Response } from 'express';
 
+const waitTime = (time: number = 100) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(true);
+    }, time);
+  });
+};
+
 export default {
   'GET /api/admins/info': (req: Request, res: Response) => {
     res.send({
@@ -54,16 +62,27 @@ export default {
       phone: '0752-268888888',
     });
   },
-  'POST /api/admins/login': (req: Request, res: Response) => {
+  'POST /api/admins/login': async (req: Request, res: Response) => {
+    const { password, username } = req.body;
+    await waitTime(1000);
+
+    if (username === 'admin' && password === 'admin') {
+      res.send({
+        success: true,
+        message: '',
+        data: {
+          id: 1,
+          admin_name: 'admin',
+        },
+        currentAuthority: 'admin',
+        type: 'account',
+      });
+      return;
+    }
+
     res.send({
-      success: true,
-      message: '',
-      data: {
-        id: 1,
-        admin_name: 'admin',
-      },
-      currentAuthority: 'admin',
-      type: 'account',
+      success: false,
+      message: 'Login failed',
     });
   },
   'GET /api/admins/add': (req: Request, res: Response) => {
@@ -215,7 +234,344 @@ export default {
       },
     });
   },
+  'GET /api/admins/:id': (req: Request, res: Response) => {
+    res.send({
+      success: true,
+      message: '',
+      data: {
+        page: { name: 'admin-edit', title: 'Admin Edit', type: 'page' },
+        layout: {
+          tabs: [
+            {
+              name: 'basic',
+              title: 'Basic',
+              data: [
+                {
+                  name: 'admin_name',
+                  title: 'Admin Name',
+                  type: 'text',
+                  data: [],
+                  hideInColumn: null,
+                  sorter: null,
+                  editDisabled: true,
+                  mode: null,
+                },
+                {
+                  name: 'display_name',
+                  title: 'Display Name',
+                  type: 'text',
+                  data: [],
+                  hideInColumn: null,
+                  sorter: null,
+                  editDisabled: null,
+                  mode: null,
+                },
+                {
+                  name: 'groups',
+                  title: 'Groups',
+                  type: 'tree',
+                  data: [
+                    {
+                      id: 53,
+                      parent_id: 0,
+                      group_name: 'Admin Group',
+                      create_time: '2020-09-21T00:10:30+08:00',
+                      delete_time: null,
+                      status: 1,
+                      value: 53,
+                      title: 'Admin Group',
+                      depth: 1,
+                    },
+                  ],
+                  hideInColumn: null,
+                  sorter: null,
+                  editDisabled: null,
+                  mode: null,
+                },
+                {
+                  name: 'create_time',
+                  title: 'Create Time',
+                  type: 'datetime',
+                  data: [],
+                  hideInColumn: null,
+                  sorter: null,
+                  editDisabled: null,
+                  mode: null,
+                },
+                {
+                  name: 'update_time',
+                  title: 'Update Time',
+                  type: 'datetime',
+                  data: [],
+                  hideInColumn: null,
+                  sorter: null,
+                  editDisabled: null,
+                  mode: null,
+                },
+                {
+                  name: 'status',
+                  title: 'Status',
+                  type: 'switch',
+                  data: [
+                    { title: 'Enabled', value: 1 },
+                    { title: 'Disabled', value: 0 },
+                  ],
+                  hideInColumn: null,
+                  sorter: null,
+                  editDisabled: null,
+                  mode: null,
+                },
+              ],
+            },
+          ],
+          actions: [
+            {
+              name: 'actions',
+              title: 'Actions',
+              data: [
+                {
+                  component: 'button',
+                  type: 'dashed',
+                  name: 'reset',
+                  title: 'Reset',
+                  call: 'reset',
+                  method: null,
+                  uri: null,
+                },
+                {
+                  component: 'button',
+                  type: 'default',
+                  name: 'cancel',
+                  title: 'Cancel',
+                  call: 'cancel',
+                  method: null,
+                  uri: null,
+                },
+                {
+                  component: 'button',
+                  type: 'primary',
+                  name: 'submit',
+                  title: 'Submit',
+                  call: 'submit',
+                  method: 'put',
+                  uri: '/api/admins/1',
+                },
+              ],
+            },
+          ],
+        },
+        dataSource: {
+          id: 1,
+          admin_name: 'admin',
+          display_name: 'Admin',
+          create_time: '2021-04-13T13:28:28+08:00',
+          update_time: '2021-04-13T13:32:52+08:00',
+          status: 1,
+          groups: [53],
+        },
+      },
+    });
+  },
   'GET /api/admins': (req: Request, res: Response) => {
+    // in trash
+    if (req.query.trash === 'onlyTrashed') {
+      res.send({
+        success: true,
+        message: '',
+        data: {
+          page: {
+            name: 'admin-list',
+            title: 'Admin List',
+            type: 'basic-list',
+            searchBar: true,
+          },
+          layout: {
+            tableColumn: [
+              {
+                name: 'admin_name',
+                title: 'Admin Name',
+                type: 'text',
+                data: [],
+                hideInColumn: null,
+                sorter: null,
+                editDisabled: null,
+                mode: null,
+              },
+              {
+                name: 'groups',
+                title: 'Groups',
+                type: 'tree',
+                data: [
+                  {
+                    id: 53,
+                    parent_id: 0,
+                    group_name: 'Admin Group',
+                    create_time: '2020-09-21T00:10:30+08:00',
+                    delete_time: null,
+                    status: 1,
+                    value: 53,
+                    title: 'Admin Group',
+                    depth: 1,
+                  },
+                ],
+                hideInColumn: true,
+                sorter: null,
+                editDisabled: null,
+                mode: null,
+              },
+              {
+                name: 'display_name',
+                title: 'Display Name',
+                type: 'text',
+                data: [],
+                hideInColumn: null,
+                sorter: null,
+                editDisabled: null,
+                mode: null,
+              },
+              {
+                name: 'create_time',
+                title: 'Create Time',
+                type: 'datetime',
+                data: [],
+                hideInColumn: null,
+                sorter: true,
+                editDisabled: null,
+                mode: null,
+              },
+              {
+                name: 'status',
+                title: 'Status',
+                type: 'switch',
+                data: [
+                  {
+                    title: 'Enabled',
+                    value: 1,
+                  },
+                  {
+                    title: 'Disabled',
+                    value: 0,
+                  },
+                ],
+                hideInColumn: null,
+                sorter: null,
+                editDisabled: null,
+                mode: null,
+              },
+              {
+                name: 'trash',
+                title: 'Trash',
+                type: 'select',
+                data: [
+                  {
+                    title: 'Only Trashed',
+                    value: 'onlyTrashed',
+                  },
+                  {
+                    title: 'With Trashed',
+                    value: 'withTrashed',
+                  },
+                  {
+                    title: 'Without Trashed',
+                    value: 'withoutTrashed',
+                  },
+                ],
+                hideInColumn: true,
+                sorter: null,
+                editDisabled: null,
+                mode: '',
+              },
+              {
+                name: 'actions',
+                title: 'Actions',
+                type: 'actions',
+                data: [
+                  {
+                    component: 'button',
+                    type: 'primary',
+                    name: 'edit',
+                    title: 'Edit',
+                    call: 'modal',
+                    method: null,
+                    uri: '/api/admins/:id',
+                  },
+                  {
+                    component: 'button',
+                    type: 'default',
+                    name: 'delete',
+                    title: 'Delete',
+                    call: 'delete',
+                    method: 'post',
+                    uri: '/api/admins/delete',
+                  },
+                ],
+                hideInColumn: null,
+                sorter: null,
+                editDisabled: null,
+                mode: null,
+              },
+            ],
+            tableToolBar: [
+              {
+                component: 'button',
+                type: 'primary',
+                name: 'add',
+                title: 'Add',
+                call: 'modal',
+                method: null,
+                uri: '/api/admins/add',
+              },
+              {
+                component: 'button',
+                type: 'default',
+                name: 'reload',
+                title: 'Reload',
+                call: 'reload',
+                method: null,
+                uri: null,
+              },
+            ],
+            batchToolBar: [
+              {
+                component: 'button',
+                type: 'danger',
+                name: 'delete-permanently',
+                title: 'Delete Permanently',
+                call: 'deletePermanently',
+                method: 'post',
+                uri: '/api/admins/delete',
+              },
+              {
+                component: 'button',
+                type: 'default',
+                name: 'restore',
+                title: 'Restore',
+                call: 'restore',
+                method: 'post',
+                uri: '/api/admins/restore',
+              },
+            ],
+          },
+          dataSource: [
+            {
+              id: 1001,
+              admin_name: 'trashUser',
+              display_name: '',
+              create_time: '2021-04-29T17:34:15+08:00',
+              delete_time: null,
+              status: 1,
+              groups: [],
+            },
+          ],
+          meta: {
+            total: 1,
+            per_page: 10,
+            page: 1,
+          },
+        },
+      });
+      return;
+    }
     res.send({
       success: true,
       message: '',
@@ -444,6 +800,20 @@ export default {
     res.send({
       success: true,
       message: 'Add successfully.',
+      data: [],
+    });
+  },
+  'PUT /api/admins/:id': (req: Request, res: Response) => {
+    res.send({
+      success: true,
+      message: 'Edit successfully.',
+      data: [],
+    });
+  },
+  'POST /api/admins/delete': (req: Request, res: Response) => {
+    res.send({
+      success: true,
+      message: 'Delete successfully.',
       data: [],
     });
   },
