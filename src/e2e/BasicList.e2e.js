@@ -3,11 +3,17 @@ import * as pti from 'puppeteer-to-istanbul';
 
 const BASE_URL = `http://localhost:${process.env.PORT || 8000}`;
 
-test('BasicList', async () => {
-  const browser = await puppeteer.launch({
+const { NODE_ENV } = process.env;
+let puppeteerOption = {};
+if (NODE_ENV === 'test') {
+  puppeteerOption = {
     headless: false,
-    slowMo: 40,
-  });
+    slowMo: 25,
+  };
+}
+
+test('BasicList', async () => {
+  const browser = await puppeteer.launch(puppeteerOption);
   const page = await browser.newPage();
 
   // Enable both JavaScript and CSS coverage
