@@ -4,12 +4,12 @@ import * as pti from 'puppeteer-to-istanbul';
 const BASE_URL = `http://localhost:${process.env.PORT || 8000}`;
 
 const { NODE_ENV } = process.env;
-let puppeteerOption = {};
+let puppeteerOption = {
+  headless: false,
+  slowMo: 25,
+};
 if (NODE_ENV === 'test') {
-  puppeteerOption = {
-    headless: false,
-    slowMo: 25,
-  };
+  puppeteerOption = {};
 }
 
 test('BasicList', async () => {
