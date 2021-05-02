@@ -4,11 +4,14 @@ import * as pti from 'puppeteer-to-istanbul';
 const BASE_URL = `http://localhost:${process.env.PORT || 8000}`;
 
 const { CI } = process.env;
+console.log(process.env.CI);
+console.log(process.env);
 let puppeteerOption = {
   headless: false,
   slowMo: 25,
 };
 if (CI === true) {
+  console.log('here');
   puppeteerOption = {};
 }
 
