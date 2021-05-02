@@ -1,8 +1,8 @@
 {
-  "name": "ant-design-pro",
-  "version": "5.0.0-beta.2",
+  "name": "octopus-backend",
+  "version": "0.0.1",
   "private": true,
-  "description": "An out-of-box UI solution for enterprise applications",
+  "description": "",
   "scripts": {
     "analyze": "cross-env ANALYZE=1 umi build",
     "build": "umi build",
