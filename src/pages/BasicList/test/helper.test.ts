@@ -1,4 +1,4 @@
-import { setFieldsAdaptor, submitFieldsAdaptor } from './helper';
+import { setFieldsAdaptor, submitFieldsAdaptor } from '../helper';
 import moment from 'moment';
 
 const setFieldsAdaptorParams = {
@@ -60,6 +60,10 @@ describe('setFieldsAdaptor', () => {
     expect(setFieldsAdaptor([] as any)).toEqual({});
     expect(setFieldsAdaptor({} as any)).toEqual({});
     expect(setFieldsAdaptor(undefined as any)).toEqual({});
+    expect(setFieldsAdaptor(NaN as any)).toEqual({});
+    expect(setFieldsAdaptor(true as any)).toEqual({});
+    expect(setFieldsAdaptor(false as any)).toEqual({});
+    expect(setFieldsAdaptor('' as any)).toEqual({});
   });
   test('Valid parameter should return correct object', () => {
     expect(setFieldsAdaptor(setFieldsAdaptorParams as any)).toEqual(setFieldsAdaptorResult);
@@ -93,6 +97,10 @@ describe('submitFieldsAdaptor', () => {
     expect(submitFieldsAdaptor([] as any)).toEqual({});
     expect(submitFieldsAdaptor({} as any)).toEqual({});
     expect(submitFieldsAdaptor(undefined as any)).toEqual({});
+    expect(submitFieldsAdaptor(NaN as any)).toEqual({});
+    expect(submitFieldsAdaptor(true as any)).toEqual({});
+    expect(submitFieldsAdaptor(false as any)).toEqual({});
+    expect(submitFieldsAdaptor('' as any)).toEqual({});
   });
   test('Valid parameter should return correct object', () => {
     expect(submitFieldsAdaptor(submitFieldsAdaptorParams as any)).toEqual(
