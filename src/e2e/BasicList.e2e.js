@@ -91,7 +91,7 @@ test('BasicList', async () => {
   expect(await page.$eval('.basic-list-modal #admin_name', (el) => el.value)).toBe('admin');
   await page.click('.basic-list-modal .submit-btn');
   await page.waitForSelector('.process-message span:nth-child(2)');
-  await page.waitForTimeout(500);
+  await page.waitForTimeout(1000);
   expect(await page.$eval('.process-message span:nth-child(2)', (el) => el.innerText)).toBe(
     'Edit successfully.',
   );
@@ -99,11 +99,13 @@ test('BasicList', async () => {
 
   // delete
   await page.click('.basic-list-table .delete-btn');
+  await page.waitForTimeout(500);
   await page.waitForSelector('.batch-confirm-modal');
   await page.waitForSelector('.batch-overview-table');
   expect(await page.$eval('.batch-overview-table td:nth-child(2)', (el) => el.innerText)).toBe(
     'admin',
   );
+  await page.waitForSelector('.batch-confirm-modal .ant-btn-dangerous');
   await page.click('.batch-confirm-modal .ant-btn-dangerous');
   await page.waitForTimeout(500);
   expect(await page.$eval('.process-message span:nth-child(2)', (el) => el.innerText)).toBe(
