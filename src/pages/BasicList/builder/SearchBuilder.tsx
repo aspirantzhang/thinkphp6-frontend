@@ -1,8 +1,9 @@
+import React from 'react';
 import moment from 'moment';
 import { Input, Form, DatePicker, TreeSelect, Col, Select } from 'antd';
 
 const SearchBuilder = (data: BasicListApi.Field[] | undefined) => {
-  return (data || []).map((field) => {
+  return (Array.isArray(data) ? data : []).map((field) => {
     const basicAttr = {
       label: field.title,
       name: field.name,
@@ -52,7 +53,7 @@ const SearchBuilder = (data: BasicListApi.Field[] | undefined) => {
           <Col sm={6} key={field.name}>
             <Form.Item {...basicAttr} valuePropName="checked">
               <Select>
-                {(field.data || []).map((option: any) => {
+                {(Array.isArray(field.data) ? field.data : []).map((option: any) => {
                   return (
                     <Select.Option value={option.value} key={option.value}>
                       {option.title}
