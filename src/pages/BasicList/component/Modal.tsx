@@ -48,7 +48,6 @@ const Modal = ({
           content: data.message,
           key: 'process',
           className: 'process-message',
-          duration: 30000,
         });
         hideModal(true);
       },

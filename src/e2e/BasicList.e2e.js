@@ -38,8 +38,8 @@ test('BasicList', async () => {
 
   // invalid username
   await page.waitForSelector('#admin_name');
-  await page.type('#admin_name', 'invalid');
-  await page.type('#password', 'invalid');
+  await page.type('.basic-list-modal #admin_name', 'invalid');
+  await page.type('.basic-list-modal #password', 'invalid');
   await page.click('.basic-list-modal .btn-submit');
   await page.waitForSelector('.process-message span:nth-child(2)');
   expect(await page.$eval('.process-message span:nth-child(2)', (el) => el.innerText)).toBe(
@@ -51,19 +51,22 @@ test('BasicList', async () => {
   );
 
   // valid username
-  await page.type('#admin_name', 'e2e');
-  await page.type('#password', 'e2e');
+  await page.type('.basic-list-modal #admin_name', 'e2e');
+  await page.type('.basic-list-modal #password', 'e2e');
   await page.click('.basic-list-modal .btn-submit');
-  await page.waitForSelector('tbody tr:nth-child(1) td:nth-child(3)');
-  expect(await page.$eval('tbody tr:nth-child(1) td:nth-child(3)', (el) => el.innerText)).toBe(
-    'admin',
-  );
+  await page.waitForSelector('.basic-list-table tbody tr:nth-child(1) td:nth-child(3)');
+  expect(
+    await page.$eval(
+      '.basic-list-table tbody tr:nth-child(1) td:nth-child(3)',
+      (el) => el.innerText,
+    ),
+  ).toBe('admin');
   await page.waitForTimeout(2000);
 
-  // edit
+  // modal edit
   await page.click('.basic-list-table .btn-edit');
-  await page.waitForSelector('#admin_name');
-  expect(await page.$eval('#admin_name', (el) => el.value)).toBe('admin');
+  await page.waitForSelector('.basic-list-modal #admin_name');
+  expect(await page.$eval('.basic-list-modal #admin_name', (el) => el.value)).toBe('admin');
   await page.click('.basic-list-modal .btn-submit');
   await page.waitForSelector('.process-message span:nth-child(2)');
   await page.waitForTimeout(500);
@@ -84,6 +87,58 @@ test('BasicList', async () => {
   expect(await page.$eval('.process-message span:nth-child(2)', (el) => el.innerText)).toBe(
     'Delete successfully.',
   );
+  await page.waitForTimeout(1000);
+
+  // batch delete
+  await page.waitForSelector('.basic-list-table .ant-table-tbody .ant-checkbox-input:nth-child(1)');
+  await page.click('.basic-list-table .ant-table-tbody .ant-checkbox-input:nth-child(1)');
+  await page.click('.basic-list-table .btn-delete');
+  await page.waitForSelector('.batch-confirm-modal');
+  await page.waitForSelector('.batch-overview-table');
+  expect(await page.$eval('.batch-overview-table td:nth-child(2)', (el) => el.innerText)).toBe(
+    'admin',
+  );
+  await page.click('.batch-confirm-modal .ant-btn');
+  await page.waitForTimeout(1000);
+
+  // open search
+  await page.waitForSelector('.before-table-layout .search-btn');
+  await page.click('.before-table-layout .search-btn');
+  await page.waitForTimeout(1000);
+  await page.waitForSelector('.basic-list .search-layout');
+
+  // go to trash
+  await page.click('.search-layout #trash');
+  await page.waitForTimeout(1000);
+  await page.click("div[title='Only Trashed']");
+  await page.waitForTimeout(1000);
+  await page.waitForSelector('.search-layout .submit-btn');
+  await page.click('.search-layout .submit-btn');
+  await page.waitForTimeout(1000);
+  await page.waitForSelector('.basic-list-table tbody tr:nth-child(1) td:nth-child(3)');
+  expect(
+    await page.$eval(
+      '.basic-list-table tbody tr:nth-child(1) td:nth-child(3)',
+      (el) => el.innerText,
+    ),
+  ).toBe('trashUser');
+  // search clear
+  await page.waitForSelector('.search-layout .clear-btn');
+  await page.click('.search-layout .clear-btn');
+  await page.waitForTimeout(1000);
+  await page.waitForSelector('.basic-list-table tbody tr:nth-child(1) td:nth-child(3)');
+  expect(
+    await page.$eval(
+      '.basic-list-table tbody tr:nth-child(1) td:nth-child(3)',
+      (el) => el.innerText,
+    ),
+  ).toBe('admin');
+
+  // close search
+  await page.waitForSelector('.before-table-layout .search-btn');
+  await page.click('.before-table-layout .search-btn');
+  await page.waitForTimeout(1000);
+  expect((await page.$('.basic-list .search-layout')) === null).toBeTruthy();
 
   // Disable both JavaScript and CSS coverage
   const [jsCoverage, cssCoverage] = await Promise.all([

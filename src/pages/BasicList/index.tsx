@@ -234,7 +234,7 @@ const Index = () => {
                 <Row>
                   <Col sm={24} className={styles.textAlignRight}>
                     <Space>
-                      <Button type="primary" htmlType="submit">
+                      <Button type="primary" htmlType="submit" className="submit-btn">
                         Submit
                       </Button>
                       <Button
@@ -244,6 +244,7 @@ const Index = () => {
                           setSelectedRowKeys([]);
                           setSelectedRows([]);
                         }}
+                        className="clear-btn"
                       >
                         Clear
                       </Button>
@@ -273,6 +274,7 @@ const Index = () => {
                   searchAction.toggle();
                 }}
                 type={searchVisible ? 'primary' : 'default'}
+                className="search-btn"
               />
             </Tooltip>
             {ActionBuilder(init?.data?.layout?.tableToolBar, actionHandler)}
