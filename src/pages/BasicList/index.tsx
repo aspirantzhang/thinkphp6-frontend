@@ -67,7 +67,7 @@ const Index = () => {
         content: 'Processing...',
         key: 'process',
         duration: 0,
-        className: 'process-loading',
+        className: 'process-message',
       });
       const { uri, method, ...formValues } = values;
       return {
@@ -84,6 +84,7 @@ const Index = () => {
         message.success({
           content: data?.message,
           key: 'process',
+          className: 'process-message',
         });
         init.run();
       },
@@ -163,6 +164,7 @@ const Index = () => {
             });
           },
           onCancel() {},
+          className: 'batch-confirm-modal',
         });
         break;
       }
@@ -180,6 +182,7 @@ const Index = () => {
         columns={[tableColumns[0] || {}, tableColumns[1] || {}]}
         dataSource={dataSource}
         pagination={false}
+        className="batch-overview-table"
       />
     );
   }
@@ -217,7 +220,7 @@ const Index = () => {
     return (
       <QueueAnim type="top">
         {searchVisible && (
-          <div key="searchForm">
+          <div key="searchForm" className="search-layout">
             <Card className={styles.searchForm} key="searchForm">
               <Form onFinish={onFinish} form={searchForm}>
                 <Row gutter={24}>
@@ -231,7 +234,7 @@ const Index = () => {
                 <Row>
                   <Col sm={24} className={styles.textAlignRight}>
                     <Space>
-                      <Button type="primary" htmlType="submit">
+                      <Button type="primary" htmlType="submit" className="submit-btn">
                         Submit
                       </Button>
                       <Button
@@ -241,6 +244,7 @@ const Index = () => {
                           setSelectedRowKeys([]);
                           setSelectedRows([]);
                         }}
+                        className="clear-btn"
                       >
                         Clear
                       </Button>
@@ -256,7 +260,7 @@ const Index = () => {
   };
   const beforeTableLayout = () => {
     return (
-      <Row>
+      <Row className="before-table-layout">
         <Col xs={24} sm={12}>
           ...
         </Col>
@@ -270,6 +274,7 @@ const Index = () => {
                   searchAction.toggle();
                 }}
                 type={searchVisible ? 'primary' : 'default'}
+                className="search-btn"
               />
             </Tooltip>
             {ActionBuilder(init?.data?.layout?.tableToolBar, actionHandler)}
@@ -280,7 +285,7 @@ const Index = () => {
   };
   const afterTableLayout = () => {
     return (
-      <Row>
+      <Row className="after-table-layout">
         <Col xs={24} sm={12}>
           ...
         </Col>
@@ -312,6 +317,7 @@ const Index = () => {
       header={{
         title: init.data?.page?.title,
       }}
+      className="basic-list"
     >
       {searchLayout()}
       <Card>
@@ -324,11 +330,12 @@ const Index = () => {
           loading={init?.loading}
           onChange={tableChangeHandler}
           rowSelection={rowSelection}
+          className="basic-list-table"
         />
         {afterTableLayout()}
       </Card>
       <Modal modalVisible={modalVisible} hideModal={hideModal} modalUri={modalUri} />
-      <FooterToolbar extra={batchToolbar()} />
+      <FooterToolbar extra={batchToolbar()} className="batch-toolbar" />
     </PageContainer>
   );
 };

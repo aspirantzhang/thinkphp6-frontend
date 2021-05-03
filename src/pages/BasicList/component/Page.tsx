@@ -27,7 +27,7 @@ const Page = () => {
         content: 'Processing...',
         key: 'process',
         duration: 0,
-        className: 'process-loading',
+        className: 'process-message',
       });
       const { uri, method, ...formValues } = values;
       return {
@@ -44,6 +44,7 @@ const Page = () => {
         message.success({
           content: data.message,
           key: 'process',
+          className: 'process-message',
         });
         history.goBack();
       },

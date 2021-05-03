@@ -17,7 +17,7 @@ const ActionBuilder = (
             actionHandler(action, record);
           }}
           loading={loading}
-          className={`btn-${action.name}`}
+          className={`${action.name.replace(/[^\w\d]/g, '-')}-btn`}
         >
           {action.title}
         </Button>
