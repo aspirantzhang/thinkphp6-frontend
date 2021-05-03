@@ -147,7 +147,8 @@ export default {
       },
     });
   },
-  'GET /api/models/design/:id': (req: Request, res: Response) => {
+  'GET /api/models/design/:id': async (req: Request, res: Response) => {
+    await waitTime(1000);
     res.send({ success: true, message: '', data: { data: { routeName: 'e2es' } } });
   },
 };
