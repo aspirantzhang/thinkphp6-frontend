@@ -32,9 +32,9 @@
     "test:all": "node ./tests/run-tests.js",
     "test:component": "umi test ./src/components",
     "tsc": "tsc --noEmit",
-    "coverage:html": "nyc report --reporter=html",
-    "coverage:cov": "nyc report --reporter=text-lcov > coverage.lcov",
-    "all": "yarn lint && yarn tsc && yarn test:all"
+    "e2e:html": "nyc report --reporter=html",
+    "e2e:cov": "nyc report --reporter=text-lcov > coverage.lcov",
+    "all": "yarn lint && yarn test:all"
   },
   "lint-staged": {
     "**/*.less": "stylelint --syntax less",
@@ -89,6 +89,7 @@
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
     "@types/react-helmet": "^6.1.0",
+    "@types/react-test-renderer": "^17.0.1",
     "@types/swagger-ui-react": "^3.35.0",
     "@umijs/fabric": "^2.5.2",
     "@umijs/plugin-blocks": "^2.0.5",
@@ -112,6 +113,7 @@
     "prettier": "^2.0.1",
     "puppeteer": "^8.0.0",
     "puppeteer-to-istanbul": "^1.4.0",
+    "react-test-renderer": "^17.0.2",
     "standard": "^16.0.3",
     "stylelint": "^13.0.0",
     "typescript": "^4.2.2"
