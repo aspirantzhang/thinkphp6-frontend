@@ -1,3 +1,4 @@
+import React from 'react';
 import { Button } from 'antd';
 import type { ButtonType } from 'antd/lib/button';
 
@@ -7,7 +8,7 @@ const ActionBuilder = (
   loading = false,
   record: Record<string, unknown> = {},
 ) => {
-  return (actions || []).map((action) => {
+  return (Array.isArray(actions) ? actions : []).map((action) => {
     if (action.component === 'button') {
       return (
         <Button

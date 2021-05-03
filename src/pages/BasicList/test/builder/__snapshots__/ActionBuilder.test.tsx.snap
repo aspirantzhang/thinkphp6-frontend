@@ -1,0 +1,24 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ActionBuilder snapshot test 1`] = `
+Array [
+  <button
+    className="ant-btn ant-btn-primary edit-btn"
+    onClick={[Function]}
+    type="button"
+  >
+    <span>
+      Edit
+    </span>
+  </button>,
+  <button
+    className="ant-btn ant-btn-default delete-btn"
+    onClick={[Function]}
+    type="button"
+  >
+    <span>
+      Delete
+    </span>
+  </button>,
+]
+`;
