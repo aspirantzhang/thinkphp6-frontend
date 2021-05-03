@@ -780,7 +780,7 @@ export default {
           },
         ],
         meta: {
-          total: 2,
+          total: 1,
           per_page: 10,
           page: 1,
         },
