@@ -54,7 +54,6 @@ jobs:
           key: node_modules-${{ hashFiles('**/package-temp-dir/package-lock.json') }}
 
       - run: npm run lint
-      - run: npm run tsc
       - run: npm run test:all
         env:
           CI: true
