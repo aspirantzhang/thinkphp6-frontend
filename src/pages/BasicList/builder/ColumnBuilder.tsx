@@ -7,7 +7,7 @@ const ColumnBuilder = (
   actionHandler: BasicListApi.ActionHandler,
 ) => {
   const newColumns: BasicListApi.Field[] = [];
-  (tableColumn || []).forEach((column) => {
+  (Array.isArray(tableColumn) ? tableColumn : []).forEach((column) => {
     if (column.hideInColumn !== true) {
       switch (column.type) {
         case 'datetime':
