@@ -122,6 +122,7 @@ test('BasicList', async () => {
   expect(await page.$eval('.batch-overview-table td:nth-child(2)', (el) => el.innerText)).toBe(
     'admin',
   );
+  await page.waitForSelector('.batch-confirm-modal .ant-btn');
   await page.click('.batch-confirm-modal .ant-btn');
   await page.waitForTimeout(1000);
 
