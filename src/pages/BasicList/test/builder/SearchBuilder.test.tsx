@@ -51,7 +51,7 @@ const validSearch = [
 
 describe('SearchBuilder', () => {
   test('snapshot test', () => {
-    const container = render(<Form>{SearchBuilder(validSearch as any)}</Form>);
+    const { container } = render(<Form>{SearchBuilder(validSearch as any)}</Form>);
     expect(container).toMatchSnapshot();
   });
 
