@@ -17,6 +17,7 @@ module.exports = {
     '.test.tsx',
     '.test.ts',
     '.d.ts',
+    'antd-test-setup.js',
   ],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
