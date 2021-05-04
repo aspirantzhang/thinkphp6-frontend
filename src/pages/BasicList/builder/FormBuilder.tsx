@@ -1,7 +1,8 @@
+import React from 'react';
 import { Input, Form, DatePicker, TreeSelect, Switch, InputNumber, Radio } from 'antd';
 
 const FormBuilder = (data: BasicListApi.Field[] | undefined) => {
-  return (data || []).map((field) => {
+  return (Array.isArray(data) ? data : []).map((field) => {
     const basicAttr = {
       label: field.title,
       name: field.name,
