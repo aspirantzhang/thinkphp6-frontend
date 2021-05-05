@@ -17,9 +17,9 @@ exports[`SearchBuilder snapshot test 1`] = `
           <label
             class=""
             for="single_line_text"
-            title="Single Line Text"
+            title="Single-line Text"
           >
-            Single Line Text
+            Single-line Text
           </label>
         </div>
         <div
@@ -54,10 +54,10 @@ exports[`SearchBuilder snapshot test 1`] = `
         >
           <label
             class=""
-            for="textarea"
-            title="Textarea"
+            for="multi_line_text"
+            title="Multi-line Text"
           >
-            Textarea
+            Multi-line Text
           </label>
         </div>
         <div
@@ -72,7 +72,7 @@ exports[`SearchBuilder snapshot test 1`] = `
               <input
                 class="ant-input ant-input-disabled"
                 disabled=""
-                id="textarea"
+                id="multi_line_text"
                 type="text"
                 value=""
               />

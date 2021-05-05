@@ -27,7 +27,7 @@ export default {
               data: [
                 {
                   name: 'single_line_text',
-                  title: 'Single Line Text',
+                  title: 'Single-line Text',
                   type: 'input',
                   data: [],
                   hideInColumn: null,
@@ -46,8 +46,8 @@ export default {
                   mode: null,
                 },
                 {
-                  name: 'textarea',
-                  title: 'Textarea',
+                  name: 'multi_line_text',
+                  title: 'Multi-line Text',
                   type: 'textarea',
                   data: [],
                   hideInColumn: true,
@@ -172,7 +172,7 @@ export default {
               data: [
                 {
                   name: 'single_line_text',
-                  title: 'Single Line Text',
+                  title: 'Single-line Text',
                   type: 'input',
                   data: [],
                   hideInColumn: null,
@@ -181,8 +181,8 @@ export default {
                   mode: null,
                 },
                 {
-                  name: 'textarea',
-                  title: 'Textarea',
+                  name: 'multi_line_text',
+                  title: 'Multi-line Text',
                   type: 'textarea',
                   data: [],
                   hideInColumn: true,
@@ -313,7 +313,7 @@ export default {
             tableColumn: [
               {
                 name: 'single_line_text',
-                title: 'Single Line Text',
+                title: 'Single-line Text',
                 type: 'input',
                 data: [],
                 hideInColumn: null,
@@ -322,8 +322,8 @@ export default {
                 mode: null,
               },
               {
-                name: 'textarea',
-                title: 'Textarea',
+                name: 'multi_line_text',
+                title: 'Multi-line Text',
                 type: 'textarea',
                 data: [],
                 hideInColumn: true,
@@ -510,7 +510,7 @@ export default {
           tableColumn: [
             {
               name: 'single_line_text',
-              title: 'Single Line Text',
+              title: 'Single-line Text',
               type: 'input',
               data: [],
               hideInColumn: null,
@@ -529,8 +529,8 @@ export default {
               mode: null,
             },
             {
-              name: 'textarea',
-              title: 'Textarea',
+              name: 'multi_line_text',
+              title: 'Multi-line Text',
               type: 'textarea',
               data: [],
               hideInColumn: true,
