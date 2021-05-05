@@ -28,10 +28,10 @@ test('BasicList', async () => {
   await page.waitForNavigation();
 
   // list
-  await page.goto(`${BASE_URL}/basic-list/api/admins`);
+  await page.goto(`${BASE_URL}/basic-list/api/tests`);
   await page.waitForSelector('.ant-page-header-heading-title');
   expect(await page.$eval('.ant-page-header-heading-title', (el) => el.innerText)).toBe(
-    'Admin List',
+    'Test List',
   );
   await page.waitForSelector('.basic-list-table tbody tr:nth-child(1) td:nth-child(3)');
   expect(
@@ -39,7 +39,7 @@ test('BasicList', async () => {
       '.basic-list-table tbody tr:nth-child(1) td:nth-child(3)',
       (el) => el.innerText,
     ),
-  ).toBe('admin');
+  ).toBe('test');
   await page.waitForSelector('.before-table-layout .reload-btn');
   await page.click('.before-table-layout .reload-btn');
   await page.waitForTimeout(1000);
@@ -48,20 +48,21 @@ test('BasicList', async () => {
       '.basic-list-table tbody tr:nth-child(1) td:nth-child(3)',
       (el) => el.innerText,
     ),
-  ).toBe('admin');
+  ).toBe('test');
 
   // modal add
   await page.waitForSelector('.before-table-layout .add-btn');
   await page.click('.before-table-layout .add-btn');
   await page.waitForSelector('.basic-list-modal .ant-modal-title');
   expect(await page.$eval('.basic-list-modal .ant-modal-title', (el) => el.innerText)).toBe(
-    'Admin Add',
+    'Test Add',
   );
 
   // invalid username
-  await page.waitForSelector('#admin_name');
-  await page.type('.basic-list-modal #admin_name', 'invalid');
+  await page.waitForSelector('#test_name');
+  await page.type('.basic-list-modal #test_name', 'invalid');
   await page.type('.basic-list-modal #password', 'invalid');
+  await page.waitForSelector('.basic-list-modal .submit-btn');
   await page.click('.basic-list-modal .submit-btn');
   await page.waitForSelector('.process-message span:nth-child(2)');
   expect(await page.$eval('.process-message span:nth-child(2)', (el) => el.innerText)).toBe(
@@ -73,8 +74,9 @@ test('BasicList', async () => {
   );
 
   // valid username
-  await page.type('.basic-list-modal #admin_name', 'e2e');
+  await page.type('.basic-list-modal #test_name', 'e2e');
   await page.type('.basic-list-modal #password', 'e2e');
+  await page.waitForSelector('.basic-list-modal .submit-btn');
   await page.click('.basic-list-modal .submit-btn');
   await page.waitForSelector('.basic-list-table tbody tr:nth-child(1) td:nth-child(3)');
   expect(
@@ -82,13 +84,15 @@ test('BasicList', async () => {
       '.basic-list-table tbody tr:nth-child(1) td:nth-child(3)',
       (el) => el.innerText,
     ),
-  ).toBe('admin');
+  ).toBe('test');
   await page.waitForTimeout(2000);
 
   // modal edit
+  await page.waitForSelector('.basic-list-table .edit-btn');
   await page.click('.basic-list-table .edit-btn');
-  await page.waitForSelector('.basic-list-modal #admin_name');
-  expect(await page.$eval('.basic-list-modal #admin_name', (el) => el.value)).toBe('admin');
+  await page.waitForSelector('.basic-list-modal #test_name');
+  expect(await page.$eval('.basic-list-modal #test_name', (el) => el.value)).toBe('test');
+  await page.waitForSelector('.basic-list-modal .submit-btn');
   await page.click('.basic-list-modal .submit-btn');
   await page.waitForSelector('.process-message span:nth-child(2)');
   await page.waitForTimeout(1000);
@@ -103,7 +107,7 @@ test('BasicList', async () => {
   await page.waitForSelector('.batch-confirm-modal');
   await page.waitForSelector('.batch-overview-table');
   expect(await page.$eval('.batch-overview-table td:nth-child(2)', (el) => el.innerText)).toBe(
-    'admin',
+    'test',
   );
   await page.waitForSelector('.batch-confirm-modal .ant-btn-dangerous');
   await page.click('.batch-confirm-modal .ant-btn-dangerous');
@@ -116,11 +120,12 @@ test('BasicList', async () => {
   // batch delete
   await page.waitForSelector('.basic-list-table .ant-table-tbody .ant-checkbox-input:nth-child(1)');
   await page.click('.basic-list-table .ant-table-tbody .ant-checkbox-input:nth-child(1)');
+  await page.waitForSelector('.batch-toolbar .delete-btn');
   await page.click('.batch-toolbar .delete-btn');
   await page.waitForSelector('.batch-confirm-modal');
   await page.waitForSelector('.batch-overview-table');
   expect(await page.$eval('.batch-overview-table td:nth-child(2)', (el) => el.innerText)).toBe(
-    'admin',
+    'test',
   );
   await page.waitForSelector('.batch-confirm-modal .ant-btn');
   await page.click('.batch-confirm-modal .ant-btn');
@@ -133,8 +138,10 @@ test('BasicList', async () => {
   await page.waitForSelector('.basic-list .search-layout');
 
   // go to trash
+  await page.waitForSelector('.search-layout #trash');
   await page.click('.search-layout #trash');
-  await page.waitForTimeout(1000);
+  await page.waitForTimeout(500);
+  await page.waitForSelector("div[title='Only Trashed']");
   await page.click("div[title='Only Trashed']");
   await page.waitForTimeout(1000);
   await page.waitForSelector('.search-layout .submit-btn');
@@ -158,7 +165,7 @@ test('BasicList', async () => {
       '.basic-list-table tbody tr:nth-child(1) td:nth-child(3)',
       (el) => el.innerText,
     ),
-  ).toBe('admin');
+  ).toBe('test');
 
   // close search
   await page.waitForSelector('.before-table-layout .search-btn');
