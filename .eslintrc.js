@@ -6,6 +6,7 @@ module.exports = {
     REACT_APP_ENV: true,
   },
   rules: {
+    'linebreak-style': ['error', 'unix'],
     'no-param-reassign': ['error', { props: false }],
     '@typescript-eslint/consistent-type-definitions': 'off',
   },
