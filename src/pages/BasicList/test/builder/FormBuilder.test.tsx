@@ -12,7 +12,7 @@ const validFormData = [
   {
     name: 'single_line_text',
     key: 'single_line_text',
-    title: 'Single Line Text',
+    title: 'Single-line Text',
     type: 'input',
     disabled: true,
   },
@@ -24,9 +24,9 @@ const validFormData = [
     disabled: true,
   },
   {
-    name: 'textarea',
-    key: 'textarea',
-    title: 'Textarea',
+    name: 'multi_line_text',
+    key: 'multi_line_text',
+    title: 'Multi-line Text',
     type: 'textarea',
     disabled: true,
   },
@@ -102,8 +102,8 @@ describe('FormBuilder', () => {
 
   test('valid params', () => {
     render(<Form>{FormBuilder(validFormData as any)}</Form>);
-    expect(screen.getByLabelText('Single Line Text')).toBeInTheDocument();
-    expect(screen.getByLabelText('Textarea')).toBeInTheDocument();
+    expect(screen.getByLabelText('Single-line Text')).toBeInTheDocument();
+    expect(screen.getByLabelText('Multi-line Text')).toBeInTheDocument();
     expect(screen.getByLabelText('Password')).toBeInTheDocument();
     expect(screen.getByLabelText('Number')).toBeInTheDocument();
     expect(screen.getByLabelText('Tree')).toBeInTheDocument();

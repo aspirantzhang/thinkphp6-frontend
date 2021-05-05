@@ -11,7 +11,7 @@ import SearchBuilder from '../../builder/SearchBuilder';
 const validSearch = [
   {
     name: 'single_line_text',
-    title: 'Single Line Text',
+    title: 'Single-line Text',
     type: 'input',
     disabled: true,
   },
@@ -22,8 +22,8 @@ const validSearch = [
     disabled: true,
   },
   {
-    name: 'textarea',
-    title: 'Textarea',
+    name: 'multi_line_text',
+    title: 'Multi-line Text',
     type: 'textarea',
     disabled: true,
   },
@@ -69,8 +69,8 @@ describe('SearchBuilder', () => {
 
   test('valid params', () => {
     render(<Form>{SearchBuilder(validSearch as any)}</Form>);
-    expect(screen.getByLabelText('Single Line Text')).toBeInTheDocument();
-    expect(screen.getByLabelText('Textarea')).toBeInTheDocument();
+    expect(screen.getByLabelText('Single-line Text')).toBeInTheDocument();
+    expect(screen.getByLabelText('Multi-line Text')).toBeInTheDocument();
     expect(screen.getByLabelText('Tree')).toBeInTheDocument();
     expect(screen.getByLabelText('Datetime')).toBeInTheDocument();
     expect(screen.getByLabelText('Select')).toBeInTheDocument();
