@@ -28,6 +28,12 @@ const validSearch = [
     disabled: true,
   },
   {
+    name: 'number',
+    title: 'Number',
+    type: 'number',
+    disabled: true,
+  },
+  {
     name: 'tree',
     title: 'Tree',
     type: 'tree',
@@ -71,11 +77,13 @@ describe('SearchBuilder', () => {
     render(<Form>{SearchBuilder(validSearch as any)}</Form>);
     expect(screen.getByLabelText('Single-line Text')).toBeInTheDocument();
     expect(screen.getByLabelText('Multi-line Text')).toBeInTheDocument();
+    expect(screen.getByLabelText('Number')).toBeInTheDocument();
     expect(screen.getByLabelText('Tree')).toBeInTheDocument();
     expect(screen.getByLabelText('Datetime')).toBeInTheDocument();
     expect(screen.getByLabelText('Select')).toBeInTheDocument();
     expect(screen.getByLabelText('Switch')).toBeInTheDocument();
     expect(screen.queryByLabelText('Invalid')).not.toBeInTheDocument();
+    expect(screen.queryByLabelText('Password')).not.toBeInTheDocument();
   });
 
   test('invalid params', () => {
