@@ -24,17 +24,17 @@ const validFormData = [
     disabled: true,
   },
   {
-    name: 'number',
-    key: 'number',
-    title: 'Number',
-    type: 'number',
-    disabled: true,
-  },
-  {
     name: 'textarea',
     key: 'textarea',
     title: 'Textarea',
     type: 'textarea',
+    disabled: true,
+  },
+  {
+    name: 'number',
+    key: 'number',
+    title: 'Number',
+    type: 'number',
     disabled: true,
   },
   {
@@ -103,9 +103,9 @@ describe('FormBuilder', () => {
   test('valid params', () => {
     render(<Form>{FormBuilder(validFormData as any)}</Form>);
     expect(screen.getByLabelText('Single Line Text')).toBeInTheDocument();
+    expect(screen.getByLabelText('Textarea')).toBeInTheDocument();
     expect(screen.getByLabelText('Password')).toBeInTheDocument();
     expect(screen.getByLabelText('Number')).toBeInTheDocument();
-    expect(screen.getByLabelText('Textarea')).toBeInTheDocument();
     expect(screen.getByLabelText('Tree')).toBeInTheDocument();
     expect(screen.getByLabelText('Datetime')).toBeInTheDocument();
     expect(screen.getByLabelText('Switch')).toBeInTheDocument();
