@@ -18,6 +18,14 @@ const SearchBuilder = (data: BasicListApi.Field[] | undefined) => {
             </Form.Item>
           </Col>
         );
+      case 'textarea':
+        return (
+          <Col sm={6} key={field.name}>
+            <Form.Item {...basicAttr}>
+              <Input disabled={field.disabled} />
+            </Form.Item>
+          </Col>
+        );
       case 'datetime':
         return (
           <Col sm={12} key={field.name}>

@@ -16,6 +16,18 @@ const validSearch = [
     disabled: true,
   },
   {
+    name: 'password',
+    title: 'Password',
+    type: 'password',
+    disabled: true,
+  },
+  {
+    name: 'textarea',
+    title: 'Textarea',
+    type: 'textarea',
+    disabled: true,
+  },
+  {
     name: 'tree',
     title: 'Tree',
     type: 'tree',
@@ -57,12 +69,13 @@ describe('SearchBuilder', () => {
 
   test('valid params', () => {
     render(<Form>{SearchBuilder(validSearch as any)}</Form>);
-    expect(screen.getByText('Single Line Text')).toBeInTheDocument();
-    expect(screen.getByText('Tree')).toBeInTheDocument();
-    expect(screen.getByText('Datetime')).toBeInTheDocument();
-    expect(screen.getByText('Select')).toBeInTheDocument();
-    expect(screen.getByText('Switch')).toBeInTheDocument();
-    expect(screen.queryByText('Invalid')).not.toBeInTheDocument();
+    expect(screen.getByLabelText('Single Line Text')).toBeInTheDocument();
+    expect(screen.getByLabelText('Textarea')).toBeInTheDocument();
+    expect(screen.getByLabelText('Tree')).toBeInTheDocument();
+    expect(screen.getByLabelText('Datetime')).toBeInTheDocument();
+    expect(screen.getByLabelText('Select')).toBeInTheDocument();
+    expect(screen.getByLabelText('Switch')).toBeInTheDocument();
+    expect(screen.queryByLabelText('Invalid')).not.toBeInTheDocument();
   });
 
   test('invalid params', () => {

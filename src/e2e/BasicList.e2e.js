@@ -139,6 +139,11 @@ test('BasicList', async () => {
   await page.waitForTimeout(1000);
   await page.waitForSelector('.basic-list .search-layout');
 
+  // check field exists
+  await page.waitForSelector('.search-layout #single_line_text');
+  expect((await page.$('.search-layout #password')) === null).toBeTruthy();
+  await page.waitForSelector('.search-layout #textarea');
+
   // go to trash
   await page.waitForSelector('.search-layout #trash');
   await page.click('.search-layout #trash');

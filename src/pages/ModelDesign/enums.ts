@@ -1,5 +1,7 @@
 export const fieldType = [
-  { label: 'Text', value: 'text' },
+  { label: 'Single Line Text', value: 'input' },
+  { label: 'Password', value: 'password' },
+  { label: 'Multi Line Text', value: 'textarea' },
   { label: 'Number', value: 'number' },
   { label: 'Switch', value: 'switch' },
   { label: 'Radio', value: 'radio' },

@@ -54,6 +54,44 @@ exports[`SearchBuilder snapshot test 1`] = `
         >
           <label
             class=""
+            for="textarea"
+            title="Textarea"
+          >
+            Textarea
+          </label>
+        </div>
+        <div
+          class="ant-col ant-form-item-control"
+        >
+          <div
+            class="ant-form-item-control-input"
+          >
+            <div
+              class="ant-form-item-control-input-content"
+            >
+              <input
+                class="ant-input ant-input-disabled"
+                disabled=""
+                id="textarea"
+                type="text"
+                value=""
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-sm-6"
+    >
+      <div
+        class="ant-row ant-form-item"
+      >
+        <div
+          class="ant-col ant-form-item-label"
+        >
+          <label
+            class=""
             for="tree"
             title="Tree"
           >

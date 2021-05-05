@@ -113,6 +113,38 @@ exports[`FormBuilder snapshot test 1`] = `
       >
         <label
           class=""
+          for="textarea"
+          title="Textarea"
+        >
+          Textarea
+        </label>
+      </div>
+      <div
+        class="ant-col ant-form-item-control"
+      >
+        <div
+          class="ant-form-item-control-input"
+        >
+          <div
+            class="ant-form-item-control-input-content"
+          >
+            <textarea
+              class="ant-input ant-input-disabled"
+              disabled=""
+              id="textarea"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="ant-row ant-form-item"
+    >
+      <div
+        class="ant-col ant-form-item-label"
+      >
+        <label
+          class=""
           for="number"
           title="Number"
         >
@@ -203,38 +235,6 @@ exports[`FormBuilder snapshot test 1`] = `
                 />
               </div>
             </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div
-      class="ant-row ant-form-item"
-    >
-      <div
-        class="ant-col ant-form-item-label"
-      >
-        <label
-          class=""
-          for="textarea"
-          title="Textarea"
-        >
-          Textarea
-        </label>
-      </div>
-      <div
-        class="ant-col ant-form-item-control"
-      >
-        <div
-          class="ant-form-item-control-input"
-        >
-          <div
-            class="ant-form-item-control-input-content"
-          >
-            <textarea
-              class="ant-input ant-input-disabled"
-              disabled=""
-              id="textarea"
-            />
           </div>
         </div>
       </div>
