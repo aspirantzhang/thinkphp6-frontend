@@ -10,7 +10,7 @@ const SearchBuilder = (data: BasicListApi.Field[] | undefined) => {
       key: field.name,
     };
     switch (field.type) {
-      case 'text':
+      case 'input':
         return (
           <Col sm={6} key={field.name}>
             <Form.Item {...basicAttr}>

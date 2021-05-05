@@ -10,10 +10,17 @@ import FormBuilder from '../../builder/FormBuilder';
 
 const validFormData = [
   {
-    name: 'text',
-    key: 'text',
-    title: 'Text',
-    type: 'text',
+    name: 'single_line_text',
+    key: 'single_line_text',
+    title: 'Single Line Text',
+    type: 'input',
+    disabled: true,
+  },
+  {
+    name: 'password',
+    key: 'password',
+    title: 'Password',
+    type: 'password',
     disabled: true,
   },
   {
@@ -95,16 +102,17 @@ describe('FormBuilder', () => {
 
   test('valid params', () => {
     render(<Form>{FormBuilder(validFormData as any)}</Form>);
-    expect(screen.getByText('Text')).toBeInTheDocument();
-    expect(screen.getByText('Number')).toBeInTheDocument();
-    expect(screen.getByText('Textarea')).toBeInTheDocument();
-    expect(screen.getByText('Tree')).toBeInTheDocument();
-    expect(screen.getByText('Datetime')).toBeInTheDocument();
-    expect(screen.getByText('Switch')).toBeInTheDocument();
-    expect(screen.getByText('Radio')).toBeInTheDocument();
-    expect(screen.getByText('Parent')).toBeInTheDocument();
-    expect(screen.queryByText('Invalid')).not.toBeInTheDocument();
-    expect(screen.queryByText('Update Time')).not.toBeInTheDocument();
+    expect(screen.getByLabelText('Single Line Text')).toBeInTheDocument();
+    expect(screen.getByLabelText('Password')).toBeInTheDocument();
+    expect(screen.getByLabelText('Number')).toBeInTheDocument();
+    expect(screen.getByLabelText('Textarea')).toBeInTheDocument();
+    expect(screen.getByLabelText('Tree')).toBeInTheDocument();
+    expect(screen.getByLabelText('Datetime')).toBeInTheDocument();
+    expect(screen.getByLabelText('Switch')).toBeInTheDocument();
+    expect(screen.getByTitle('Radio')).toBeInTheDocument();
+    expect(screen.getByLabelText('Parent')).toBeInTheDocument();
+    expect(screen.queryByLabelText('Invalid')).not.toBeInTheDocument();
+    expect(screen.queryByLabelText('Update Time')).not.toBeInTheDocument();
   });
 
   test('invalid params', () => {

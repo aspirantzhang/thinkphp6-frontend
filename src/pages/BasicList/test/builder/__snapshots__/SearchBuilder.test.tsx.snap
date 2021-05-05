@@ -16,10 +16,10 @@ exports[`SearchBuilder snapshot test 1`] = `
         >
           <label
             class=""
-            for="text"
-            title="Text"
+            for="single_line_text"
+            title="Single Line Text"
           >
-            Text
+            Single Line Text
           </label>
         </div>
         <div
@@ -34,7 +34,7 @@ exports[`SearchBuilder snapshot test 1`] = `
               <input
                 class="ant-input ant-input-disabled"
                 disabled=""
-                id="text"
+                id="single_line_text"
                 type="text"
                 value=""
               />

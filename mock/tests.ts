@@ -26,9 +26,9 @@ export default {
               title: 'Basic',
               data: [
                 {
-                  name: 'test_name',
-                  title: 'Test Name',
-                  type: 'text',
+                  name: 'single_line_text',
+                  title: 'Single Line Text',
+                  type: 'input',
                   data: [],
                   hideInColumn: null,
                   sorter: null,
@@ -38,7 +38,7 @@ export default {
                 {
                   name: 'password',
                   title: 'Password',
-                  type: 'text',
+                  type: 'password',
                   data: [],
                   hideInColumn: null,
                   sorter: null,
@@ -171,9 +171,9 @@ export default {
               title: 'Basic',
               data: [
                 {
-                  name: 'test_name',
-                  title: 'Test Name',
-                  type: 'text',
+                  name: 'single_line_text',
+                  title: 'Single Line Text',
+                  type: 'input',
                   data: [],
                   hideInColumn: null,
                   sorter: null,
@@ -286,8 +286,7 @@ export default {
         },
         dataSource: {
           id: 1,
-          test_name: 'test',
-          display_name: 'Test',
+          single_line_text: 'single-line-text-value',
           create_time: '2021-04-13T13:28:28+08:00',
           update_time: '2021-04-13T13:32:52+08:00',
           status: 1,
@@ -312,9 +311,9 @@ export default {
           layout: {
             tableColumn: [
               {
-                name: 'test_name',
-                title: 'Test Name',
-                type: 'text',
+                name: 'single_line_text',
+                title: 'Single Line Text',
+                type: 'input',
                 data: [],
                 hideInColumn: null,
                 sorter: null,
@@ -479,7 +478,7 @@ export default {
           dataSource: [
             {
               id: 1001,
-              test_name: 'trashUser',
+              single_line_text: 'single-line-text-value',
               display_name: '',
               create_time: '2021-04-29T17:34:15+08:00',
               delete_time: null,
@@ -509,11 +508,21 @@ export default {
         layout: {
           tableColumn: [
             {
-              name: 'test_name',
-              title: 'Test Name',
-              type: 'text',
+              name: 'single_line_text',
+              title: 'Single Line Text',
+              type: 'input',
               data: [],
               hideInColumn: null,
+              sorter: null,
+              editDisabled: null,
+              mode: null,
+            },
+            {
+              name: 'password',
+              title: 'Password',
+              type: 'password',
+              data: [],
+              hideInColumn: true,
               sorter: null,
               editDisabled: null,
               mode: null,
@@ -536,16 +545,6 @@ export default {
                 },
               ],
               hideInColumn: true,
-              sorter: null,
-              editDisabled: null,
-              mode: null,
-            },
-            {
-              name: 'display_name',
-              title: 'Display Name',
-              type: 'text',
-              data: [],
-              hideInColumn: null,
               sorter: null,
               editDisabled: null,
               mode: null,
@@ -676,8 +675,7 @@ export default {
         dataSource: [
           {
             id: 1,
-            test_name: 'test',
-            display_name: 'Test',
+            single_line_text: 'single-line-text-value',
             create_time: '2021-04-13T13:28:28+08:00',
             delete_time: null,
             status: 1,
@@ -712,9 +710,9 @@ export default {
     });
   },
   'POST /api/tests': async (req: Request, res: Response) => {
-    const { test_name, password } = req.body;
+    const { single_line_text, password } = req.body;
     await waitTime(1000);
-    if (test_name === 'invalid' && password === 'invalid') {
+    if (single_line_text === 'invalid' && password === 'invalid') {
       res.send({
         success: false,
         message: 'Error Message.',

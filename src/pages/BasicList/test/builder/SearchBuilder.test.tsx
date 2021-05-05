@@ -10,9 +10,9 @@ import SearchBuilder from '../../builder/SearchBuilder';
 
 const validSearch = [
   {
-    name: 'text',
-    title: 'Text',
-    type: 'text',
+    name: 'single_line_text',
+    title: 'Single Line Text',
+    type: 'input',
     disabled: true,
   },
   {
@@ -57,7 +57,7 @@ describe('SearchBuilder', () => {
 
   test('valid params', () => {
     render(<Form>{SearchBuilder(validSearch as any)}</Form>);
-    expect(screen.getByText('Text')).toBeInTheDocument();
+    expect(screen.getByText('Single Line Text')).toBeInTheDocument();
     expect(screen.getByText('Tree')).toBeInTheDocument();
     expect(screen.getByText('Datetime')).toBeInTheDocument();
     expect(screen.getByText('Select')).toBeInTheDocument();

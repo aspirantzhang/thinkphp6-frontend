@@ -9,10 +9,16 @@ const FormBuilder = (data: BasicListApi.Field[] | undefined) => {
       key: field.name,
     };
     switch (field.type) {
-      case 'text':
+      case 'input':
         return (
           <Form.Item {...basicAttr}>
             <Input disabled={field.disabled} />
+          </Form.Item>
+        );
+      case 'password':
+        return (
+          <Form.Item {...basicAttr}>
+            <Input.Password disabled={field.disabled} />
           </Form.Item>
         );
       case 'datetime':
@@ -53,7 +59,11 @@ const FormBuilder = (data: BasicListApi.Field[] | undefined) => {
           <Form.Item {...basicAttr}>
             <Radio.Group buttonStyle="solid" defaultValue={field.data[0]?.value}>
               {(field.data || []).map((item: any) => {
-                return <Radio.Button value={item.value}>{item.title}</Radio.Button>;
+                return (
+                  <Radio.Button key={item.value} value={item.value}>
+                    {item.title}
+                  </Radio.Button>
+                );
               })}
             </Radio.Group>
           </Form.Item>

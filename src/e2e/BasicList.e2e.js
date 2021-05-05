@@ -39,7 +39,7 @@ test('BasicList', async () => {
       '.basic-list-table tbody tr:nth-child(1) td:nth-child(3)',
       (el) => el.innerText,
     ),
-  ).toBe('test');
+  ).toBe('single-line-text-value');
   await page.waitForSelector('.before-table-layout .reload-btn');
   await page.click('.before-table-layout .reload-btn');
   await page.waitForTimeout(1000);
@@ -48,7 +48,7 @@ test('BasicList', async () => {
       '.basic-list-table tbody tr:nth-child(1) td:nth-child(3)',
       (el) => el.innerText,
     ),
-  ).toBe('test');
+  ).toBe('single-line-text-value');
 
   // modal add
   await page.waitForSelector('.before-table-layout .add-btn');
@@ -59,8 +59,8 @@ test('BasicList', async () => {
   );
 
   // invalid username
-  await page.waitForSelector('#test_name');
-  await page.type('.basic-list-modal #test_name', 'invalid');
+  await page.waitForSelector('.basic-list-modal #single_line_text');
+  await page.type('.basic-list-modal #single_line_text', 'invalid');
   await page.type('.basic-list-modal #password', 'invalid');
   await page.waitForSelector('.basic-list-modal .submit-btn');
   await page.click('.basic-list-modal .submit-btn');
@@ -74,7 +74,7 @@ test('BasicList', async () => {
   );
 
   // valid username
-  await page.type('.basic-list-modal #test_name', 'e2e');
+  await page.type('.basic-list-modal #single_line_text', 'e2e');
   await page.type('.basic-list-modal #password', 'e2e');
   await page.waitForSelector('.basic-list-modal .submit-btn');
   await page.click('.basic-list-modal .submit-btn');
@@ -84,14 +84,16 @@ test('BasicList', async () => {
       '.basic-list-table tbody tr:nth-child(1) td:nth-child(3)',
       (el) => el.innerText,
     ),
-  ).toBe('test');
+  ).toBe('single-line-text-value');
   await page.waitForTimeout(2000);
 
   // modal edit
   await page.waitForSelector('.basic-list-table .edit-btn');
   await page.click('.basic-list-table .edit-btn');
-  await page.waitForSelector('.basic-list-modal #test_name');
-  expect(await page.$eval('.basic-list-modal #test_name', (el) => el.value)).toBe('test');
+  await page.waitForSelector('.basic-list-modal #single_line_text');
+  expect(await page.$eval('.basic-list-modal #single_line_text', (el) => el.value)).toBe(
+    'single-line-text-value',
+  );
   await page.waitForSelector('.basic-list-modal .submit-btn');
   await page.click('.basic-list-modal .submit-btn');
   await page.waitForSelector('.process-message span:nth-child(2)');
@@ -107,7 +109,7 @@ test('BasicList', async () => {
   await page.waitForSelector('.batch-confirm-modal');
   await page.waitForSelector('.batch-overview-table');
   expect(await page.$eval('.batch-overview-table td:nth-child(2)', (el) => el.innerText)).toBe(
-    'test',
+    'single-line-text-value',
   );
   await page.waitForSelector('.batch-confirm-modal .ant-btn-dangerous');
   await page.click('.batch-confirm-modal .ant-btn-dangerous');
@@ -125,7 +127,7 @@ test('BasicList', async () => {
   await page.waitForSelector('.batch-confirm-modal');
   await page.waitForSelector('.batch-overview-table');
   expect(await page.$eval('.batch-overview-table td:nth-child(2)', (el) => el.innerText)).toBe(
-    'test',
+    'single-line-text-value',
   );
   await page.waitForSelector('.batch-confirm-modal .ant-btn');
   await page.click('.batch-confirm-modal .ant-btn');
@@ -153,7 +155,7 @@ test('BasicList', async () => {
       '.basic-list-table tbody tr:nth-child(1) td:nth-child(3)',
       (el) => el.innerText,
     ),
-  ).toBe('trashUser');
+  ).toBe('single-line-text-value');
 
   // search clear
   await page.waitForSelector('.search-layout .clear-btn');
@@ -165,7 +167,7 @@ test('BasicList', async () => {
       '.basic-list-table tbody tr:nth-child(1) td:nth-child(3)',
       (el) => el.innerText,
     ),
-  ).toBe('test');
+  ).toBe('single-line-text-value');
 
   // close search
   await page.waitForSelector('.before-table-layout .search-btn');
