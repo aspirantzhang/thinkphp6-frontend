@@ -27,6 +27,12 @@ const FormBuilder = (data: BasicListApi.Field[] | undefined) => {
             <Input.TextArea disabled={field.disabled} />
           </Form.Item>
         );
+      case 'number':
+        return (
+          <Form.Item {...basicAttr}>
+            <InputNumber disabled={field.disabled} />
+          </Form.Item>
+        );
       case 'datetime':
         if (field.key !== 'update_time') {
           return (
@@ -46,12 +52,6 @@ const FormBuilder = (data: BasicListApi.Field[] | undefined) => {
         return (
           <Form.Item {...basicAttr} valuePropName="checked">
             <Switch disabled={field.disabled} defaultChecked />
-          </Form.Item>
-        );
-      case 'number':
-        return (
-          <Form.Item {...basicAttr}>
-            <InputNumber disabled={field.disabled} />
           </Form.Item>
         );
       case 'radio':

@@ -1,6 +1,6 @@
 import React from 'react';
 import moment from 'moment';
-import { Input, Form, DatePicker, TreeSelect, Col, Select } from 'antd';
+import { Input, InputNumber, Form, DatePicker, TreeSelect, Col, Select } from 'antd';
 
 const SearchBuilder = (data: BasicListApi.Field[] | undefined) => {
   return (Array.isArray(data) ? data : []).map((field) => {
@@ -23,6 +23,14 @@ const SearchBuilder = (data: BasicListApi.Field[] | undefined) => {
           <Col sm={6} key={field.name}>
             <Form.Item {...basicAttr}>
               <Input disabled={field.disabled} />
+            </Form.Item>
+          </Col>
+        );
+      case 'number':
+        return (
+          <Col sm={6} key={field.name}>
+            <Form.Item {...basicAttr}>
+              <InputNumber style={{ width: '100%' }} disabled={field.disabled} />
             </Form.Item>
           </Col>
         );

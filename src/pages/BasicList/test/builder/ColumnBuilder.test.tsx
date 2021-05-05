@@ -27,6 +27,13 @@ const validColumns = [
     type: 'textarea',
   },
   {
+    name: 'number',
+    dataIndex: 'number',
+    key: 'number',
+    title: 'Number',
+    type: 'number',
+  },
+  {
     name: 'datetime',
     dataIndex: 'datetime',
     key: 'datetime',
@@ -76,6 +83,13 @@ const validResults = [
     key: 'multi_line_text',
     title: 'Multi-line Text',
     type: 'textarea',
+  },
+  {
+    name: 'number',
+    dataIndex: 'number',
+    key: 'number',
+    title: 'Number',
+    type: 'number',
   },
   {
     name: 'datetime',
