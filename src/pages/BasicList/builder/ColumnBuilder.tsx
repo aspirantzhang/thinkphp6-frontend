@@ -21,6 +21,12 @@ const ColumnBuilder = (
             return <Tag color={value ? 'blue' : 'red'}>{option?.title}</Tag>;
           };
           break;
+        case 'radio':
+          column.render = (value: any) => {
+            const option = (column.data || []).find((item: any) => item.value === value);
+            return <Tag>{option?.title}</Tag>;
+          };
+          break;
         case 'actions':
           column.render = (_: any, record: any) => {
             return <Space>{ActionBuilder(column.data, actionHandler, false, record)}</Space>;

@@ -78,6 +78,29 @@ const fields = [
     editDisabled: null,
     mode: null,
   },
+  {
+    name: 'radio',
+    title: 'Radio',
+    type: 'radio',
+    data: [
+      {
+        title: 'Mx',
+        value: 'mx',
+      },
+      {
+        title: 'Mr',
+        value: 'mr',
+      },
+      {
+        title: 'Ms',
+        value: 'ms',
+      },
+    ],
+    hideInColumn: null,
+    sorter: null,
+    editDisabled: null,
+    mode: null,
+  },
 ];
 
 const dataSource = {
@@ -86,6 +109,7 @@ const dataSource = {
   number: 99999,
   datetime: '2021-04-13T13:28:28+08:00',
   switch: 1,
+  radio: 'mr',
   create_time: '2021-04-13T13:28:28+08:00',
   delete_time: null,
   status: 1,
@@ -118,6 +142,7 @@ const editDataSource = {
   number: 99999,
   datetime: '2021-04-13T13:28:28+08:00',
   switch: 1,
+  radio: 'mr',
   create_time: '2021-04-13T13:28:28+08:00',
   update_time: '2021-04-13T13:32:52+08:00',
   status: 1,

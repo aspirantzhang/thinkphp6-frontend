@@ -1,6 +1,6 @@
 import React from 'react';
 import moment from 'moment';
-import { Input, InputNumber, Form, DatePicker, TreeSelect, Col, Select, Switch } from 'antd';
+import { Input, InputNumber, Form, DatePicker, TreeSelect, Col, Select, Switch, Radio } from 'antd';
 
 const SearchBuilder = (data: BasicListApi.Field[] | undefined) => {
   return (Array.isArray(data) ? data : []).map((field) => {
@@ -59,7 +59,31 @@ const SearchBuilder = (data: BasicListApi.Field[] | undefined) => {
         return (
           <Col sm={6} key={field.name}>
             <Form.Item {...basicAttr} valuePropName="checked">
-              <Switch />
+              <Select>
+                {(Array.isArray(field.data) ? field.data : []).map((option: any) => {
+                  return (
+                    <Select.Option value={option.value} key={option.value}>
+                      {option.title}
+                    </Select.Option>
+                  );
+                })}
+              </Select>
+            </Form.Item>
+          </Col>
+        );
+      case 'radio':
+        return (
+          <Col sm={6} key={field.name}>
+            <Form.Item {...basicAttr}>
+              <Radio.Group buttonStyle="solid">
+                {(field.data || []).map((item: any) => {
+                  return (
+                    <Radio.Button key={item.value} value={item.value}>
+                      {item.title}
+                    </Radio.Button>
+                  );
+                })}
+              </Radio.Group>
             </Form.Item>
           </Col>
         );
