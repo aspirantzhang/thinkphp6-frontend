@@ -34,7 +34,7 @@ const FormBuilder = (data: BasicListApi.Field[] | undefined) => {
           </Form.Item>
         );
       case 'datetime':
-        if (field.key !== 'update_time') {
+        if (field.name !== 'update_time') {
           return (
             <Form.Item {...basicAttr}>
               <DatePicker showTime disabled={field.disabled} />

@@ -34,16 +34,16 @@ const validSearch = [
     disabled: true,
   },
   {
+    name: 'datetime',
+    title: 'Datetime',
+    type: 'datetime',
+    disabled: true,
+  },
+  {
     name: 'tree',
     title: 'Tree',
     type: 'tree',
     data: [],
-    disabled: true,
-  },
-  {
-    name: 'datetime',
-    title: 'Datetime',
-    type: 'datetime',
     disabled: true,
   },
   {
@@ -78,8 +78,8 @@ describe('SearchBuilder', () => {
     expect(screen.getByLabelText('Single-line Text')).toBeInTheDocument();
     expect(screen.getByLabelText('Multi-line Text')).toBeInTheDocument();
     expect(screen.getByLabelText('Number')).toBeInTheDocument();
-    expect(screen.getByLabelText('Tree')).toBeInTheDocument();
     expect(screen.getByLabelText('Datetime')).toBeInTheDocument();
+    expect(screen.getByLabelText('Tree')).toBeInTheDocument();
     expect(screen.getByLabelText('Select')).toBeInTheDocument();
     expect(screen.getByLabelText('Switch')).toBeInTheDocument();
     expect(screen.queryByLabelText('Invalid')).not.toBeInTheDocument();
