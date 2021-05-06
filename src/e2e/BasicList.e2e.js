@@ -147,6 +147,7 @@ test('BasicList', async () => {
   await page.waitForSelector('.search-layout #datetime');
   await page.waitForSelector('.search-layout #switch');
   await page.waitForSelector('.search-layout #radio');
+  await page.waitForSelector('.search-layout #tree');
 
   // go to trash
   await page.waitForSelector('.search-layout #trash');

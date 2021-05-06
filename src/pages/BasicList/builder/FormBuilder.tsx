@@ -68,7 +68,6 @@ const FormBuilder = (data: BasicListApi.Field[] | undefined) => {
             <TreeSelect treeData={field.data} disabled={field.disabled} treeCheckable />
           </Form.Item>
         );
-
       case 'parent':
         return (
           <Form.Item {...basicAttr}>
