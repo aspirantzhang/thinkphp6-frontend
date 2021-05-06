@@ -38,18 +38,18 @@ const validFormData = [
     disabled: true,
   },
   {
+    name: 'datetime',
+    key: 'datetime',
+    title: 'Datetime',
+    type: 'datetime',
+    disabled: true,
+  },
+  {
     name: 'tree',
     key: 'tree',
     title: 'Tree',
     type: 'tree',
     data: [],
-    disabled: true,
-  },
-  {
-    name: 'datetime',
-    key: 'datetime',
-    title: 'Datetime',
-    type: 'datetime',
     disabled: true,
   },
   {
@@ -106,8 +106,8 @@ describe('FormBuilder', () => {
     expect(screen.getByLabelText('Multi-line Text')).toBeInTheDocument();
     expect(screen.getByLabelText('Password')).toBeInTheDocument();
     expect(screen.getByLabelText('Number')).toBeInTheDocument();
-    expect(screen.getByLabelText('Tree')).toBeInTheDocument();
     expect(screen.getByLabelText('Datetime')).toBeInTheDocument();
+    expect(screen.getByLabelText('Tree')).toBeInTheDocument();
     expect(screen.getByLabelText('Switch')).toBeInTheDocument();
     expect(screen.getByTitle('Radio')).toBeInTheDocument();
     expect(screen.getByLabelText('Parent')).toBeInTheDocument();

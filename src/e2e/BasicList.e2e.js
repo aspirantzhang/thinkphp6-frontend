@@ -144,6 +144,7 @@ test('BasicList', async () => {
   expect((await page.$('.search-layout #password')) === null).toBeTruthy();
   await page.waitForSelector('.search-layout #multi_line_text');
   await page.waitForSelector('.search-layout #number');
+  await page.waitForSelector('.search-layout #datetime');
 
   // go to trash
   await page.waitForSelector('.search-layout #trash');
