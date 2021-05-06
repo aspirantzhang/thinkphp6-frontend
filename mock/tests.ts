@@ -101,6 +101,43 @@ const fields = [
     editDisabled: null,
     mode: null,
   },
+  {
+    name: 'tree',
+    title: 'Tree',
+    type: 'tree',
+    data: [
+      {
+        id: 1,
+        parent_id: 0,
+        title: 'Option 1',
+        value: 1,
+        children: [
+          {
+            id: 3,
+            parent_id: 1,
+            title: 'Option 1-1',
+            value: 3,
+          },
+          {
+            id: 4,
+            parent_id: 1,
+            title: 'Option 1-2',
+            value: 4,
+          },
+        ],
+      },
+      {
+        id: 2,
+        parent_id: 0,
+        title: 'Option 2',
+        value: 2,
+      },
+    ],
+    hideInColumn: true,
+    sorter: null,
+    editDisabled: null,
+    mode: null,
+  },
 ];
 
 const dataSource = {
@@ -110,29 +147,17 @@ const dataSource = {
   datetime: '2021-04-13T13:28:28+08:00',
   switch: 1,
   radio: 'mr',
+  tree: [
+    {
+      id: 2,
+      parent_id: 0,
+      title: 'Option 2',
+      value: 2,
+    },
+  ],
   create_time: '2021-04-13T13:28:28+08:00',
   delete_time: null,
   status: 1,
-  groups: [
-    {
-      id: 53,
-      parent_id: 0,
-      group_name: 'Test Group',
-      create_time: '2020-09-21T00:10:30+08:00',
-      update_time: '2021-04-09T23:57:46+08:00',
-      delete_time: null,
-      status: 1,
-      pivot: {
-        id: 225,
-        test_id: 1,
-        group_id: 53,
-        create_time: '0000-00-00 00:00:00',
-        update_time: '0000-00-00 00:00:00',
-        delete_time: null,
-        status: 1,
-      },
-    },
-  ],
 };
 
 const editDataSource = {
@@ -143,10 +168,10 @@ const editDataSource = {
   datetime: '2021-04-13T13:28:28+08:00',
   switch: 1,
   radio: 'mr',
+  tree: [2, 4],
   create_time: '2021-04-13T13:28:28+08:00',
   update_time: '2021-04-13T13:32:52+08:00',
   status: 1,
-  groups: [53],
 };
 
 export default {
@@ -167,28 +192,6 @@ export default {
               title: 'Basic',
               data: [
                 ...fields,
-                {
-                  name: 'groups',
-                  title: 'Groups',
-                  type: 'tree',
-                  data: [
-                    {
-                      id: 53,
-                      parent_id: 0,
-                      group_name: 'Test Group',
-                      create_time: '2020-09-21T00:10:30+08:00',
-                      delete_time: null,
-                      status: 1,
-                      value: 53,
-                      title: 'Test Group',
-                      depth: 1,
-                    },
-                  ],
-                  hideInColumn: null,
-                  sorter: null,
-                  editDisabled: null,
-                  mode: null,
-                },
                 {
                   name: 'create_time',
                   title: 'Create Time',
@@ -283,28 +286,6 @@ export default {
               title: 'Basic',
               data: [
                 ...fields,
-                {
-                  name: 'groups',
-                  title: 'Groups',
-                  type: 'tree',
-                  data: [
-                    {
-                      id: 53,
-                      parent_id: 0,
-                      group_name: 'Test Group',
-                      create_time: '2020-09-21T00:10:30+08:00',
-                      delete_time: null,
-                      status: 1,
-                      value: 53,
-                      title: 'Test Group',
-                      depth: 1,
-                    },
-                  ],
-                  hideInColumn: null,
-                  sorter: null,
-                  editDisabled: null,
-                  mode: null,
-                },
                 {
                   name: 'create_time',
                   title: 'Create Time',
@@ -432,28 +413,6 @@ export default {
                 type: 'datetime',
                 data: [],
                 hideInColumn: null,
-                sorter: null,
-                editDisabled: null,
-                mode: null,
-              },
-              {
-                name: 'groups',
-                title: 'Groups',
-                type: 'tree',
-                data: [
-                  {
-                    id: 53,
-                    parent_id: 0,
-                    group_name: 'Test Group',
-                    create_time: '2020-09-21T00:10:30+08:00',
-                    delete_time: null,
-                    status: 1,
-                    value: 53,
-                    title: 'Test Group',
-                    depth: 1,
-                  },
-                ],
-                hideInColumn: true,
                 sorter: null,
                 editDisabled: null,
                 mode: null,
@@ -604,28 +563,6 @@ export default {
         layout: {
           tableColumn: [
             ...fields,
-            {
-              name: 'groups',
-              title: 'Groups',
-              type: 'tree',
-              data: [
-                {
-                  id: 53,
-                  parent_id: 0,
-                  group_name: 'Test Group',
-                  create_time: '2020-09-21T00:10:30+08:00',
-                  delete_time: null,
-                  status: 1,
-                  value: 53,
-                  title: 'Test Group',
-                  depth: 1,
-                },
-              ],
-              hideInColumn: true,
-              sorter: null,
-              editDisabled: null,
-              mode: null,
-            },
             {
               name: 'create_time',
               title: 'Create Time',

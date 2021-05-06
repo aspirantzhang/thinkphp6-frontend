@@ -1,6 +1,6 @@
 import React from 'react';
 import moment from 'moment';
-import { Input, InputNumber, Form, DatePicker, TreeSelect, Col, Select, Switch, Radio } from 'antd';
+import { Input, InputNumber, Form, DatePicker, TreeSelect, Col, Select, Radio } from 'antd';
 
 const SearchBuilder = (data: BasicListApi.Field[] | undefined) => {
   return (Array.isArray(data) ? data : []).map((field) => {
