@@ -145,6 +145,7 @@ test('BasicList', async () => {
   await page.waitForSelector('.search-layout #multi_line_text');
   await page.waitForSelector('.search-layout #number');
   await page.waitForSelector('.search-layout #datetime');
+  await page.waitForSelector('.search-layout #switch');
 
   // go to trash
   await page.waitForSelector('.search-layout #trash');

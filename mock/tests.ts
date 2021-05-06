@@ -59,6 +59,25 @@ const fields = [
     editDisabled: null,
     mode: null,
   },
+  {
+    name: 'switch',
+    title: 'Switch',
+    type: 'switch',
+    data: [
+      {
+        title: 'On',
+        value: 1,
+      },
+      {
+        title: 'Off',
+        value: 0,
+      },
+    ],
+    hideInColumn: null,
+    sorter: null,
+    editDisabled: null,
+    mode: null,
+  },
 ];
 
 const dataSource = {
@@ -66,6 +85,7 @@ const dataSource = {
   single_line_text: 'single-line-text-value',
   number: 99999,
   datetime: '2021-04-13T13:28:28+08:00',
+  switch: 1,
   create_time: '2021-04-13T13:28:28+08:00',
   delete_time: null,
   status: 1,
@@ -97,7 +117,7 @@ const editDataSource = {
   multi_line_text: 'multi-line-text-value',
   number: 99999,
   datetime: '2021-04-13T13:28:28+08:00',
-  textarea: 'text-area-value',
+  switch: 1,
   create_time: '2021-04-13T13:28:28+08:00',
   update_time: '2021-04-13T13:32:52+08:00',
   status: 1,

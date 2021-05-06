@@ -40,6 +40,13 @@ const validSearch = [
     disabled: true,
   },
   {
+    name: 'switch',
+    title: 'Switch',
+    type: 'switch',
+    data: [{ title: 'foo', value: 'bar' }],
+    disabled: true,
+  },
+  {
     name: 'tree',
     title: 'Tree',
     type: 'tree',
@@ -51,13 +58,6 @@ const validSearch = [
     title: 'Select',
     type: 'select',
     data: [],
-    disabled: true,
-  },
-  {
-    name: 'switch',
-    title: 'Switch',
-    type: 'switch',
-    data: [{ title: 'foo', value: 'bar' }],
     disabled: true,
   },
   {
@@ -79,9 +79,9 @@ describe('SearchBuilder', () => {
     expect(screen.getByLabelText('Multi-line Text')).toBeInTheDocument();
     expect(screen.getByLabelText('Number')).toBeInTheDocument();
     expect(screen.getByLabelText('Datetime')).toBeInTheDocument();
+    expect(screen.getByLabelText('Switch')).toBeInTheDocument();
     expect(screen.getByLabelText('Tree')).toBeInTheDocument();
     expect(screen.getByLabelText('Select')).toBeInTheDocument();
-    expect(screen.getByLabelText('Switch')).toBeInTheDocument();
     expect(screen.queryByLabelText('Invalid')).not.toBeInTheDocument();
     expect(screen.queryByLabelText('Password')).not.toBeInTheDocument();
   });

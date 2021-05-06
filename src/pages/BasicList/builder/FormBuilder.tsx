@@ -42,16 +42,16 @@ const FormBuilder = (data: BasicListApi.Field[] | undefined) => {
           );
         }
         return null;
-      case 'tree':
-        return (
-          <Form.Item {...basicAttr}>
-            <TreeSelect treeData={field.data} disabled={field.disabled} treeCheckable />
-          </Form.Item>
-        );
       case 'switch':
         return (
           <Form.Item {...basicAttr} valuePropName="checked">
             <Switch disabled={field.disabled} defaultChecked />
+          </Form.Item>
+        );
+      case 'tree':
+        return (
+          <Form.Item {...basicAttr}>
+            <TreeSelect treeData={field.data} disabled={field.disabled} treeCheckable />
           </Form.Item>
         );
       case 'radio':

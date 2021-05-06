@@ -45,6 +45,14 @@ const validFormData = [
     disabled: true,
   },
   {
+    name: 'switch',
+    key: 'switch',
+    title: 'Switch',
+    type: 'switch',
+    data: [{ title: 'foo', value: 'bar' }],
+    disabled: true,
+  },
+  {
     name: 'tree',
     key: 'tree',
     title: 'Tree',
@@ -57,14 +65,6 @@ const validFormData = [
     key: 'update_time',
     title: 'Update Time',
     type: 'datetime',
-    disabled: true,
-  },
-  {
-    name: 'switch',
-    key: 'switch',
-    title: 'Switch',
-    type: 'switch',
-    data: [{ title: 'foo', value: 'bar' }],
     disabled: true,
   },
   {

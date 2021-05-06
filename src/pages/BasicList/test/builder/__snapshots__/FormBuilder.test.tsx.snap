@@ -315,6 +315,48 @@ exports[`FormBuilder snapshot test 1`] = `
       >
         <label
           class=""
+          for="switch"
+          title="Switch"
+        >
+          Switch
+        </label>
+      </div>
+      <div
+        class="ant-col ant-form-item-control"
+      >
+        <div
+          class="ant-form-item-control-input"
+        >
+          <div
+            class="ant-form-item-control-input-content"
+          >
+            <button
+              aria-checked="true"
+              class="ant-switch ant-switch-checked ant-switch-disabled"
+              disabled=""
+              id="switch"
+              role="switch"
+              type="button"
+            >
+              <div
+                class="ant-switch-handle"
+              />
+              <span
+                class="ant-switch-inner"
+              />
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="ant-row ant-form-item"
+    >
+      <div
+        class="ant-col ant-form-item-label"
+      >
+        <label
+          class=""
           for="tree"
           title="Tree"
         >
@@ -380,48 +422,6 @@ exports[`FormBuilder snapshot test 1`] = `
                 />
               </div>
             </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div
-      class="ant-row ant-form-item"
-    >
-      <div
-        class="ant-col ant-form-item-label"
-      >
-        <label
-          class=""
-          for="switch"
-          title="Switch"
-        >
-          Switch
-        </label>
-      </div>
-      <div
-        class="ant-col ant-form-item-control"
-      >
-        <div
-          class="ant-form-item-control-input"
-        >
-          <div
-            class="ant-form-item-control-input-content"
-          >
-            <button
-              aria-checked="true"
-              class="ant-switch ant-switch-checked ant-switch-disabled"
-              disabled=""
-              id="switch"
-              role="switch"
-              type="button"
-            >
-              <div
-                class="ant-switch-handle"
-              />
-              <span
-                class="ant-switch-inner"
-              />
-            </button>
           </div>
         </div>
       </div>
