@@ -95,6 +95,19 @@ const SearchBuilder = (data: BasicListApi.Field[] | undefined) => {
             </Form.Item>
           </Col>
         );
+      case 'parent':
+        return (
+          <Col sm={6} key={field.name}>
+            <Form.Item {...basicAttr}>
+              <TreeSelect
+                treeData={field.data}
+                disabled={field.disabled}
+                treeDefaultExpandAll
+                allowClear
+              />
+            </Form.Item>
+          </Col>
+        );
       case 'select':
         return (
           <Col sm={6} key={field.name}>

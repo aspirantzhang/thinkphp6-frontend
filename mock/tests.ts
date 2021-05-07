@@ -138,6 +138,43 @@ const fields = [
     editDisabled: null,
     mode: null,
   },
+  {
+    name: 'parent',
+    title: 'Parent',
+    type: 'parent',
+    data: [
+      {
+        id: 1,
+        parent_id: 0,
+        title: 'Option 1',
+        value: 1,
+        children: [
+          {
+            id: 3,
+            parent_id: 1,
+            title: 'Option 1-1',
+            value: 3,
+          },
+          {
+            id: 4,
+            parent_id: 1,
+            title: 'Option 1-2',
+            value: 4,
+          },
+        ],
+      },
+      {
+        id: 2,
+        parent_id: 0,
+        title: 'Option 2',
+        value: 2,
+      },
+    ],
+    hideInColumn: false,
+    sorter: null,
+    editDisabled: null,
+    mode: null,
+  },
 ];
 
 const dataSource = {
@@ -155,6 +192,7 @@ const dataSource = {
       value: 2,
     },
   ],
+  parent: 3,
   create_time: '2021-04-13T13:28:28+08:00',
   delete_time: null,
   status: 1,
@@ -169,6 +207,7 @@ const editDataSource = {
   switch: 1,
   radio: 'mr',
   tree: [2, 4],
+  parent: 3,
   create_time: '2021-04-13T13:28:28+08:00',
   update_time: '2021-04-13T13:32:52+08:00',
   status: 1,
@@ -563,35 +602,6 @@ export default {
         layout: {
           tableColumn: [
             ...fields,
-            {
-              name: 'create_time',
-              title: 'Create Time',
-              type: 'datetime',
-              data: [],
-              hideInColumn: null,
-              sorter: true,
-              editDisabled: null,
-              mode: null,
-            },
-            {
-              name: 'status',
-              title: 'Status',
-              type: 'switch',
-              data: [
-                {
-                  title: 'Enabled',
-                  value: 1,
-                },
-                {
-                  title: 'Disabled',
-                  value: 0,
-                },
-              ],
-              hideInColumn: null,
-              sorter: null,
-              editDisabled: null,
-              mode: null,
-            },
             {
               name: 'trash',
               title: 'Trash',

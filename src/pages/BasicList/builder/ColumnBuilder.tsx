@@ -1,6 +1,7 @@
 import moment from 'moment';
 import { Space, Tag } from 'antd';
 import ActionBuilder from './ActionBuilder';
+import { searchTree } from '../helper';
 
 const ColumnBuilder = (
   tableColumn: BasicListApi.Field[] | undefined,
@@ -25,6 +26,12 @@ const ColumnBuilder = (
           column.render = (value: any) => {
             const option = (column.data || []).find((item: any) => item.value === value);
             return <Tag>{option?.title}</Tag>;
+          };
+          break;
+        case 'parent':
+          column.render = (value: any) => {
+            const option = searchTree(column.data, value, 'id');
+            return option?.title;
           };
           break;
         case 'actions':

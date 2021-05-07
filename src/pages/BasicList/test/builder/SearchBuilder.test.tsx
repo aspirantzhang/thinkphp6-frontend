@@ -54,6 +54,13 @@ const validSearch = [
     disabled: true,
   },
   {
+    name: 'parent',
+    title: 'Parent',
+    type: 'parent',
+    data: [],
+    disabled: true,
+  },
+  {
     name: 'select',
     title: 'Select',
     type: 'select',
