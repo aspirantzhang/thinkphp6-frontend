@@ -1,4 +1,4 @@
-import { setFieldsAdaptor, submitFieldsAdaptor } from '../helper';
+import { setFieldsAdaptor, submitFieldsAdaptor, searchTree, searchTreeRecursion } from '../helper';
 import moment from 'moment';
 
 const setFieldsAdaptorParams = {
@@ -106,5 +106,133 @@ describe('submitFieldsAdaptor', () => {
     expect(submitFieldsAdaptor(submitFieldsAdaptorParams as any)).toEqual(
       submitFieldsAdaptorResult,
     );
+  });
+});
+
+const validTree = [
+  {
+    id: 1,
+    parent_id: 0,
+    title: 'Level 1',
+    value: 1,
+    children: [
+      {
+        id: 3,
+        parent_id: 1,
+        title: 'Level 1-1',
+        value: 3,
+        children: [
+          {
+            id: 5,
+            parent_id: 3,
+            title: 'Level 1-1-1',
+            value: 5,
+          },
+          {
+            id: 6,
+            parent_id: 3,
+            title: 'Level 1-1-2',
+            value: 6,
+          },
+        ],
+      },
+      {
+        id: 4,
+        parent_id: 1,
+        title: 'Level 1-2',
+        value: 4,
+      },
+    ],
+  },
+  {
+    id: 2,
+    parent_id: 0,
+    title: 'Level 2',
+    value: 2,
+    children: [
+      {
+        id: 7,
+        parent_id: 2,
+        title: 'Level 2-1',
+        value: 7,
+        children: [
+          {
+            id: 8,
+            parent_id: 7,
+            title: 'Level 2-1-1',
+            value: 8,
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 9,
+    parent_id: 0,
+    title: 'Level 3',
+    value: 9,
+  },
+];
+
+describe('searchTree', () => {
+  test('Invalid parameter should return null', () => {
+    expect(searchTree(null as any, 'foo', 'bar')).toEqual(null);
+    expect(searchTree([] as any, 'foo', 'bar')).toEqual(null);
+    expect(searchTree({} as any, 'foo', 'bar')).toEqual(null);
+    expect(searchTree(undefined as any, 'foo', 'bar')).toEqual(null);
+    expect(searchTree(NaN as any, 'foo', 'bar')).toEqual(null);
+    expect(searchTree(true as any, 'foo', 'bar')).toEqual(null);
+    expect(searchTree(false as any, 'foo', 'bar')).toEqual(null);
+    expect(searchTree('' as any, 'foo', 'bar')).toEqual(null);
+  });
+  test('Valid parameter should return correct object', () => {
+    // level 3
+    expect(searchTree(validTree, 5, 'value')).toEqual({
+      id: 5,
+      parent_id: 3,
+      title: 'Level 1-1-1',
+      value: 5,
+    });
+    expect(searchTree(validTree, 7, 'parent_id')).toEqual({
+      id: 8,
+      parent_id: 7,
+      title: 'Level 2-1-1',
+      value: 8,
+    });
+    // level 2
+    expect(searchTree(validTree, 'Level 1-2', 'title')).toEqual({
+      id: 4,
+      parent_id: 1,
+      title: 'Level 1-2',
+      value: 4,
+    });
+    // level 1
+    expect(searchTree(validTree, 9, 'id')).toEqual({
+      id: 9,
+      parent_id: 0,
+      title: 'Level 3',
+      value: 9,
+    });
+    // with children
+    expect(searchTree(validTree, 3, 'id', true)).toEqual({
+      id: 3,
+      parent_id: 1,
+      title: 'Level 1-1',
+      value: 3,
+      children: [
+        {
+          id: 5,
+          parent_id: 3,
+          title: 'Level 1-1-1',
+          value: 5,
+        },
+        {
+          id: 6,
+          parent_id: 3,
+          title: 'Level 1-1-2',
+          value: 6,
+        },
+      ],
+    });
   });
 });
