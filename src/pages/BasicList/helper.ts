@@ -51,3 +51,33 @@ export const submitFieldsAdaptor = (formValues: any) => {
   }
   return {};
 };
+
+export function searchTree(
+  tree: Record<string, any>[],
+  value: unknown,
+  key = 'value',
+  withChildren = false,
+) {
+  let result = null;
+  if (!Array.isArray(tree)) return result;
+
+  for (let index = 0; index < tree.length; index += 1) {
+    const stack = [tree[index]];
+    while (stack.length) {
+      const node = stack.shift()!;
+      if (node[key] === value) {
+        result = node;
+        break;
+      }
+      if (node.children) {
+        stack.push(...node.children);
+      }
+    }
+    if (result) break;
+  }
+  if (withChildren !== true) {
+    delete result?.children;
+  }
+
+  return result;
+}
