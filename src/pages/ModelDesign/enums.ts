@@ -3,9 +3,11 @@ export const fieldType = [
   { label: 'Password', value: 'password' },
   { label: 'Multi Line Text', value: 'textarea' },
   { label: 'Number', value: 'number' },
+  { label: 'Datetime', value: 'datetime' },
   { label: 'Switch', value: 'switch' },
   { label: 'Radio', value: 'radio' },
-  { label: 'Datetime', value: 'datetime' },
+  { label: 'Tree', value: 'tree' },
+  { label: 'Parent', value: 'parent' },
 ];
 
 export const buttonType = [
