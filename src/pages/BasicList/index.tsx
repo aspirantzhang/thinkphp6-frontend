@@ -29,6 +29,7 @@ import styles from './index.less';
 const Index = () => {
   const [pageQuery, setPageQuery] = useState('');
   const [sortQuery, setSortQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState<string | true>('');
   const [modalVisible, setModalVisible] = useState(false);
   const [modalUri, setModalUri] = useState('');
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
@@ -40,18 +41,15 @@ const Index = () => {
   const location = useLocation();
 
   const init = useRequest<{ data: BasicListApi.ListData }>(
-    (values: any) => {
-      if (values === true) {
+    (option: any) => {
+      const url = `${location.pathname.replace('/basic-list', '')}`;
+      if (option === true) {
         return {
-          url: `${location.pathname.replace('/basic-list', '')}`,
+          url,
         };
       }
       return {
-        url: `${location.pathname.replace('/basic-list', '')}?${pageQuery}${sortQuery}`,
-        params: values,
-        paramsSerializer: (params: any) => {
-          return stringify(params, { arrayFormat: 'comma', skipEmptyString: true, skipNull: true });
-        },
+        url: `${url}?${searchQuery}${pageQuery}${sortQuery}`,
       };
     },
     {
@@ -97,7 +95,7 @@ const Index = () => {
 
   useUpdateEffect(() => {
     init.run();
-  }, [pageQuery, sortQuery]);
+  }, [pageQuery, sortQuery, searchQuery]);
 
   useUpdateEffect(() => {
     init.run(true);
@@ -213,7 +211,12 @@ const Index = () => {
   };
 
   const onFinish = (value: any) => {
-    init.run(submitFieldsAdaptor(value));
+    const searchString = stringify(submitFieldsAdaptor(value), {
+      arrayFormat: 'comma',
+      skipEmptyString: true,
+      skipNull: true,
+    });
+    setSearchQuery(searchString && `&${searchString}`);
   };
 
   const searchLayout = () => {
@@ -239,7 +242,7 @@ const Index = () => {
                       </Button>
                       <Button
                         onClick={() => {
-                          init.run();
+                          setSearchQuery('');
                           searchForm.resetFields();
                           setSelectedRowKeys([]);
                           setSelectedRows([]);
