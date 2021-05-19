@@ -293,20 +293,22 @@ const Index = () => {
           ...
         </Col>
         <Col xs={24} sm={12} className={styles.tableToolbar}>
-          <Pagination
-            total={init?.data?.meta?.total || 0}
-            current={init?.data?.meta?.page || 1}
-            pageSize={init?.data?.meta?.per_page || 10}
-            showSizeChanger
-            showQuickJumper
-            showTotal={(total) =>
-              `${lang.formatMessage({
-                id: `basic-list.list.pagination.total`,
-              })}: ${total}`
-            }
-            onChange={paginationChangeHandler}
-            onShowSizeChange={paginationChangeHandler}
-          />
+          {!!init?.data?.meta?.total && (
+            <Pagination
+              total={init?.data?.meta?.total || 0}
+              current={init?.data?.meta?.page || 1}
+              pageSize={init?.data?.meta?.per_page || 10}
+              showSizeChanger
+              showQuickJumper
+              showTotal={(total) =>
+                `${lang.formatMessage({
+                  id: `basic-list.list.pagination.total`,
+                })}: ${total}`
+              }
+              onChange={paginationChangeHandler}
+              onShowSizeChange={paginationChangeHandler}
+            />
+          )}
         </Col>
       </Row>
     );
