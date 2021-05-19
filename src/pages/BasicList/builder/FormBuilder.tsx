@@ -3,55 +3,58 @@ import { Input, Form, DatePicker, TreeSelect, Switch, InputNumber, Radio } from 
 
 const FormBuilder = (data: BasicListApi.Field[] | undefined) => {
   return (Array.isArray(data) ? data : []).map((field) => {
-    const basicAttr = {
+    const formItemAttr = {
       label: field.title,
       name: field.name,
       key: field.name,
     };
+    const componentAttr = {
+      disabled: field.editDisabled,
+    };
     switch (field.type) {
       case 'input':
         return (
-          <Form.Item {...basicAttr}>
-            <Input disabled={field.disabled} />
+          <Form.Item {...formItemAttr}>
+            <Input {...componentAttr} />
           </Form.Item>
         );
       case 'password':
         return (
-          <Form.Item {...basicAttr}>
-            <Input.Password disabled={field.disabled} />
+          <Form.Item {...formItemAttr}>
+            <Input.Password {...componentAttr} />
           </Form.Item>
         );
       case 'textarea':
         return (
-          <Form.Item {...basicAttr}>
-            <Input.TextArea disabled={field.disabled} />
+          <Form.Item {...formItemAttr}>
+            <Input.TextArea {...componentAttr} />
           </Form.Item>
         );
       case 'number':
         return (
-          <Form.Item {...basicAttr}>
-            <InputNumber disabled={field.disabled} />
+          <Form.Item {...formItemAttr}>
+            <InputNumber {...componentAttr} />
           </Form.Item>
         );
       case 'datetime':
         if (field.name !== 'update_time') {
           return (
-            <Form.Item {...basicAttr}>
-              <DatePicker showTime disabled={field.disabled} />
+            <Form.Item {...formItemAttr}>
+              <DatePicker showTime {...componentAttr} />
             </Form.Item>
           );
         }
         return null;
       case 'switch':
         return (
-          <Form.Item {...basicAttr} valuePropName="checked">
-            <Switch disabled={field.disabled} defaultChecked />
+          <Form.Item {...formItemAttr} valuePropName="checked">
+            <Switch {...componentAttr} defaultChecked />
           </Form.Item>
         );
       case 'radio':
         return (
-          <Form.Item {...basicAttr}>
-            <Radio.Group buttonStyle="solid" defaultValue={field.data[0]?.value}>
+          <Form.Item {...formItemAttr}>
+            <Radio.Group buttonStyle="solid" defaultValue={field.data[0]?.value} {...componentAttr}>
               {(field.data || []).map((item: any) => {
                 return (
                   <Radio.Button key={item.value} value={item.value}>
@@ -64,13 +67,13 @@ const FormBuilder = (data: BasicListApi.Field[] | undefined) => {
         );
       case 'tree':
         return (
-          <Form.Item {...basicAttr}>
-            <TreeSelect treeData={field.data} disabled={field.disabled} treeCheckable />
+          <Form.Item {...formItemAttr}>
+            <TreeSelect treeData={field.data} {...componentAttr} treeCheckable />
           </Form.Item>
         );
       case 'parent':
         return (
-          <Form.Item {...basicAttr}>
+          <Form.Item {...formItemAttr}>
             <TreeSelect
               showSearch
               style={{ width: '100%' }}
@@ -79,6 +82,7 @@ const FormBuilder = (data: BasicListApi.Field[] | undefined) => {
               placeholder="Please select"
               treeDefaultExpandAll
               allowClear
+              {...componentAttr}
             />
           </Form.Item>
         );
