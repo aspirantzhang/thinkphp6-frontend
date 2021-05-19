@@ -4,7 +4,7 @@ import { Input, InputNumber, Form, DatePicker, TreeSelect, Col, Select, Radio } 
 
 const SearchBuilder = (data: BasicListApi.Field[] | undefined) => {
   return (Array.isArray(data) ? data : []).map((field) => {
-    const basicAttr = {
+    const formItemAttr = {
       label: field.title,
       name: field.name,
       key: field.name,
@@ -13,34 +13,33 @@ const SearchBuilder = (data: BasicListApi.Field[] | undefined) => {
       case 'input':
         return (
           <Col sm={6} key={field.name}>
-            <Form.Item {...basicAttr}>
-              <Input disabled={field.disabled} />
+            <Form.Item {...formItemAttr}>
+              <Input />
             </Form.Item>
           </Col>
         );
       case 'textarea':
         return (
           <Col sm={6} key={field.name}>
-            <Form.Item {...basicAttr}>
-              <Input disabled={field.disabled} />
+            <Form.Item {...formItemAttr}>
+              <Input />
             </Form.Item>
           </Col>
         );
       case 'number':
         return (
           <Col sm={6} key={field.name}>
-            <Form.Item {...basicAttr}>
-              <InputNumber style={{ width: '100%' }} disabled={field.disabled} />
+            <Form.Item {...formItemAttr}>
+              <InputNumber style={{ width: '100%' }} />
             </Form.Item>
           </Col>
         );
       case 'datetime':
         return (
           <Col sm={12} key={field.name}>
-            <Form.Item {...basicAttr}>
+            <Form.Item {...formItemAttr}>
               <DatePicker.RangePicker
                 showTime
-                disabled={field.disabled}
                 style={{ width: '100%' }}
                 ranges={{
                   Today: [moment().startOf('day'), moment().endOf('day')],
@@ -58,7 +57,7 @@ const SearchBuilder = (data: BasicListApi.Field[] | undefined) => {
       case 'switch':
         return (
           <Col sm={6} key={field.name}>
-            <Form.Item {...basicAttr} valuePropName="checked">
+            <Form.Item {...formItemAttr} valuePropName="checked">
               <Select>
                 {(Array.isArray(field.data) ? field.data : []).map((option: any) => {
                   return (
@@ -74,7 +73,7 @@ const SearchBuilder = (data: BasicListApi.Field[] | undefined) => {
       case 'radio':
         return (
           <Col sm={6} key={field.name}>
-            <Form.Item {...basicAttr}>
+            <Form.Item {...formItemAttr}>
               <Radio.Group buttonStyle="solid">
                 {(field.data || []).map((item: any) => {
                   return (
@@ -90,28 +89,23 @@ const SearchBuilder = (data: BasicListApi.Field[] | undefined) => {
       case 'tree':
         return (
           <Col sm={6} key={field.name}>
-            <Form.Item {...basicAttr}>
-              <TreeSelect treeData={field.data} disabled={field.disabled} treeCheckable />
+            <Form.Item {...formItemAttr}>
+              <TreeSelect treeData={field.data} treeCheckable />
             </Form.Item>
           </Col>
         );
       case 'parent':
         return (
           <Col sm={6} key={field.name}>
-            <Form.Item {...basicAttr}>
-              <TreeSelect
-                treeData={field.data}
-                disabled={field.disabled}
-                treeDefaultExpandAll
-                allowClear
-              />
+            <Form.Item {...formItemAttr}>
+              <TreeSelect treeData={field.data} treeDefaultExpandAll allowClear />
             </Form.Item>
           </Col>
         );
       case 'select':
         return (
           <Col sm={6} key={field.name}>
-            <Form.Item {...basicAttr} valuePropName="checked">
+            <Form.Item {...formItemAttr} valuePropName="checked">
               <Select>
                 {(Array.isArray(field.data) ? field.data : []).map((option: any) => {
                   return (
