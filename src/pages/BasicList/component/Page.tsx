@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { Form, Input, message, Tag, Spin, Row, Col, Tabs, Card, Space } from 'antd';
-import { useRequest, useLocation, history } from 'umi';
+import { useRequest, useLocation, history, useIntl } from 'umi';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import moment from 'moment';
 import FormBuilder from '../builder/FormBuilder';
@@ -12,6 +12,7 @@ const Page = () => {
   const [form] = Form.useForm();
   const { TabPane } = Tabs;
   const location = useLocation();
+  const lang = useIntl();
 
   const init = useRequest<{ data: BasicListApi.PageData }>(
     `${location.pathname.replace('/basic-list', '')}`,
@@ -133,8 +134,10 @@ const Page = () => {
           <FooterToolbar
             extra={
               <Tag>
-                Update Time:
-                {moment(form.getFieldValue('update_time')).format('YYYY-MM-DD HH:mm:ss')}
+                {lang.formatMessage({
+                  id: `basic-list.page.updateTime`,
+                })}
+                :{moment(form.getFieldValue('update_time')).format('YYYY-MM-DD HH:mm:ss')}
               </Tag>
             }
           >
