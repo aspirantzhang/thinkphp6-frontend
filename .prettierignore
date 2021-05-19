@@ -22,3 +22,4 @@ CNAME
 /build
 /public
 *.snap
+/src/utils/utils.ts
