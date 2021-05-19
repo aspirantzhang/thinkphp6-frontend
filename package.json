@@ -34,7 +34,7 @@
     "tsc": "tsc --noEmit",
     "e2e:html": "nyc report --reporter=html",
     "e2e:cov": "nyc report --reporter=text-lcov > coverage.lcov",
-    "all": "yarn lint && yarn test:all"
+    "all": "yarn lint:fix && yarn lint && yarn test:all"
   },
   "lint-staged": {
     "**/*.less": "stylelint --syntax less",

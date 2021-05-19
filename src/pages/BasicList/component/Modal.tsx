@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { Modal as AntdModal, Form, Input, message, Tag, Spin } from 'antd';
-import { useRequest } from 'umi';
+import { useRequest, useIntl } from 'umi';
 import moment from 'moment';
 import FormBuilder from '../builder/FormBuilder';
 import ActionBuilder from '../builder/ActionBuilder';
@@ -17,6 +17,7 @@ const Modal = ({
   modalUri: string;
 }) => {
   const [form] = Form.useForm();
+  const lang = useIntl();
 
   const init = useRequest<{ data: BasicListApi.PageData }>(`${modalUri}`, {
     manual: true,
@@ -134,7 +135,10 @@ const Modal = ({
               </Form.Item>
             </Form>
             <Tag className={styles.formUpdateTime}>
-              Update Time: {moment(form.getFieldValue('update_time')).format('YYYY-MM-DD HH:mm:ss')}
+              {lang.formatMessage({
+                id: `basic-list.page.updateTime`,
+              })}
+              : {moment(form.getFieldValue('update_time')).format('YYYY-MM-DD HH:mm:ss')}
             </Tag>
           </>
         )}

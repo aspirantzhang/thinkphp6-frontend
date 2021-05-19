@@ -32,8 +32,7 @@ exports[`SearchBuilder snapshot test 1`] = `
               class="ant-form-item-control-input-content"
             >
               <input
-                class="ant-input ant-input-disabled"
-                disabled=""
+                class="ant-input"
                 id="single_line_text"
                 type="text"
                 value=""
@@ -70,8 +69,7 @@ exports[`SearchBuilder snapshot test 1`] = `
               class="ant-form-item-control-input-content"
             >
               <input
-                class="ant-input ant-input-disabled"
-                disabled=""
+                class="ant-input"
                 id="multi_line_text"
                 type="text"
                 value=""
@@ -108,7 +106,7 @@ exports[`SearchBuilder snapshot test 1`] = `
               class="ant-form-item-control-input-content"
             >
               <div
-                class="ant-input-number ant-input-number-disabled"
+                class="ant-input-number"
                 style="width: 100%;"
               >
                 <div
@@ -175,7 +173,6 @@ exports[`SearchBuilder snapshot test 1`] = `
                   <input
                     autocomplete="off"
                     class="ant-input-number-input"
-                    disabled=""
                     id="number"
                     role="spinbutton"
                     step="1"
@@ -215,7 +212,7 @@ exports[`SearchBuilder snapshot test 1`] = `
               class="ant-form-item-control-input-content"
             >
               <div
-                class="ant-picker ant-picker-range ant-picker-disabled"
+                class="ant-picker ant-picker-range"
                 style="width: 100%;"
               >
                 <div
@@ -223,7 +220,6 @@ exports[`SearchBuilder snapshot test 1`] = `
                 >
                   <input
                     autocomplete="off"
-                    disabled=""
                     id="datetime"
                     placeholder="Start date"
                     readonly=""
@@ -264,7 +260,6 @@ exports[`SearchBuilder snapshot test 1`] = `
                 >
                   <input
                     autocomplete="off"
-                    disabled=""
                     placeholder="End date"
                     readonly=""
                     size="21"
@@ -419,7 +414,7 @@ exports[`SearchBuilder snapshot test 1`] = `
               class="ant-form-item-control-input-content"
             >
               <div
-                class="ant-select ant-tree-select ant-select-multiple ant-select-disabled ant-select-show-search"
+                class="ant-select ant-tree-select ant-select-multiple ant-select-show-search"
               >
                 <div
                   class="ant-select-selector"
@@ -439,12 +434,10 @@ exports[`SearchBuilder snapshot test 1`] = `
                           aria-activedescendant="tree_list_0"
                           aria-autocomplete="list"
                           aria-controls="tree_list"
-                          aria-expanded="false"
                           aria-haspopup="listbox"
                           aria-owns="tree_list"
                           autocomplete="off"
                           class="ant-select-selection-search-input"
-                          disabled=""
                           id="tree"
                           readonly=""
                           role="combobox"
@@ -500,7 +493,7 @@ exports[`SearchBuilder snapshot test 1`] = `
               class="ant-form-item-control-input-content"
             >
               <div
-                class="ant-select ant-tree-select ant-select-single ant-select-allow-clear ant-select-show-arrow ant-select-disabled"
+                class="ant-select ant-tree-select ant-select-single ant-select-allow-clear ant-select-show-arrow"
               >
                 <div
                   class="ant-select-selector"
@@ -512,12 +505,10 @@ exports[`SearchBuilder snapshot test 1`] = `
                       aria-activedescendant="parent_list_0"
                       aria-autocomplete="list"
                       aria-controls="parent_list"
-                      aria-expanded="false"
                       aria-haspopup="listbox"
                       aria-owns="parent_list"
                       autocomplete="off"
                       class="ant-select-selection-search-input"
-                      disabled=""
                       id="parent"
                       readonly=""
                       role="combobox"
