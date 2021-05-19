@@ -299,7 +299,11 @@ const Index = () => {
             pageSize={init?.data?.meta?.per_page || 10}
             showSizeChanger
             showQuickJumper
-            showTotal={(total) => `Total ${total} items`}
+            showTotal={(total) =>
+              `${lang.formatMessage({
+                id: `basic-list.list.pagination.total`,
+              })}: ${total}`
+            }
             onChange={paginationChangeHandler}
             onShowSizeChange={paginationChangeHandler}
           />
