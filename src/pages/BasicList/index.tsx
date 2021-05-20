@@ -150,9 +150,18 @@ const Index = () => {
           ),
           icon: <ExclamationCircleOutlined />,
           content: batchOverview(Object.keys(record).length ? [record] : selectedRows),
-          okText: `Sure to ${action.call}!!!`,
+          okText: lang.formatMessage(
+            {
+              id: 'basic-list.list.actionHandler.okButtonText',
+            },
+            {
+              operationName,
+            },
+          ),
           okType: 'danger',
-          cancelText: 'Cancel',
+          cancelText: lang.formatMessage({
+            id: 'basic-list.list.actionHandler.cancelButtonText',
+          }),
           onOk() {
             return request.run({
               uri: action.uri,
@@ -238,7 +247,9 @@ const Index = () => {
                   <Col sm={24} className={styles.textAlignRight}>
                     <Space>
                       <Button type="primary" htmlType="submit" className="submit-btn">
-                        Submit
+                        {lang.formatMessage({
+                          id: 'basic-list.list.search.submitButtonText',
+                        })}
                       </Button>
                       <Button
                         onClick={() => {
@@ -249,7 +260,9 @@ const Index = () => {
                         }}
                         className="clear-btn"
                       >
-                        Clear
+                        {lang.formatMessage({
+                          id: 'basic-list.list.search.clearButtonText',
+                        })}
                       </Button>
                     </Space>
                   </Col>
@@ -269,7 +282,11 @@ const Index = () => {
         </Col>
         <Col xs={24} sm={12} className={styles.tableToolbar}>
           <Space>
-            <Tooltip title="search">
+            <Tooltip
+              title={lang.formatMessage({
+                id: `basic-list.list.search.toggleSearch`,
+              })}
+            >
               <Button
                 shape="circle"
                 icon={<SearchOutlined />}
