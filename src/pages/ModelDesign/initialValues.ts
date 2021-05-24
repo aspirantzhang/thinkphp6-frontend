@@ -1,9 +1,36 @@
 export const schemaExample = {
   routeName: 'admins',
   fields: [
-    { name: 'nickname', title: 'Nick Name', type: 'text', editDisabled: true },
-    { name: 'gender', title: 'Gender', type: 'radio' },
-    { name: 'married', title: 'Married', type: 'switch', hideInColumn: true },
+    { name: 'nickname', title: 'Nick Name', type: 'input', editDisabled: true },
+    {
+      name: 'gender',
+      title: 'Gender',
+      type: 'radio',
+      data: [
+        {
+          title: 'Mx',
+          value: 'mx',
+        },
+        {
+          title: 'Mr',
+          value: 'mr',
+        },
+        {
+          title: 'Ms',
+          value: 'ms',
+        },
+      ],
+    },
+    {
+      name: 'married',
+      title: 'Married',
+      type: 'switch',
+      hideInColumn: true,
+      data: [
+        { title: 'Yes', value: 1 },
+        { title: 'No', value: 0 },
+      ],
+    },
   ],
   listAction: [
     {

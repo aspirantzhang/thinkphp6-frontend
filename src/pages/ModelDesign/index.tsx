@@ -41,7 +41,7 @@ const Index = () => {
         effects: () => {
           onFieldReact('*.*.uri', (field) => {
             if (isField(field)) {
-              field.value = field.value?.replace('admins', field.query('routeName').get('value'));
+              field.value = field.value?.replace('admins', field.query('modelName').get('value'));
             }
           });
           onFieldReact('fields.*.data', (field) => {
@@ -84,7 +84,7 @@ const Index = () => {
           if (stopMark !== true) {
             setSpinLoading(false);
             form.setState((state) => {
-              const { routeName, ...rest } = res.data.data;
+              const { modelName, ...rest } = res.data.data;
               if (Object.keys(rest).length === 0) {
                 state.initialValues = schemaExample;
               }
@@ -166,7 +166,7 @@ const Index = () => {
             <Card title="Basic" size="small">
               <SchemaField>
                 <SchemaField.String
-                  name="routeName"
+                  name="modelName"
                   title="Route Name"
                   x-component="Input"
                   x-decorator="FormItem"
