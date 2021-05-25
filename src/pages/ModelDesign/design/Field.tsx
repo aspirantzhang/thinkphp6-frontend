@@ -1,17 +1,30 @@
 import { useState, useEffect, useMemo } from 'react';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import { createForm, onFieldChange, onFieldReact, isField } from '@formily/core';
-import { Form } from '@formily/antd';
-import { Spin, Button, message } from 'antd';
+import { createSchemaField } from '@formily/react';
+import { Form, FormItem, Input, ArrayTable, Switch, Select, Checkbox } from '@formily/antd';
+import { Spin, Button, Card, message } from 'antd';
 import { useSetState } from 'ahooks';
 import { request, useLocation, history, useModel } from 'umi';
-import View from './View';
-import Modal from './Modal';
-import Drawer from './Drawer';
-import styles from './index.less';
+import Modal from '../component/Modal';
+import Drawer from '../component/Drawer';
+import styles from '../index.less';
 import { schemaExample } from './initialValues';
+import * as enums from './enums';
 
-const Index = () => {
+const SchemaField = createSchemaField({
+  components: {
+    Input,
+    FormItem,
+    ArrayTable,
+    Switch,
+    Select,
+    Checkbox,
+    Button,
+  },
+});
+
+const Field = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [currentFieldPath, setCurrentFieldPath] = useState('');
@@ -89,7 +102,7 @@ const Index = () => {
       const getData = async () => {
         try {
           const res = await request(
-            `${location.pathname.replace('/basic-list/api/models/model-design', '')}`,
+            `${location.pathname.replace('/basic-list/api/models/field-design', '')}`,
           );
           if (stopMark !== true) {
             setSpinLoading(false);
@@ -145,7 +158,7 @@ const Index = () => {
     const updateData = async () => {
       try {
         const res = await request(
-          `${location.pathname.replace('/basic-list/api/models/model-design', '')}`,
+          `${location.pathname.replace('/basic-list/api/models/field-design', '')}`,
           {
             method: 'put',
             data: {
@@ -167,12 +180,92 @@ const Index = () => {
   };
 
   return (
-    <PageContainer>
+    <PageContainer
+      header={{
+        breadcrumb: {},
+      }}
+    >
       {spinLoading ? (
         <Spin className={styles.formSpin} tip="Loading..." />
       ) : (
         <Form form={form}>
-          <View />
+          <Card title="Fields" size="small">
+            <SchemaField>
+              <SchemaField.Array x-component="ArrayTable" name="fields" x-decorator="FormItem">
+                <SchemaField.Object>
+                  <SchemaField.Void
+                    x-component="ArrayTable.Column"
+                    x-component-props={{ title: 'Sort', width: 60, align: 'center' }}
+                  >
+                    <SchemaField.Void x-component="ArrayTable.SortHandle" x-decorator="FormItem" />
+                  </SchemaField.Void>
+
+                  <SchemaField.Void
+                    x-component="ArrayTable.Column"
+                    x-component-props={{ title: 'Name' }}
+                  >
+                    <SchemaField.String name="name" x-component="Input" x-decorator="FormItem" />
+                  </SchemaField.Void>
+
+                  <SchemaField.Void
+                    x-component="ArrayTable.Column"
+                    x-component-props={{ title: 'Title' }}
+                  >
+                    <SchemaField.String name="title" x-component="Input" x-decorator="FormItem" />
+                  </SchemaField.Void>
+
+                  <SchemaField.Void
+                    x-component="ArrayTable.Column"
+                    x-component-props={{ title: 'Type' }}
+                  >
+                    <SchemaField.String
+                      name="type"
+                      x-component="Select"
+                      x-decorator="FormItem"
+                      enum={enums.fieldType}
+                    />
+                  </SchemaField.Void>
+
+                  <SchemaField.Void
+                    x-component="ArrayTable.Column"
+                    x-component-props={{ title: 'Data', width: 60, align: 'center' }}
+                  >
+                    <SchemaField.String
+                      name="data"
+                      x-component="Button"
+                      x-decorator="FormItem"
+                      x-content="Data"
+                    />
+                  </SchemaField.Void>
+
+                  <SchemaField.Void
+                    x-component="ArrayTable.Column"
+                    x-component-props={{ title: 'Settings', width: 60, align: 'center' }}
+                  >
+                    <SchemaField.String
+                      name="settings"
+                      x-component="Button"
+                      x-decorator="FormItem"
+                      x-content="Settings"
+                    />
+                  </SchemaField.Void>
+
+                  <SchemaField.Void
+                    x-component="ArrayTable.Column"
+                    x-component-props={{ title: 'Operations', width: 100, align: 'center' }}
+                  >
+                    <SchemaField.Void x-component="ArrayTable.Remove" />
+                    <SchemaField.Void x-component="ArrayTable.MoveUp" />
+                    <SchemaField.Void x-component="ArrayTable.MoveDown" />
+                  </SchemaField.Void>
+                </SchemaField.Object>
+                <SchemaField.Void
+                  x-component="ArrayTable.Addition"
+                  x-component-props={{ title: 'Add' }}
+                />
+              </SchemaField.Array>
+            </SchemaField>
+          </Card>
         </Form>
       )}
       <FooterToolbar
@@ -208,4 +301,4 @@ const Index = () => {
   );
 };
 
-export default Index;
+export default Field;
