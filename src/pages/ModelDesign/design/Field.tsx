@@ -4,10 +4,12 @@ import { createForm, onFieldChange, onFieldReact, isField } from '@formily/core'
 import { createSchemaField } from '@formily/react';
 import { Form, FormItem, Input, ArrayTable, Switch, Select, Checkbox } from '@formily/antd';
 import { Spin, Button, Card, message } from 'antd';
+import { DoubleRightOutlined } from '@ant-design/icons';
 import { useSetState } from 'ahooks';
 import { request, useLocation, history, useModel } from 'umi';
 import Modal from '../component/Modal';
 import Drawer from '../component/Drawer';
+import AllowDrawer from '../component/AllowDrawer';
 import styles from '../index.less';
 import { schemaExample } from './initialValues';
 import * as enums from './enums';
@@ -27,6 +29,7 @@ const SchemaField = createSchemaField({
 const Field = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [drawerVisible, setDrawerVisible] = useState(false);
+  const [allowDrawerVisible, setAllowDrawerVisible] = useState(false);
   const [currentFieldPath, setCurrentFieldPath] = useState('');
   const [modalState, setModalState] = useSetState({
     type: '',
@@ -36,6 +39,7 @@ const Field = () => {
     type: '',
     values: {},
   });
+  const [drawerFieldData, setDrawerFieldData] = useSetState<{ fields?: Record<string, unknown> }>();
   const [spinLoading, setSpinLoading] = useState(true);
   const [submitLoading, setSubmitLoading] = useState(false);
   const location = useLocation();
@@ -97,6 +101,12 @@ const Field = () => {
   }, [drawerState.type]);
 
   useEffect(() => {
+    if (drawerFieldData.fields && Object.keys(drawerFieldData.fields).length > 0) {
+      setAllowDrawerVisible(true);
+    }
+  }, [drawerFieldData]);
+
+  useEffect(() => {
     let stopMark = false;
     if (location.pathname) {
       const getData = async () => {
@@ -125,24 +135,24 @@ const Field = () => {
     };
   }, [location.pathname]);
 
-  const reFetchMenu = async () => {
-    setInitialState({
-      ...initialState,
-      settings: {
-        menu: {
-          loading: true,
-        },
-      },
-    });
+  // const reFetchMenu = async () => {
+  //   setInitialState({
+  //     ...initialState,
+  //     settings: {
+  //       menu: {
+  //         loading: true,
+  //       },
+  //     },
+  //   });
 
-    const userMenu = await initialState?.fetchMenu?.();
-    if (userMenu) {
-      setInitialState({
-        ...initialState,
-        currentMenu: userMenu,
-      });
-    }
-  };
+  //   const userMenu = await initialState?.fetchMenu?.();
+  //   if (userMenu) {
+  //     setInitialState({
+  //       ...initialState,
+  //       currentMenu: userMenu,
+  //     });
+  //   }
+  // };
 
   const modalSubmitHandler = (values: any) => {
     setModalVisible(false);
@@ -150,33 +160,6 @@ const Field = () => {
       state.value = values.data;
     });
     setModalState({ type: '', values: {} });
-  };
-
-  const pageSubmitHandler = (values: any) => {
-    setSubmitLoading(true);
-    message.loading({ content: 'Processing...', key: 'process', duration: 0 });
-    const updateData = async () => {
-      try {
-        const res = await request(
-          `${location.pathname.replace('/basic-list/api/models/field-design', '')}`,
-          {
-            method: 'put',
-            data: {
-              data: values,
-            },
-          },
-        );
-        if (res.success === true) {
-          message.success({ content: res.message, key: 'process' });
-          history.goBack();
-          reFetchMenu();
-        }
-      } catch (error) {
-        setSubmitLoading(false);
-      }
-    };
-
-    updateData();
   };
 
   return (
@@ -270,15 +253,18 @@ const Field = () => {
       )}
       <FooterToolbar
         extra={
-          <Button
-            type="primary"
-            onClick={() => {
-              form.submit(pageSubmitHandler);
-            }}
-            loading={submitLoading}
-          >
-            Submit
-          </Button>
+          <div style={{ textAlign: 'center' }}>
+            <Button
+              type="primary"
+              onClick={() => {
+                form.submit(setDrawerFieldData);
+              }}
+              loading={submitLoading}
+              shape="round"
+            >
+              Next Step <DoubleRightOutlined />
+            </Button>
+          </div>
         }
       />
       <Modal
@@ -296,6 +282,15 @@ const Field = () => {
           setDrawerState({ type: '', values: {} });
         }}
         drawerVisible={drawerVisible}
+      />
+      <AllowDrawer
+        hideAllowDrawer={() => {
+          console.log('close drawer');
+          setAllowDrawerVisible(false);
+          setDrawerFieldData({ fields: {} });
+        }}
+        allowDrawerVisible={allowDrawerVisible}
+        drawerFieldData={drawerFieldData}
       />
     </PageContainer>
   );
