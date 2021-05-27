@@ -5,9 +5,8 @@ import { createSchemaField } from '@formily/react';
 import { Form, FormItem, Input, ArrayTable, Switch, Space, Select, Checkbox } from '@formily/antd';
 import { Spin, Button, Card, message } from 'antd';
 import { useSetState } from 'ahooks';
-import { request, useLocation, history, useModel } from 'umi';
+import { request, useLocation, history } from 'umi';
 import Modal from '../component/Modal';
-import Drawer from '../component/Drawer';
 import styles from '../index.less';
 import { schemaExample } from './initialValues';
 import * as enums from './enums';
@@ -26,20 +25,14 @@ const SchemaField = createSchemaField({
 
 const Field = () => {
   const [modalVisible, setModalVisible] = useState(false);
-  const [drawerVisible, setDrawerVisible] = useState(false);
   const [currentFieldPath, setCurrentFieldPath] = useState('');
   const [modalState, setModalState] = useSetState({
-    type: '',
-    values: {},
-  });
-  const [drawerState, setDrawerState] = useSetState({
     type: '',
     values: {},
   });
   const [spinLoading, setSpinLoading] = useState(true);
   const [submitLoading, setSubmitLoading] = useState(false);
   const location = useLocation();
-  const { initialState, setInitialState } = useModel('@@initialState');
 
   const form = useMemo(
     () =>
@@ -68,17 +61,6 @@ const Field = () => {
               field.active = false;
             }
           });
-          onFieldChange('fields.*.settings', ['active'], (field) => {
-            if (isField(field) && field.active === true) {
-              console.log('click');
-              // setCurrentFieldPath(field.path.toString());
-              setDrawerState({
-                values: field.value,
-                type: field.query('.type').get('value'),
-              });
-              field.active = false;
-            }
-          });
         },
       }),
     [],
@@ -89,12 +71,6 @@ const Field = () => {
       setModalVisible(true);
     }
   }, [modalState.type]);
-
-  useEffect(() => {
-    if (drawerState.type) {
-      setDrawerVisible(true);
-    }
-  }, [drawerState.type]);
 
   useEffect(() => {
     let stopMark = false;
@@ -125,25 +101,6 @@ const Field = () => {
     };
   }, [location.pathname]);
 
-  const reFetchMenu = async () => {
-    setInitialState({
-      ...initialState,
-      settings: {
-        menu: {
-          loading: true,
-        },
-      },
-    });
-
-    const userMenu = await initialState?.fetchMenu?.();
-    if (userMenu) {
-      setInitialState({
-        ...initialState,
-        currentMenu: userMenu,
-      });
-    }
-  };
-
   const modalSubmitHandler = (values: any) => {
     setModalVisible(false);
     form.setFieldState(currentFieldPath, (state) => {
@@ -169,7 +126,6 @@ const Field = () => {
         if (res.success === true) {
           message.success({ content: res.message, key: 'process' });
           history.goBack();
-          reFetchMenu();
         }
       } catch (error) {
         setSubmitLoading(false);
@@ -771,13 +727,6 @@ const Field = () => {
         }}
         modalSubmitHandler={modalSubmitHandler}
         modalState={modalState}
-      />
-      <Drawer
-        hideDrawer={() => {
-          setDrawerVisible(false);
-          setDrawerState({ type: '', values: {} });
-        }}
-        drawerVisible={drawerVisible}
       />
     </PageContainer>
   );

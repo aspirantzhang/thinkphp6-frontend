@@ -1,7 +1,14 @@
 export const schemaExample = {
   routeName: 'admins',
   fields: [
-    { name: 'nickname', title: 'Nick Name', type: 'input', editDisabled: true },
+    {
+      name: 'nickname',
+      title: 'Nick Name',
+      type: 'input',
+      settings: {
+        validate: ['require', 'length'],
+      },
+    },
     {
       name: 'gender',
       title: 'Gender',
@@ -20,6 +27,7 @@ export const schemaExample = {
           value: 'ms',
         },
       ],
+      settings: { validate: ['require'] },
     },
     {
       name: 'married',
@@ -30,6 +38,7 @@ export const schemaExample = {
         { title: 'Yes', value: 1 },
         { title: 'No', value: 0 },
       ],
+      settings: { display: ['listSorter'], validate: ['require'] },
     },
   ],
   listAction: [

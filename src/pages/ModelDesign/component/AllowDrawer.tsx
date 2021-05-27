@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Drawer as AntdDrawer, Button, message } from 'antd';
-import { useLocation, request, history } from 'umi';
+import { useLocation, request, history, useModel } from 'umi';
 import { createForm } from '@formily/core';
 import { createSchemaField } from '@formily/react';
 import {
@@ -38,6 +38,8 @@ const AllowDrawer = ({
 }) => {
   const location = useLocation();
   const [submitLoading, setSubmitLoading] = useState(false);
+  const { initialState, setInitialState } = useModel('@@initialState');
+
   useEffect(() => {
     if (drawerFieldData.fields && Object.keys(drawerFieldData.fields).length > 0) {
       form.setState((state) => {
@@ -49,6 +51,26 @@ const AllowDrawer = ({
   const pageSubmitHandler = (values: any) => {
     setSubmitLoading(true);
     message.loading({ content: 'Processing...', key: 'process', duration: 0 });
+
+    const reFetchMenu = async () => {
+      setInitialState({
+        ...initialState,
+        settings: {
+          menu: {
+            loading: true,
+          },
+        },
+      });
+
+      const userMenu = await initialState?.fetchMenu?.();
+      if (userMenu) {
+        setInitialState({
+          ...initialState,
+          currentMenu: userMenu,
+        });
+      }
+    };
+
     const updateData = async () => {
       try {
         const res = await request(
@@ -63,7 +85,7 @@ const AllowDrawer = ({
         if (res.success === true) {
           message.success({ content: res.message, key: 'process' });
           history.goBack();
-          // reFetchMenu();
+          reFetchMenu();
         }
       } catch (error) {
         setSubmitLoading(false);

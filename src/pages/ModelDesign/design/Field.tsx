@@ -3,12 +3,12 @@ import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import { createForm, onFieldChange, onFieldReact, isField } from '@formily/core';
 import { createSchemaField } from '@formily/react';
 import { Form, FormItem, Input, ArrayTable, Switch, Select, Checkbox } from '@formily/antd';
-import { Spin, Button, Card, message } from 'antd';
-import { DoubleRightOutlined } from '@ant-design/icons';
+import { Spin, Button, Card, Space } from 'antd';
+import { DoubleRightOutlined, DoubleLeftOutlined } from '@ant-design/icons';
 import { useSetState } from 'ahooks';
-import { request, useLocation, history, useModel } from 'umi';
+import { request, useLocation, history } from 'umi';
 import Modal from '../component/Modal';
-import Drawer from '../component/Drawer';
+import SettingDrawer from '../component/SettingDrawer';
 import AllowDrawer from '../component/AllowDrawer';
 import styles from '../index.less';
 import { schemaExample } from './initialValues';
@@ -41,9 +41,7 @@ const Field = () => {
   });
   const [drawerFieldData, setDrawerFieldData] = useSetState<{ fields?: Record<string, unknown> }>();
   const [spinLoading, setSpinLoading] = useState(true);
-  const [submitLoading, setSubmitLoading] = useState(false);
   const location = useLocation();
-  const { initialState, setInitialState } = useModel('@@initialState');
 
   const form = useMemo(
     () =>
@@ -74,8 +72,7 @@ const Field = () => {
           });
           onFieldChange('fields.*.settings', ['active'], (field) => {
             if (isField(field) && field.active === true) {
-              console.log('click');
-              // setCurrentFieldPath(field.path.toString());
+              setCurrentFieldPath(field.path.toString());
               setDrawerState({
                 values: field.value,
                 type: field.query('.type').get('value'),
@@ -160,6 +157,14 @@ const Field = () => {
       state.value = values.data;
     });
     setModalState({ type: '', values: {} });
+  };
+
+  const drawerSubmitHandler = (values: any) => {
+    setDrawerVisible(false);
+    form.setFieldState(currentFieldPath, (state) => {
+      state.value = values;
+    });
+    setDrawerState({ type: '', values: {} });
   };
 
   return (
@@ -254,16 +259,26 @@ const Field = () => {
       <FooterToolbar
         extra={
           <div style={{ textAlign: 'center' }}>
-            <Button
-              type="primary"
-              onClick={() => {
-                form.submit(setDrawerFieldData);
-              }}
-              loading={submitLoading}
-              shape="round"
-            >
-              Next Step <DoubleRightOutlined />
-            </Button>
+            <Space size={50}>
+              <Button
+                danger
+                shape="round"
+                onClick={() => {
+                  history.goBack();
+                }}
+              >
+                <DoubleLeftOutlined /> Back to List
+              </Button>
+              <Button
+                type="primary"
+                onClick={() => {
+                  form.submit(setDrawerFieldData);
+                }}
+                shape="round"
+              >
+                Next Step <DoubleRightOutlined />
+              </Button>
+            </Space>
           </div>
         }
       />
@@ -273,19 +288,20 @@ const Field = () => {
           setModalVisible(false);
           setModalState({ type: '', values: {} });
         }}
-        modalSubmitHandler={modalSubmitHandler}
         modalState={modalState}
+        modalSubmitHandler={modalSubmitHandler}
       />
-      <Drawer
+      <SettingDrawer
         hideDrawer={() => {
           setDrawerVisible(false);
           setDrawerState({ type: '', values: {} });
         }}
         drawerVisible={drawerVisible}
+        drawerState={drawerState}
+        drawerSubmitHandler={drawerSubmitHandler}
       />
       <AllowDrawer
         hideAllowDrawer={() => {
-          console.log('close drawer');
           setAllowDrawerVisible(false);
           setDrawerFieldData({ fields: {} });
         }}
