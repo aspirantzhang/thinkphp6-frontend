@@ -75,7 +75,7 @@ const SettingDrawer = ({
   const validateOptions = [
     { label: 'Require', value: 'require' },
     { label: 'Length', value: 'length' },
-    { label: 'Number', value: 'Number' },
+    { label: 'Number', value: 'number' },
     { label: 'Number Array', value: 'numberArray' },
     { label: 'Parent Id', value: 'parentId' },
     { label: 'Number Tag', value: 'numberTag' },
