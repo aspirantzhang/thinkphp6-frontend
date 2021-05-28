@@ -129,16 +129,6 @@ const AllowDrawer = ({
               </SchemaField.Void>
               <SchemaField.Void
                 x-component="ArrayTable.Column"
-                x-component-props={{ title: 'List', align: 'center' }}
-              >
-                <SchemaField.String
-                  name="allowList"
-                  x-component="Checkbox"
-                  x-decorator="FormItem"
-                />
-              </SchemaField.Void>
-              <SchemaField.Void
-                x-component="ArrayTable.Column"
                 x-component-props={{ title: 'Read', align: 'center' }}
               >
                 <SchemaField.String
@@ -163,16 +153,6 @@ const AllowDrawer = ({
               >
                 <SchemaField.String
                   name="allowUpdate"
-                  x-component="Checkbox"
-                  x-decorator="FormItem"
-                />
-              </SchemaField.Void>
-              <SchemaField.Void
-                x-component="ArrayTable.Column"
-                x-component-props={{ title: 'Search', align: 'center' }}
-              >
-                <SchemaField.String
-                  name="allowSearch"
                   x-component="Checkbox"
                   x-decorator="FormItem"
                 />
