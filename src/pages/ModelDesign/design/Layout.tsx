@@ -8,7 +8,7 @@ import { useSetState } from 'ahooks';
 import { request, useLocation, history } from 'umi';
 import Modal from '../component/Modal';
 import styles from '../index.less';
-import { schemaExample } from './initialValues';
+import { initialLayout } from './initialLayout';
 import * as enums from './enums';
 
 const SchemaField = createSchemaField({
@@ -40,7 +40,10 @@ const Field = () => {
         effects: () => {
           onFieldReact('*.*.uri', (field) => {
             if (isField(field)) {
-              field.value = field.value?.replace('admins', field.query('modelName').get('value'));
+              field.value = field.value?.replace(
+                '{%modelName%}',
+                field.query('modelName').get('value'),
+              );
             }
           });
           onFieldReact('fields.*.data', (field) => {
@@ -83,9 +86,12 @@ const Field = () => {
           if (stopMark !== true) {
             setSpinLoading(false);
             form.setState((state) => {
-              const { modelName, ...rest } = res.data.data;
-              if (Object.keys(rest).length === 0) {
-                state.initialValues = schemaExample;
+              if (
+                res.data.data?.layout === undefined ||
+                Object.keys(res.data.data.layout).length === 0
+              ) {
+                message.info('Initialized with sample values.');
+                state.initialValues = initialLayout;
               }
               state.initialValues = res.data.data;
             });
@@ -119,6 +125,7 @@ const Field = () => {
           {
             method: 'put',
             data: {
+              type: 'layout',
               data: values,
             },
           },
@@ -150,7 +157,7 @@ const Field = () => {
               <SchemaField>
                 <SchemaField.String
                   name="modelName"
-                  title="Route Name"
+                  title="Model Name"
                   x-component="Input"
                   x-decorator="FormItem"
                 />

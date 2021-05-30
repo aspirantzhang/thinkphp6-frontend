@@ -1,53 +1,12 @@
-export const schemaExample = {
-  routeName: 'admins',
-  fields: [
-    {
-      name: 'nickname',
-      title: 'Nick Name',
-      type: 'input',
-      settings: {
-        validate: ['require', 'length'],
-      },
-    },
-    {
-      name: 'gender',
-      title: 'Gender',
-      type: 'radio',
-      data: [
-        {
-          title: 'Mx',
-          value: 'mx',
-        },
-        {
-          title: 'Mr',
-          value: 'mr',
-        },
-        {
-          title: 'Ms',
-          value: 'ms',
-        },
-      ],
-      settings: { validate: ['require'] },
-    },
-    {
-      name: 'married',
-      title: 'Married',
-      type: 'switch',
-      hideInColumn: true,
-      data: [
-        { title: 'Yes', value: 1 },
-        { title: 'No', value: 0 },
-      ],
-      settings: { display: ['listSorter'], validate: ['require'] },
-    },
-  ],
+export const initialLayout = {
+  modelName: '{%modelName%}',
   listAction: [
     {
       name: 'edit',
       title: 'Edit',
       type: 'primary',
       call: 'modal',
-      uri: '/api/admins/:id',
+      uri: '/api/{%modelName%}/:id',
       method: 'get',
     },
     {
@@ -55,7 +14,7 @@ export const schemaExample = {
       title: 'Page Edit',
       type: 'default',
       call: 'page',
-      uri: '/api/admins/:id',
+      uri: '/api/{%modelName%}/:id',
       method: 'get',
     },
     {
@@ -63,7 +22,7 @@ export const schemaExample = {
       title: 'Delete',
       type: 'default',
       call: 'delete',
-      uri: '/api/admins/delete',
+      uri: '/api/{%modelName%}/delete',
       method: 'post',
     },
   ],
@@ -87,7 +46,7 @@ export const schemaExample = {
       title: 'Submit',
       type: 'primary',
       call: 'submit',
-      uri: '/api/admins',
+      uri: '/api/{%modelName%}',
       method: 'post',
     },
   ],
@@ -111,7 +70,7 @@ export const schemaExample = {
       title: 'Submit',
       type: 'primary',
       call: 'submit',
-      uri: '/api/admins/:id',
+      uri: '/api/{%modelName%}/:id',
       method: 'put',
     },
   ],
@@ -121,7 +80,7 @@ export const schemaExample = {
       title: 'Add',
       type: 'primary',
       call: 'modal',
-      uri: '/api/admins/add',
+      uri: '/api/{%modelName%}/add',
       method: 'get',
     },
     {
@@ -129,7 +88,7 @@ export const schemaExample = {
       title: 'Page Add',
       type: 'default',
       call: 'page',
-      uri: '/api/admins/add',
+      uri: '/api/{%modelName%}/add',
       method: 'get',
     },
     {
@@ -146,7 +105,7 @@ export const schemaExample = {
       title: 'Delete',
       type: 'danger',
       call: 'delete',
-      uri: '/api/admins/delete',
+      uri: '/api/{%modelName%}/delete',
       method: 'post',
     },
     {
@@ -154,7 +113,7 @@ export const schemaExample = {
       title: 'Disabled',
       type: 'default',
       call: 'disabled',
-      uri: '/api/admins/disable',
+      uri: '/api/{%modelName%}/disable',
       method: 'post',
     },
   ],
@@ -165,14 +124,14 @@ export const schemaExample = {
       type: 'danger',
       call: 'deletePermanently',
       method: 'post',
-      uri: '/api/admins/delete',
+      uri: '/api/{%modelName%}/delete',
     },
     {
       name: 'restore',
       title: 'Restore',
       type: 'default',
       call: 'restore',
-      uri: '/api/admins/restore',
+      uri: '/api/{%modelName%}/restore',
       method: 'post',
     },
   ],

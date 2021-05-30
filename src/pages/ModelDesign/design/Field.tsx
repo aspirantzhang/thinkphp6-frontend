@@ -3,7 +3,7 @@ import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import { createForm, onFieldChange, onFieldReact, isField } from '@formily/core';
 import { createSchemaField } from '@formily/react';
 import { Form, FormItem, Input, ArrayTable, Switch, Select, Checkbox } from '@formily/antd';
-import { Spin, Button, Card, Space } from 'antd';
+import { Spin, Button, Card, Space, message } from 'antd';
 import { DoubleRightOutlined, DoubleLeftOutlined } from '@ant-design/icons';
 import { useSetState } from 'ahooks';
 import { request, useLocation, history } from 'umi';
@@ -11,7 +11,7 @@ import Modal from '../component/Modal';
 import SettingDrawer from '../component/SettingDrawer';
 import AllowDrawer from '../component/AllowDrawer';
 import styles from '../index.less';
-import { schemaExample } from './initialValues';
+import { initialFields } from './initialFields';
 import * as enums from './enums';
 
 const SchemaField = createSchemaField({
@@ -27,18 +27,18 @@ const SchemaField = createSchemaField({
 });
 
 const Field = () => {
-  const [modalVisible, setModalVisible] = useState(false);
-  const [drawerVisible, setDrawerVisible] = useState(false);
-  const [allowDrawerVisible, setAllowDrawerVisible] = useState(false);
   const [currentFieldPath, setCurrentFieldPath] = useState('');
+  const [modalVisible, setModalVisible] = useState(false);
   const [modalState, setModalState] = useSetState({
     type: '',
     values: {},
   });
+  const [drawerVisible, setDrawerVisible] = useState(false);
   const [drawerState, setDrawerState] = useSetState({
     type: '',
     values: {},
   });
+  const [allowDrawerVisible, setAllowDrawerVisible] = useState(false);
   const [drawerFieldData, setDrawerFieldData] = useSetState<{ fields?: Record<string, unknown> }>();
   const [spinLoading, setSpinLoading] = useState(true);
   const location = useLocation();
@@ -114,9 +114,12 @@ const Field = () => {
           if (stopMark !== true) {
             setSpinLoading(false);
             form.setState((state) => {
-              const { modelName, ...rest } = res.data.data;
-              if (Object.keys(rest).length === 0) {
-                state.initialValues = schemaExample;
+              if (
+                res.data.data?.fields === undefined ||
+                Object.keys(res.data.data.fields).length === 0
+              ) {
+                message.info('Initialized with sample values.');
+                state.initialValues = initialFields;
               }
               state.initialValues = res.data.data;
             });
@@ -131,25 +134,6 @@ const Field = () => {
       stopMark = true;
     };
   }, [location.pathname]);
-
-  // const reFetchMenu = async () => {
-  //   setInitialState({
-  //     ...initialState,
-  //     settings: {
-  //       menu: {
-  //         loading: true,
-  //       },
-  //     },
-  //   });
-
-  //   const userMenu = await initialState?.fetchMenu?.();
-  //   if (userMenu) {
-  //     setInitialState({
-  //       ...initialState,
-  //       currentMenu: userMenu,
-  //     });
-  //   }
-  // };
 
   const modalSubmitHandler = (values: any) => {
     setModalVisible(false);

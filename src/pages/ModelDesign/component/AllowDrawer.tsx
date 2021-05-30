@@ -41,9 +41,9 @@ const AllowDrawer = ({
   const { initialState, setInitialState } = useModel('@@initialState');
 
   useEffect(() => {
-    if (drawerFieldData.fields && Object.keys(drawerFieldData.fields).length > 0) {
+    if (drawerFieldData) {
       form.setState((state) => {
-        state.values = { fields: drawerFieldData.fields };
+        state.values = drawerFieldData;
       });
     }
   }, [drawerFieldData]);
@@ -78,6 +78,7 @@ const AllowDrawer = ({
           {
             method: 'put',
             data: {
+              type: 'field',
               data: values,
             },
           },
