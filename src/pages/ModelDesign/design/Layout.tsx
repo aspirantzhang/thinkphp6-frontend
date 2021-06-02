@@ -3,13 +3,13 @@ import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import { createForm, onFieldChange, onFieldReact, isField } from '@formily/core';
 import { createSchemaField } from '@formily/react';
 import { Form, FormItem, Input, ArrayTable, Switch, Space, Select, Checkbox } from '@formily/antd';
-import { Card, Spin, Button, message } from 'antd';
-import * as enums from './enums';
+import { Spin, Button, Card, message } from 'antd';
 import { useSetState } from 'ahooks';
-import { request, useLocation, history, useModel } from 'umi';
-import Modal from './Modal';
-import styles from './index.less';
-import { schemaExample } from './initialValues';
+import { request, useLocation, history } from 'umi';
+import Modal from '../component/Modal';
+import styles from '../index.less';
+import { initialLayout } from './initialLayout';
+import * as enums from './enums';
 
 const SchemaField = createSchemaField({
   components: {
@@ -23,7 +23,7 @@ const SchemaField = createSchemaField({
   },
 });
 
-const Index = () => {
+const Field = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [currentFieldPath, setCurrentFieldPath] = useState('');
   const [modalState, setModalState] = useSetState({
@@ -33,7 +33,6 @@ const Index = () => {
   const [spinLoading, setSpinLoading] = useState(true);
   const [submitLoading, setSubmitLoading] = useState(false);
   const location = useLocation();
-  const { initialState, setInitialState } = useModel('@@initialState');
 
   const form = useMemo(
     () =>
@@ -41,7 +40,10 @@ const Index = () => {
         effects: () => {
           onFieldReact('*.*.uri', (field) => {
             if (isField(field)) {
-              field.value = field.value?.replace('admins', field.query('routeName').get('value'));
+              field.value = field.value?.replace(
+                '{%modelName%}',
+                field.query('modelName').get('value'),
+              );
             }
           });
           onFieldReact('fields.*.data', (field) => {
@@ -79,14 +81,17 @@ const Index = () => {
       const getData = async () => {
         try {
           const res = await request(
-            `${location.pathname.replace('/basic-list/api/models/model-design', '')}`,
+            `${location.pathname.replace('/basic-list/api/models/layout-design', '')}`,
           );
           if (stopMark !== true) {
             setSpinLoading(false);
             form.setState((state) => {
-              const { routeName, ...rest } = res.data.data;
-              if (Object.keys(rest).length === 0) {
-                state.initialValues = schemaExample;
+              if (
+                res.data.data?.layout === undefined ||
+                Object.keys(res.data.data.layout).length === 0
+              ) {
+                message.info('Initialized with sample values.');
+                state.initialValues = initialLayout;
               }
               state.initialValues = res.data.data;
             });
@@ -102,25 +107,6 @@ const Index = () => {
     };
   }, [location.pathname]);
 
-  const reFetchMenu = async () => {
-    setInitialState({
-      ...initialState,
-      settings: {
-        menu: {
-          loading: true,
-        },
-      },
-    });
-
-    const userMenu = await initialState?.fetchMenu?.();
-    if (userMenu) {
-      setInitialState({
-        ...initialState,
-        currentMenu: userMenu,
-      });
-    }
-  };
-
   const modalSubmitHandler = (values: any) => {
     setModalVisible(false);
     form.setFieldState(currentFieldPath, (state) => {
@@ -135,10 +121,11 @@ const Index = () => {
     const updateData = async () => {
       try {
         const res = await request(
-          `${location.pathname.replace('/basic-list/api/models/model-design', '')}`,
+          `${location.pathname.replace('/basic-list/api/models/layout-design', '')}`,
           {
             method: 'put',
             data: {
+              type: 'layout',
               data: values,
             },
           },
@@ -146,7 +133,6 @@ const Index = () => {
         if (res.success === true) {
           message.success({ content: res.message, key: 'process' });
           history.goBack();
-          reFetchMenu();
         }
       } catch (error) {
         setSubmitLoading(false);
@@ -157,7 +143,11 @@ const Index = () => {
   };
 
   return (
-    <PageContainer>
+    <PageContainer
+      header={{
+        breadcrumb: {},
+      }}
+    >
       {spinLoading ? (
         <Spin className={styles.formSpin} tip="Loading..." />
       ) : (
@@ -166,129 +156,13 @@ const Index = () => {
             <Card title="Basic" size="small">
               <SchemaField>
                 <SchemaField.String
-                  name="routeName"
-                  title="Route Name"
+                  name="modelName"
+                  title="Model Name"
                   x-component="Input"
                   x-decorator="FormItem"
                 />
               </SchemaField>
             </Card>
-            <Card title="Fields" size="small">
-              <SchemaField>
-                <SchemaField.Array x-component="ArrayTable" name="fields" x-decorator="FormItem">
-                  <SchemaField.Object>
-                    <SchemaField.Void
-                      x-component="ArrayTable.Column"
-                      x-component-props={{ title: 'Sort', width: 60, align: 'center' }}
-                    >
-                      <SchemaField.Void
-                        x-component="ArrayTable.SortHandle"
-                        x-decorator="FormItem"
-                      />
-                    </SchemaField.Void>
-
-                    <SchemaField.Void
-                      x-component="ArrayTable.Column"
-                      x-component-props={{ title: 'Name' }}
-                    >
-                      <SchemaField.String name="name" x-component="Input" x-decorator="FormItem" />
-                    </SchemaField.Void>
-
-                    <SchemaField.Void
-                      x-component="ArrayTable.Column"
-                      x-component-props={{ title: 'Title' }}
-                    >
-                      <SchemaField.String name="title" x-component="Input" x-decorator="FormItem" />
-                    </SchemaField.Void>
-
-                    <SchemaField.Void
-                      x-component="ArrayTable.Column"
-                      x-component-props={{ title: 'Type' }}
-                    >
-                      <SchemaField.String
-                        name="type"
-                        x-component="Select"
-                        x-decorator="FormItem"
-                        enum={enums.fieldType}
-                      />
-                    </SchemaField.Void>
-
-                    <SchemaField.Void
-                      x-component="ArrayTable.Column"
-                      x-component-props={{ title: 'Data', width: 60, align: 'center' }}
-                    >
-                      <SchemaField.String
-                        name="data"
-                        x-component="Button"
-                        x-decorator="FormItem"
-                        x-content="Data"
-                      />
-                    </SchemaField.Void>
-
-                    <SchemaField.Void
-                      x-component="ArrayTable.Column"
-                      x-component-props={{
-                        title: 'List Sorter',
-                        width: 90,
-                        align: 'center',
-                      }}
-                    >
-                      <SchemaField.Boolean
-                        name="listSorter"
-                        x-component="Checkbox"
-                        x-decorator="FormItem"
-                      />
-                    </SchemaField.Void>
-
-                    <SchemaField.Void
-                      x-component="ArrayTable.Column"
-                      x-component-props={{
-                        title: 'Hide in Column',
-                        dataIndex: 'hideInColumn',
-                        width: 90,
-                        align: 'center',
-                      }}
-                    >
-                      <SchemaField.Boolean
-                        name="hideInColumn"
-                        x-component="Checkbox"
-                        x-decorator="FormItem"
-                      />
-                    </SchemaField.Void>
-
-                    <SchemaField.Void
-                      x-component="ArrayTable.Column"
-                      x-component-props={{
-                        title: 'Edit Disabled',
-                        dataIndex: 'editDisabled',
-                        width: 90,
-                        align: 'center',
-                      }}
-                    >
-                      <SchemaField.Boolean
-                        name="editDisabled"
-                        x-component="Checkbox"
-                        x-decorator="FormItem"
-                      />
-                    </SchemaField.Void>
-
-                    <SchemaField.Void
-                      x-component="ArrayTable.Column"
-                      x-component-props={{ title: 'Operations', width: 100, align: 'center' }}
-                    >
-                      <SchemaField.Void x-component="ArrayTable.Remove" />
-                      <SchemaField.Void x-component="ArrayTable.MoveUp" />
-                      <SchemaField.Void x-component="ArrayTable.MoveDown" />
-                    </SchemaField.Void>
-                  </SchemaField.Object>
-                  <SchemaField.Void
-                    x-component="ArrayTable.Addition"
-                    x-component-props={{ title: 'Add' }}
-                  />
-                </SchemaField.Array>
-              </SchemaField>
-            </Card>
-
             <Card title="List Action" size="small">
               <SchemaField>
                 <SchemaField.Array
@@ -865,4 +739,4 @@ const Index = () => {
   );
 };
 
-export default Index;
+export default Field;

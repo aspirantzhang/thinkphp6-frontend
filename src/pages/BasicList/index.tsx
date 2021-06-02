@@ -123,13 +123,6 @@ const Index = () => {
         history.push(`/basic-list${uri}`);
         break;
       }
-      case 'modelDesign': {
-        const uri = (action.uri || '').replace(/:\w+/g, (field) => {
-          return record[field.replace(':', '')];
-        });
-        history.push(`/basic-list/api/models/model-design${uri}`);
-        break;
-      }
       case 'reload':
         init.run();
         break;

@@ -37,10 +37,12 @@
     ],
   },
   {
-    name: 'model-design',
-    icon: 'table',
-    path: '/basic-list/api/models/model-design/*',
-    component: './ModelDesign',
+    path: '/basic-list/api/models/field-design/*',
+    component: './ModelDesign/design/Field',
+  },
+  {
+    path: '/basic-list/api/models/layout-design/*',
+    component: './ModelDesign/design/Layout',
   },
   {
     path: '/basic-list/api/*/*',

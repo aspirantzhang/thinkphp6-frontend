@@ -3,7 +3,7 @@ import { createForm } from '@formily/core';
 import { createSchemaField } from '@formily/react';
 import { Form, FormItem, Input, ArrayTable, Switch, Select, Checkbox } from '@formily/antd';
 import { Modal as AntdModal } from 'antd';
-import styles from './index.less';
+import styles from '../index.less';
 
 const form = createForm();
 const SchemaField = createSchemaField({
