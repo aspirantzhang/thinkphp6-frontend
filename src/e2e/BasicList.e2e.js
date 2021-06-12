@@ -78,8 +78,8 @@ test('BasicList', async () => {
   await page.type('.basic-list-modal #password', 'e2e');
   await page.waitForSelector('.basic-list-modal .submit-btn');
   await page.click('.basic-list-modal .submit-btn');
-  await page.waitForSelector('.process-message span:nth-child(2)');
   await page.waitForTimeout(1000);
+  await page.waitForSelector('.process-message span:nth-child(2)');
   expect(await page.$eval('.process-message span:nth-child(2)', (el) => el.innerText)).toBe(
     'Add successfully.',
   );
@@ -91,7 +91,7 @@ test('BasicList', async () => {
       (el) => el.innerText,
     ),
   ).toBe('single-line-text-value');
-  await page.waitForTimeout(2000);
+  await page.waitForTimeout(3000);
 
   // modal edit
   await page.waitForSelector('.basic-list-table .edit-btn');
@@ -102,8 +102,8 @@ test('BasicList', async () => {
   );
   await page.waitForSelector('.basic-list-modal .submit-btn');
   await page.click('.basic-list-modal .submit-btn');
-  await page.waitForSelector('.process-message span:nth-child(2)');
   await page.waitForTimeout(1000);
+  await page.waitForSelector('.process-message span:nth-child(2)');
   expect(await page.$eval('.process-message span:nth-child(2)', (el) => el.innerText)).toBe(
     'Edit successfully.',
   );
