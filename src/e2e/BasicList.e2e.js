@@ -1,15 +1,15 @@
 import puppeteer from 'puppeteer';
-// import * as pti from 'puppeteer-to-istanbul';
+import * as pti from 'puppeteer-to-istanbul';
 
 const BASE_URL = `http://localhost:${process.env.PORT || 8000}`;
 
 const { CI } = process.env;
 let puppeteerOption = {
-  headless: false,
+  // headless: false,
   slowMo: 25,
 };
 if (CI === 'true') {
-  puppeteerOption = {};
+  puppeteerOption = { slowMo: 25 };
 }
 
 test('BasicList', async () => {
@@ -17,7 +17,7 @@ test('BasicList', async () => {
   const page = await browser.newPage();
 
   // Enable both JavaScript and CSS coverage
-  // await Promise.all([page.coverage.startJSCoverage(), page.coverage.startCSSCoverage()]);
+  await Promise.all([page.coverage.startJSCoverage(), page.coverage.startCSSCoverage()]);
 
   // login
   await page.goto(`${BASE_URL}/user/login`);
@@ -78,12 +78,6 @@ test('BasicList', async () => {
   await page.type('.basic-list-modal #password', 'e2e');
   await page.waitForSelector('.basic-list-modal .submit-btn');
   await page.click('.basic-list-modal .submit-btn');
-  await page.waitForSelector('.process-message span:nth-child(2)');
-  await page.waitForTimeout(1500);
-  expect(await page.$eval('.process-message span:nth-child(2)', (el) => el.innerText)).toBe(
-    'Add successfully.',
-  );
-  await page.waitForTimeout(1000);
   await page.waitForSelector('.basic-list-table tbody tr:nth-child(1) td:nth-child(3)');
   expect(
     await page.$eval(
@@ -103,7 +97,7 @@ test('BasicList', async () => {
   await page.waitForSelector('.basic-list-modal .submit-btn');
   await page.click('.basic-list-modal .submit-btn');
   await page.waitForSelector('.process-message span:nth-child(2)');
-  await page.waitForTimeout(1500);
+  await page.waitForTimeout(1000);
   expect(await page.$eval('.process-message span:nth-child(2)', (el) => el.innerText)).toBe(
     'Edit successfully.',
   );
@@ -192,15 +186,15 @@ test('BasicList', async () => {
   await page.waitForTimeout(1000);
   expect((await page.$('.basic-list .search-layout')) === null).toBeTruthy();
 
-  // // Disable both JavaScript and CSS coverage
-  // const [jsCoverage, cssCoverage] = await Promise.all([
-  //   page.coverage.stopJSCoverage(),
-  //   page.coverage.stopCSSCoverage(),
-  // ]);
-  // pti.write([...jsCoverage, ...cssCoverage], {
-  //   includeHostname: true,
-  //   storagePath: './.nyc_output',
-  // });
+  // Disable both JavaScript and CSS coverage
+  const [jsCoverage, cssCoverage] = await Promise.all([
+    page.coverage.stopJSCoverage(),
+    page.coverage.stopCSSCoverage(),
+  ]);
+  pti.write([...jsCoverage, ...cssCoverage], {
+    includeHostname: true,
+    storagePath: './.nyc_output',
+  });
 
   await page.close();
   await browser.close();

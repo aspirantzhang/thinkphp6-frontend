@@ -722,7 +722,8 @@ export default {
       data: [],
     });
   },
-  'PUT /api/tests/:id': (req: Request, res: Response) => {
+  'PUT /api/tests/:id': async (req: Request, res: Response) => {
+    await waitTime(500);
     res.send({
       success: true,
       message: 'Edit successfully.',
