@@ -5,7 +5,7 @@ const BASE_URL = `http://localhost:${process.env.PORT || 8000}`;
 
 const { CI } = process.env;
 let puppeteerOption = {
-  // headless: false,
+  headless: false,
   slowMo: 25,
 };
 if (CI === 'true') {
@@ -66,7 +66,7 @@ test('BasicList', async () => {
   await page.click('.basic-list-modal .submit-btn');
   await page.waitForSelector('.process-message span:nth-child(2)');
   expect(await page.$eval('.process-message span:nth-child(2)', (el) => el.innerText)).toBe(
-    'Processing...',
+    '处理中...',
   );
   await page.waitForTimeout(2000);
   expect(await page.$eval('.process-message span:nth-child(2)', (el) => el.innerText)).toBe(

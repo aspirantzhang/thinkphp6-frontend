@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Drawer as AntdDrawer, Button, message } from 'antd';
-import { useLocation, request, history, useModel } from 'umi';
+import { useLocation, request, history, useModel, useIntl } from 'umi';
 import { createForm } from '@formily/core';
 import { createSchemaField } from '@formily/react';
 import {
@@ -37,6 +37,7 @@ const AllowDrawer = ({
   drawerFieldData: { fields?: Record<string, unknown> };
 }) => {
   const location = useLocation();
+  const lang = useIntl();
   const [submitLoading, setSubmitLoading] = useState(false);
   const { initialState, setInitialState } = useModel('@@initialState');
 
@@ -50,7 +51,13 @@ const AllowDrawer = ({
 
   const pageSubmitHandler = (values: any) => {
     setSubmitLoading(true);
-    message.loading({ content: 'Processing...', key: 'process', duration: 0 });
+    message.loading({
+      content: lang.formatMessage({
+        id: 'basic-list.processing',
+      }),
+      key: 'process',
+      duration: 0,
+    });
 
     const reFetchMenu = async () => {
       setInitialState({

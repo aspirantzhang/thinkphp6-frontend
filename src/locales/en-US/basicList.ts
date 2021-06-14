@@ -1,4 +1,6 @@
 export default {
+  'basic-list.processing': 'Processing...',
+  'basic-list.getMenuFailed': 'Get menu data failed',
   'basic-list.list.pagination.total': 'Total records',
   'basic-list.list.actionHandler.confirmTitle': 'Overview of {operationName} operation',
   'basic-list.list.actionHandler.okButtonText': 'Sure to {operationName}!!!',
@@ -10,4 +12,7 @@ export default {
   'basic-list.list.search.toggleSearch': 'Toggle search area',
   'basic-list.list.search.submitButtonText': 'Submit',
   'basic-list.list.search.clearButtonText': 'Clear',
+  'basic-list.user.login.success': 'Login successfully!',
+  'basic-list.error.business': 'Business Error, please try again later.',
+  'basic-list.error.network': 'Network Error, please try again later.',
 };

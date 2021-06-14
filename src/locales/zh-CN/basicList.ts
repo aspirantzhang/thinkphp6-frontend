@@ -1,4 +1,5 @@
 export default {
+  'basic-list.processing': '处理中...',
   'basic-list.list.pagination.total': '总记录数',
   'basic-list.list.actionHandler.confirmTitle': '{operationName} 操作概览',
   'basic-list.list.actionHandler.okButtonText': '确定 {operationName}!!!',
@@ -10,4 +11,5 @@ export default {
   'basic-list.list.search.toggleSearch': '显示/关闭搜索区域',
   'basic-list.list.search.submitButtonText': '提交',
   'basic-list.list.search.clearButtonText': '清除',
+  'basic-list.user.login.success': '登陆成功！',
 };

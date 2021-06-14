@@ -2,7 +2,7 @@ import type { Settings as LayoutSettings, MenuDataItem } from '@ant-design/pro-l
 import { PageLoading } from '@ant-design/pro-layout';
 import { message } from 'antd';
 import type { RequestConfig, RunTimeLayoutConfig } from 'umi';
-import { history } from 'umi';
+import { history, formatMessage } from 'umi';
 import RightContent from '@/components/RightContent';
 import Footer from '@/components/Footer';
 import type { ResponseError } from 'umi-request';
@@ -40,7 +40,13 @@ export async function getInitialState(): Promise<{
       const currentMenu = await queryCurrentMenu();
       return currentMenu;
     } catch (error) {
-      message.error('Get menu data failed.', 10);
+      message.error({
+        content: formatMessage({
+          id: 'basic-list.getMenuFailed',
+        }),
+        key: 'process',
+        duration: 10,
+      });
     }
     return undefined;
   };
@@ -105,7 +111,9 @@ const errorHandler = (error: ResponseError) => {
         });
       } else {
         message.error({
-          content: 'Business Error, please try again.',
+          content: formatMessage({
+            id: 'basic-list.error.business',
+          }),
           key: 'process',
           duration: 30,
           className: 'process-message',
@@ -122,7 +130,9 @@ const errorHandler = (error: ResponseError) => {
       break;
     case 'TypeError':
       message.error({
-        content: `Network error. Please try again.`,
+        content: formatMessage({
+          id: 'basic-list.error.network',
+        }),
         key: 'process',
         duration: 30,
         className: 'process-message',
