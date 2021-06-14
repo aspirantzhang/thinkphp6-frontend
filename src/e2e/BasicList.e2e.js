@@ -21,6 +21,13 @@ test('BasicList', async () => {
 
   // login
   await page.goto(`${BASE_URL}/user/login`);
+  // switch to zh-cn
+  await page.waitForSelector('.ant-dropdown-trigger');
+  await page.click('.ant-dropdown-trigger');
+  await page.waitForTimeout(1000);
+  await page.waitForSelector('.ant-dropdown-menu');
+  await page.click('.ant-dropdown-menu li:nth-child(1)');
+
   await page.waitForSelector('#username');
   await page.type('#username', 'admin');
   await page.type('#password', 'admin');
@@ -66,7 +73,7 @@ test('BasicList', async () => {
   await page.click('.basic-list-modal .submit-btn');
   await page.waitForSelector('.process-message span:nth-child(2)');
   expect(await page.$eval('.process-message span:nth-child(2)', (el) => el.innerText)).toBe(
-    '处理中...',
+    'Processing...',
   );
   await page.waitForTimeout(2000);
   expect(await page.$eval('.process-message span:nth-child(2)', (el) => el.innerText)).toBe(
