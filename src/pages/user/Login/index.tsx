@@ -34,6 +34,7 @@ const goto = () => {
   setTimeout(() => {
     const { query } = history.location;
     const { redirect } = query as { redirect: string };
+    console.log(redirect);
     history.push(redirect ? `/admin/${redirect}` : '/');
   }, 10);
 };
@@ -64,7 +65,14 @@ const Login: React.FC = () => {
       // 登录
       const msg = await login({ ...values, type });
       if (msg.success === true) {
-        message.success('登录成功！');
+        message.success({
+          content: intl.formatMessage({
+            id: 'basic-list.user.login.success',
+          }),
+          key: 'process',
+          duration: 0,
+          className: 'process-message',
+        });
         await fetchUserInfo();
         goto();
         return;
@@ -72,7 +80,7 @@ const Login: React.FC = () => {
       // 如果失败去设置用户错误信息
       setUserLoginState(msg);
     } catch (error) {
-      message.error('登录失败，请重试！');
+      // message.error('登录失败，请重试！');
     }
     setSubmitting(false);
   };

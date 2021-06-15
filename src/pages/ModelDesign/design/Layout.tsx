@@ -5,7 +5,7 @@ import { createSchemaField } from '@formily/react';
 import { Form, FormItem, Input, ArrayTable, Switch, Space, Select, Checkbox } from '@formily/antd';
 import { Spin, Button, Card, message } from 'antd';
 import { useSetState } from 'ahooks';
-import { request, useLocation, history } from 'umi';
+import { request, useLocation, history, useIntl } from 'umi';
 import Modal from '../component/Modal';
 import styles from '../index.less';
 import { initialLayout } from './initialLayout';
@@ -33,6 +33,7 @@ const Field = () => {
   const [spinLoading, setSpinLoading] = useState(true);
   const [submitLoading, setSubmitLoading] = useState(false);
   const location = useLocation();
+  const lang = useIntl();
 
   const form = useMemo(
     () =>
@@ -117,7 +118,13 @@ const Field = () => {
 
   const pageSubmitHandler = (values: any) => {
     setSubmitLoading(true);
-    message.loading({ content: 'Processing...', key: 'process', duration: 0 });
+    message.loading({
+      content: lang.formatMessage({
+        id: 'basic-list.processing',
+      }),
+      key: 'process',
+      duration: 0,
+    });
     const updateData = async () => {
       try {
         const res = await request(

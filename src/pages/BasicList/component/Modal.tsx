@@ -28,7 +28,9 @@ const Modal = ({
   const request = useRequest(
     (values: any) => {
       message.loading({
-        content: 'Processing...',
+        content: lang.formatMessage({
+          id: 'basic-list.processing',
+        }),
         key: 'process',
         duration: 0,
         className: 'process-message',
