@@ -1,8 +1,11 @@
 import React from 'react';
 import moment from 'moment';
+import { useIntl } from 'umi';
 import { Input, InputNumber, Form, DatePicker, TreeSelect, Col, Select, Radio } from 'antd';
 
 const SearchBuilder = (data: BasicListApi.Field[] | undefined) => {
+  const lang = useIntl();
+
   return (Array.isArray(data) ? data : []).map((field) => {
     const formItemAttr = {
       label: field.title,
@@ -34,26 +37,32 @@ const SearchBuilder = (data: BasicListApi.Field[] | undefined) => {
             </Form.Item>
           </Col>
         );
-      case 'datetime':
+      case 'datetime': {
+        const today = lang.formatMessage({ id: 'basic-list.builder.dateRangePicker.today' });
+        const last7 = lang.formatMessage({ id: 'basic-list.builder.dateRangePicker.last7days' });
+        const last30 = lang.formatMessage({ id: 'basic-list.builder.dateRangePicker.last30days' });
+        const lastMonth = lang.formatMessage({
+          id: 'basic-list.builder.dateRangePicker.lastMonth',
+        });
+
+        const ranges = {
+          [today]: [moment().startOf('day'), moment().endOf('day')],
+          [last7]: [moment().subtract(7, 'd'), moment()],
+          [last30]: [moment().subtract(30, 'days'), moment()],
+          [lastMonth]: [
+            moment().subtract(1, 'months').startOf('month'),
+            moment().subtract(1, 'months').endOf('month'),
+          ],
+        };
+
         return (
           <Col sm={12} key={field.name}>
             <Form.Item {...formItemAttr}>
-              <DatePicker.RangePicker
-                showTime
-                style={{ width: '100%' }}
-                ranges={{
-                  Today: [moment().startOf('day'), moment().endOf('day')],
-                  'Last 7 Days': [moment().subtract(7, 'd'), moment()],
-                  'Last 30 Days': [moment().subtract(30, 'days'), moment()],
-                  'Last Month': [
-                    moment().subtract(1, 'months').startOf('month'),
-                    moment().subtract(1, 'months').endOf('month'),
-                  ],
-                }}
-              />
+              <DatePicker.RangePicker showTime style={{ width: '100%' }} ranges={ranges as any} />
             </Form.Item>
           </Col>
         );
+      }
       case 'switch':
         return (
           <Col sm={6} key={field.name}>

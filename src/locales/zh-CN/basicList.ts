@@ -12,4 +12,8 @@ export default {
   'basic-list.list.search.submitButtonText': '提交',
   'basic-list.list.search.clearButtonText': '清除',
   'basic-list.user.login.success': '登陆成功！',
+  'basic-list.builder.dateRangePicker.today': '今天',
+  'basic-list.builder.dateRangePicker.last7days': '过去7天',
+  'basic-list.builder.dateRangePicker.last30days': '过去30天',
+  'basic-list.builder.dateRangePicker.lastMonth': '上个月',
 };

@@ -15,4 +15,8 @@ export default {
   'basic-list.user.login.success': 'Login successfully!',
   'basic-list.error.business': 'Business Error, please try again later.',
   'basic-list.error.network': 'Network Error, please try again later.',
+  'basic-list.builder.dateRangePicker.today': 'Today',
+  'basic-list.builder.dateRangePicker.last7days': 'Last 7 Days',
+  'basic-list.builder.dateRangePicker.last30days': 'Last 30 Days',
+  'basic-list.builder.dateRangePicker.lastMonth': 'Last Month',
 };
