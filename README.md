@@ -6,7 +6,7 @@ Octopus Frontend
 [![codecov](https://codecov.io/gh/aspirantzhang/octopus-frontend/branch/master/graph/badge.svg?token=7I7NM71FH7)](https://codecov.io/gh/aspirantzhang/octopus-frontend)
 [![Total alerts](https://img.shields.io/lgtm/alerts/g/aspirantzhang/octopus-frontend.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/aspirantzhang/octopus-frontend/alerts/)
 [![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/aspirantzhang/octopus-frontend.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/aspirantzhang/octopus-frontend/context:javascript)
-[![david deps](https://img.shields.io/david/aspirantzhang/octopus-frontend)](https://david-dm.org/aspirantzhang/octopus-frontend)
+[![dependencies Status](https://status.david-dm.org/gh/aspirantzhang/octopus-frontend.svg)](https://david-dm.org/aspirantzhang/octopus-frontend)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/aspirantzhang/octopus-frontend/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/aspirantzhang/octopus-frontend/?branch=master)
 
 
