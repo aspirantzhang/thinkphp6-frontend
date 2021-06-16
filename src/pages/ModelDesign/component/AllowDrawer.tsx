@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Drawer as AntdDrawer, Button, message } from 'antd';
+import { Drawer as AntdDrawer, Button, message, Alert } from 'antd';
 import { useLocation, request, history, useModel, useIntl } from 'umi';
 import { createForm } from '@formily/core';
 import { createSchemaField } from '@formily/react';
@@ -180,6 +180,13 @@ const AllowDrawer = ({
         </SchemaField>
       </Form>
       <div style={{ textAlign: 'center' }}>
+        {/* TODO: add i18n for message */}
+        <Alert
+          message="Attention: When switching a field's 'Translate', the existing data in that field will be lost."
+          type="warning"
+          showIcon
+          style={{ width: '600px', margin: '0 auto', marginBottom: '10px' }}
+        />
         <Button
           onClick={() => {
             hideAllowDrawer();

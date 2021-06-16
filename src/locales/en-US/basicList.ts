@@ -15,4 +15,6 @@ export default {
   'basic-list.user.login.success': 'Login successfully!',
   'basic-list.error.business': 'Business Error, please try again later.',
   'basic-list.error.network': 'Network Error, please try again later.',
+  'basic-list.model-design.allowFields.translateAttention':
+    "Attention: When switching a field's 'Translate', the existing data in that field will be lost.",
 };
