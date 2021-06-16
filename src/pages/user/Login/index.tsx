@@ -70,7 +70,6 @@ const Login: React.FC = () => {
             id: 'basic-list.user.login.success',
           }),
           key: 'process',
-          duration: 0,
           className: 'process-message',
         });
         await fetchUserInfo();
