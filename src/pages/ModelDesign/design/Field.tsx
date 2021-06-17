@@ -6,7 +6,7 @@ import { Form, FormItem, Input, ArrayTable, Switch, Select, Checkbox } from '@fo
 import { Spin, Button, Card, Space, message } from 'antd';
 import { DoubleRightOutlined, DoubleLeftOutlined } from '@ant-design/icons';
 import { useSetState } from 'ahooks';
-import { request, useLocation, history } from 'umi';
+import { useRequest, useLocation, history } from 'umi';
 import Modal from '../component/Modal';
 import SettingDrawer from '../component/SettingDrawer';
 import AllowDrawer from '../component/AllowDrawer';
@@ -103,36 +103,39 @@ const Field = () => {
     }
   }, [drawerFieldData]);
 
-  useEffect(() => {
-    let stopMark = false;
-    if (location.pathname) {
-      const getData = async () => {
-        try {
-          const res = await request(
-            `${location.pathname.replace('/basic-list/api/models/field-design', '')}`,
-          );
-          if (stopMark !== true) {
-            setSpinLoading(false);
-            form.setState((state) => {
-              if (
-                res.data.data?.fields === undefined ||
-                Object.keys(res.data.data.fields).length === 0
-              ) {
-                message.info('Initialized with sample values.');
-                state.initialValues = initialFields;
-              }
-              state.initialValues = res.data.data;
-            });
+  const init = useRequest(
+    {
+      url: `${location.pathname.replace('/basic-list/api/models/field-design', '')}`,
+    },
+    {
+      manual: true,
+      onSuccess: (res) => {
+        setSpinLoading(false);
+        form.setState((state) => {
+          if (
+            res.data.data?.fields === undefined ||
+            Object.keys(res.data.data.fields).length === 0
+          ) {
+            message.info('Initialized with sample values.');
+            state.initialValues = initialFields;
           }
-        } catch (error) {
-          history.goBack();
-        }
-      };
-      getData();
+          state.initialValues = res.data.data;
+        });
+      },
+      onError: () => {
+        history.goBack();
+      },
+      formatResult: (res: any) => {
+        return res;
+      },
+      throttleInterval: 1000,
+    },
+  );
+
+  useEffect(() => {
+    if (location.pathname) {
+      init.run();
     }
-    return () => {
-      stopMark = true;
-    };
   }, [location.pathname]);
 
   const modalSubmitHandler = (values: any) => {

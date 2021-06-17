@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Drawer as AntdDrawer, Button, message, Alert } from 'antd';
-import { useLocation, request, history, useModel, useIntl } from 'umi';
+import { useLocation, useRequest, history, useModel, useIntl } from 'umi';
 import { createForm } from '@formily/core';
 import { createSchemaField } from '@formily/react';
 import {
@@ -49,6 +49,61 @@ const AllowDrawer = ({
     }
   }, [drawerFieldData]);
 
+  const reFetchMenu = async () => {
+    setInitialState({
+      ...initialState,
+      settings: {
+        menu: {
+          loading: true,
+        },
+      },
+    });
+
+    const userMenu = await initialState?.fetchMenu?.();
+    if (userMenu) {
+      setInitialState({
+        ...initialState,
+        currentMenu: userMenu,
+      });
+    }
+  };
+
+  const request = useRequest(
+    (values: any) => {
+      message.loading({
+        content: lang.formatMessage({
+          id: 'basic-list.processing',
+        }),
+        key: 'process',
+        duration: 0,
+        className: 'process-message',
+      });
+      return {
+        url: `${location.pathname.replace('/basic-list/api/models/field-design', '')}`,
+        method: 'put',
+        data: {
+          type: 'field',
+          data: values,
+        },
+      };
+    },
+    {
+      manual: true,
+      onSuccess: (res: BasicListApi.Root) => {
+        message.success({ content: res.message, key: 'process' });
+        history.goBack();
+        reFetchMenu();
+      },
+      onError: () => {
+        setSubmitLoading(false);
+      },
+      formatResult: (res: any) => {
+        return res;
+      },
+      throttleInterval: 1000,
+    },
+  );
+
   const pageSubmitHandler = (values: any) => {
     setSubmitLoading(true);
     message.loading({
@@ -58,48 +113,7 @@ const AllowDrawer = ({
       key: 'process',
       duration: 0,
     });
-
-    const reFetchMenu = async () => {
-      setInitialState({
-        ...initialState,
-        settings: {
-          menu: {
-            loading: true,
-          },
-        },
-      });
-
-      const userMenu = await initialState?.fetchMenu?.();
-      if (userMenu) {
-        setInitialState({
-          ...initialState,
-          currentMenu: userMenu,
-        });
-      }
-    };
-
-    const updateData = async () => {
-      try {
-        const res = await request(
-          `${location.pathname.replace('/basic-list/api/models/field-design', '')}`,
-          {
-            method: 'put',
-            data: {
-              type: 'field',
-              data: values,
-            },
-          },
-        );
-        if (res.success === true) {
-          message.success({ content: res.message, key: 'process' });
-          history.goBack();
-          reFetchMenu();
-        }
-      } catch (error) {
-        setSubmitLoading(false);
-      }
-    };
-    updateData();
+    request.run(values);
   };
 
   return (
