@@ -5,7 +5,7 @@ import { createSchemaField } from '@formily/react';
 import { Form, FormItem, Input, ArrayTable, Switch, Space, Select, Checkbox } from '@formily/antd';
 import { Spin, Button, Card, message } from 'antd';
 import { useSetState } from 'ahooks';
-import { request, useLocation, history, useIntl } from 'umi';
+import { useRequest, useLocation, history, useIntl } from 'umi';
 import Modal from '../component/Modal';
 import styles from '../index.less';
 import { initialLayout } from './initialLayout';
@@ -76,36 +76,80 @@ const Field = () => {
     }
   }, [modalState.type]);
 
-  useEffect(() => {
-    let stopMark = false;
-    if (location.pathname) {
-      const getData = async () => {
-        try {
-          const res = await request(
-            `${location.pathname.replace('/basic-list/api/models/layout-design', '')}`,
-          );
-          if (stopMark !== true) {
-            setSpinLoading(false);
-            form.setState((state) => {
-              if (
-                res.data.data?.layout === undefined ||
-                Object.keys(res.data.data.layout).length === 0
-              ) {
-                message.info('Initialized with sample values.');
-                state.initialValues = initialLayout;
-              }
-              state.initialValues = res.data.data;
-            });
+  const init = useRequest(
+    {
+      url: `${location.pathname.replace('/basic-list/api/models/layout-design', '')}`,
+    },
+    {
+      manual: true,
+      onSuccess: (res) => {
+        setSpinLoading(false);
+        form.setState((state) => {
+          if (
+            res.data.data?.layout === undefined ||
+            Object.keys(res.data.data.layout).length === 0
+          ) {
+            message.info('Initialized with sample values.');
+            state.initialValues = initialLayout;
           }
-        } catch (error) {
-          history.goBack();
-        }
+          state.initialValues = res.data.data.layout;
+        });
+      },
+      onError: () => {
+        history.goBack();
+      },
+      formatResult: (res: any) => {
+        return res;
+      },
+      throttleInterval: 1000,
+    },
+  );
+
+  const request = useRequest(
+    (values: any) => {
+      message.loading({
+        content: lang.formatMessage({
+          id: 'basic-list.processing',
+        }),
+        key: 'process',
+        duration: 0,
+        className: 'process-message',
+      });
+      return {
+        url: `${location.pathname.replace('/basic-list/api/models/layout-design', '')}`,
+        method: 'put',
+        data: {
+          type: 'layout',
+          data: {
+            layout: values,
+          },
+        },
       };
-      getData();
+    },
+    {
+      manual: true,
+      onSuccess: (data: BasicListApi.Root) => {
+        message.success({
+          content: data?.message,
+          key: 'process',
+          className: 'process-message',
+        });
+        history.goBack();
+      },
+      onError: () => {
+        setSubmitLoading(false);
+      },
+      formatResult: (res: any) => {
+        return res;
+      },
+      throttleInterval: 1000,
+    },
+  );
+
+  useEffect(() => {
+    if (location.pathname) {
+      init.run();
     }
-    return () => {
-      stopMark = true;
-    };
   }, [location.pathname]);
 
   const modalSubmitHandler = (values: any) => {
@@ -125,28 +169,7 @@ const Field = () => {
       key: 'process',
       duration: 0,
     });
-    const updateData = async () => {
-      try {
-        const res = await request(
-          `${location.pathname.replace('/basic-list/api/models/layout-design', '')}`,
-          {
-            method: 'put',
-            data: {
-              type: 'layout',
-              data: values,
-            },
-          },
-        );
-        if (res.success === true) {
-          message.success({ content: res.message, key: 'process' });
-          history.goBack();
-        }
-      } catch (error) {
-        setSubmitLoading(false);
-      }
-    };
-
-    updateData();
+    request.run(values);
   };
 
   return (
