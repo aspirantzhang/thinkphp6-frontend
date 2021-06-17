@@ -52,13 +52,6 @@ export const initialLayout = {
   ],
   editAction: [
     {
-      name: 'reset',
-      title: 'Reset',
-      type: 'dashed',
-      call: 'reset',
-      method: 'get',
-    },
-    {
       name: 'cancel',
       title: 'Cancel',
       type: 'default',
