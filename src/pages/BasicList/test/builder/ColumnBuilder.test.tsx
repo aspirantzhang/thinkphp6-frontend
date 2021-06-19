@@ -75,6 +75,13 @@ const validColumns = [
     title: 'Actions',
     type: 'actions',
   },
+  {
+    name: 'i18n',
+    dataIndex: 'i18n',
+    key: 'i18n',
+    title: 'I18n',
+    type: 'i18n',
+  },
 ];
 const validResults = [
   {
@@ -157,6 +164,14 @@ const validResults = [
     key: 'actions',
     title: 'Actions',
     type: 'actions',
+    render: expect.any(Function),
+  },
+  {
+    name: 'i18n',
+    dataIndex: 'i18n',
+    key: 'i18n',
+    title: 'I18n',
+    type: 'i18n',
     render: expect.any(Function),
   },
 ];
