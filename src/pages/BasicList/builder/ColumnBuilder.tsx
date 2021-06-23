@@ -1,9 +1,8 @@
 import moment from 'moment';
-import { Space, Tag, Badge, Popover } from 'antd';
-import { getLocale } from 'umi';
+import { Space, Tag } from 'antd';
 import { searchTree } from '../helper';
 import ActionBuilder from './ActionBuilder';
-import FlagIcon from './FlagIcon';
+import I18nFlagBuilder from './I18nFlagBuilder';
 
 const ColumnBuilder = (
   tableColumn: BasicListApi.Field[] | undefined,
@@ -37,43 +36,8 @@ const ColumnBuilder = (
           };
           break;
         case 'i18n':
-          column.render = (value: any) => {
-            const currentLang = getLocale().toLowerCase();
-            const currentLangTime = value[currentLang];
-            return (
-              <Space>
-                {Object.keys(value).map((itemLang) => {
-                  const itemLangTime = value[itemLang];
-                  if (itemLang !== currentLang) {
-                    const popContent = (
-                      <>
-                        <FlagIcon code={currentLang.substr(currentLang.indexOf('-') + 1)} />{' '}
-                        {moment(currentLangTime).format('YYYY-MM-DD HH:mm:ss')}
-                        <br />
-                        <FlagIcon code={itemLang.substr(itemLang.indexOf('-') + 1)} />{' '}
-                        {itemLangTime
-                          ? moment(itemLangTime).format('YYYY-MM-DD HH:mm:ss')
-                          : 'Not exist'}
-                      </>
-                    );
-                    return (
-                      <Popover content={popContent}>
-                        <Badge
-                          dot
-                          count={itemLangTime === null || currentLangTime === itemLangTime ? 0 : 1}
-                        >
-                          <FlagIcon
-                            code={itemLang.substr(itemLang.indexOf('-') + 1)}
-                            className={itemLangTime === null ? 'i18nNoValue' : undefined}
-                          />
-                        </Badge>
-                      </Popover>
-                    );
-                  }
-                  return null;
-                })}
-              </Space>
-            );
+          column.render = (value: any, record: any) => {
+            return I18nFlagBuilder(value, record, actionHandler);
           };
           break;
         case 'actions':
