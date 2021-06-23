@@ -25,9 +25,9 @@ import styles from '../index.less';
 
 const Translate = () => {
   const [form] = Form.useForm();
-  const { TabPane } = Tabs;
-  const location = useLocation();
-  const lang = useIntl();
+  // const { TabPane } = Tabs;
+  // const location = useLocation();
+  // const lang = useIntl();
 
   // const init = useRequest<{ data: BasicListApi.PageData }>(
   //   `${location.pathname.replace('/basic-list', '')}`,
@@ -179,6 +179,10 @@ const Translate = () => {
     { lg: 8, md: 24 },
   ];
 
+  const onFinish = (values: any) => {
+    console.log(values);
+  };
+
   return (
     <PageContainer
     // header={{
@@ -186,10 +190,9 @@ const Translate = () => {
     //   breadcrumb: {},
     // }}
     >
-      <Form {...layoutAttr[init.data.length - 2]}>
+      <Form {...layoutAttr[init.data.length - 2]} form={form} onFinish={onFinish}>
         <Row gutter={16}>
           {(init.data || []).map((langForm) => {
-            console.log(langForm.langName.substr(langForm.langName.indexOf('-') + 1));
             return (
               <Col {...colAttr[init.data.length - 2]}>
                 <Card
@@ -203,10 +206,14 @@ const Translate = () => {
                   extra={moment(langForm.langTime).format('YYYY-MM-DD HH:mm:ss')}
                   hoverable
                 >
-                  {FormBuilder(langForm.data)}
+                  {FormBuilder(langForm.data, langForm.langName)}
                   <Row>
                     <Col md={24} style={{ textAlign: 'center' }}>
-                      <Form.Item name="complete" wrapperCol={{ span: 24 }}>
+                      <Form.Item
+                        name={[langForm.langName, 'complete']}
+                        wrapperCol={{ span: 24 }}
+                        valuePropName="checked"
+                      >
                         <Checkbox>Mark as completed</Checkbox>
                       </Form.Item>
                     </Col>
@@ -239,7 +246,7 @@ const Translate = () => {
               <Button
                 type="primary"
                 onClick={() => {
-                  // form.submit();
+                  form.submit();
                 }}
                 // loading={submitLoading}
               >
