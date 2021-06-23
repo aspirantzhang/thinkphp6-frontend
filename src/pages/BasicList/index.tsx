@@ -109,20 +109,26 @@ const Index = () => {
     }
   }, [modalUri]);
 
-  function actionHandler(action: BasicListApi.Action, record: BasicListApi.Field) {
+  function actionHandler(action: Partial<BasicListApi.Action>, record?: BasicListApi.Field) {
     switch (action.call) {
       case 'modal':
         setModalUri(
           (action.uri || '').replace(/:\w+/g, (field) => {
-            return record[field.replace(':', '')];
+            return record![field.replace(':', '')];
           }),
         );
         break;
       case 'page': {
         const uri = (action.uri || '').replace(/:\w+/g, (field) => {
-          return record[field.replace(':', '')];
+          return record![field.replace(':', '')];
         });
         history.push(`/basic-list${uri}`);
+        break;
+      }
+      case 'i18n': {
+        history.push(
+          `${location.pathname.replace('/basic-list', '/basic-list/translate')}/${record!.id}`,
+        );
         break;
       }
       case 'reload':
@@ -144,7 +150,7 @@ const Index = () => {
             },
           ),
           icon: <ExclamationCircleOutlined />,
-          content: batchOverview(Object.keys(record).length ? [record] : selectedRows),
+          content: batchOverview(Object.keys(record!).length ? [record!] : selectedRows),
           okText: lang.formatMessage(
             {
               id: 'basic-list.list.actionHandler.okButtonText',
@@ -162,7 +168,7 @@ const Index = () => {
               uri: action.uri,
               method: action.method,
               type: action.call,
-              ids: Object.keys(record).length ? [record.id] : selectedRowKeys,
+              ids: Object.keys(record!).length ? [record!.id] : selectedRowKeys,
             });
           },
           onCancel() {},
