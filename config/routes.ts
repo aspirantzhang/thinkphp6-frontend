@@ -45,6 +45,10 @@
     component: './ModelDesign/design/Layout',
   },
   {
+    path: '/basic-list/translate/api/*/*',
+    component: './BasicList/component/Translate',
+  },
+  {
     path: '/basic-list/api/*/*',
     component: './BasicList/component/Page',
   },

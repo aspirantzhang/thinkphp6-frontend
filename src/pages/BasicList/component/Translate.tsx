@@ -1,0 +1,256 @@
+import { useEffect } from 'react';
+import {
+  Form,
+  Input,
+  message,
+  Tag,
+  Spin,
+  Row,
+  Col,
+  Tabs,
+  Card,
+  Space,
+  Button,
+  Checkbox,
+} from 'antd';
+import { useRequest, useLocation, history, useIntl } from 'umi';
+import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
+import { DoubleLeftOutlined } from '@ant-design/icons';
+import moment from 'moment';
+import FormBuilder from '../builder/FormBuilder';
+import FlagIcon from '../builder/FlagIcon';
+import ActionBuilder from '../builder/ActionBuilder';
+import { setFieldsAdaptor, submitFieldsAdaptor } from '../helper';
+import styles from '../index.less';
+
+const Translate = () => {
+  const [form] = Form.useForm();
+  const { TabPane } = Tabs;
+  const location = useLocation();
+  const lang = useIntl();
+
+  // const init = useRequest<{ data: BasicListApi.PageData }>(
+  //   `${location.pathname.replace('/basic-list', '')}`,
+  //   {
+  //     onError: () => {
+  //       history.goBack();
+  //     },
+  //   },
+  // );
+  // const request = useRequest(
+  //   (values: any) => {
+  //     message.loading({
+  //       content: lang.formatMessage({
+  //         id: 'basic-list.processing',
+  //       }),
+  //       key: 'process',
+  //       duration: 0,
+  //       className: 'process-message',
+  //     });
+  //     const { uri, method, ...formValues } = values;
+  //     return {
+  //       url: `${uri}`,
+  //       method,
+  //       data: {
+  //         ...submitFieldsAdaptor(formValues),
+  //       },
+  //     };
+  //   },
+  //   {
+  //     manual: true,
+  //     onSuccess: (data) => {
+  //       message.success({
+  //         content: data.message,
+  //         key: 'process',
+  //         className: 'process-message',
+  //       });
+  //       history.goBack();
+  //     },
+  //     formatResult: (res: any) => {
+  //       return res;
+  //     },
+  //     throttleInterval: 1000,
+  //   },
+  // );
+
+  // useEffect(() => {
+  //   if (init.data) {
+  //     form.setFieldsValue(setFieldsAdaptor(init.data));
+  //   }
+  // }, [init.data]);
+
+  const init = {
+    data: [
+      {
+        langName: 'zh-cn',
+        langTime: '2021-06-18T19:08:32+08:00',
+        data: [
+          {
+            name: 'admin_name',
+            title: '管理员用户名',
+            type: 'input',
+            data: [],
+            hideInColumn: null,
+            sorter: null,
+            editDisabled: true,
+            mode: null,
+          },
+          {
+            name: 'display_name',
+            title: '显示名称',
+            type: 'input',
+            data: [],
+            hideInColumn: null,
+            sorter: null,
+            editDisabled: null,
+            mode: null,
+          },
+        ],
+      },
+      {
+        langName: 'en-us',
+        langTime: '2021-06-18T19:08:32+08:00',
+        data: [
+          {
+            name: 'admin_name',
+            title: 'Admin Name',
+            type: 'input',
+            data: [],
+            hideInColumn: null,
+            sorter: null,
+            editDisabled: true,
+            mode: null,
+          },
+          {
+            name: 'display_name',
+            title: 'Display Name',
+            type: 'input',
+            data: [],
+            hideInColumn: null,
+            sorter: null,
+            editDisabled: null,
+            mode: null,
+          },
+        ],
+      },
+    ],
+  };
+
+  init.data[2] = {
+    langName: 'de-de',
+    langTime: '2021-06-19T19:08:32+08:00',
+    data: [
+      {
+        name: 'admin_name',
+        title: 'Admin Name',
+        type: 'input',
+        data: [],
+        hideInColumn: null,
+        sorter: null,
+        editDisabled: true,
+        mode: null,
+      },
+      {
+        name: 'display_name',
+        title: 'Display Name',
+        type: 'input',
+        data: [],
+        hideInColumn: null,
+        sorter: null,
+        editDisabled: null,
+        mode: null,
+      },
+    ],
+  };
+
+  const layoutAttr = [
+    {
+      labelCol: { span: 4 },
+      wrapperCol: { span: 20 },
+    },
+    {
+      labelCol: { span: 6 },
+      wrapperCol: { span: 18 },
+    },
+  ];
+
+  const colAttr = [
+    { lg: 12, md: 24 },
+    { lg: 8, md: 24 },
+  ];
+
+  return (
+    <PageContainer
+    // header={{
+    //   title: init.data?.page?.title,
+    //   breadcrumb: {},
+    // }}
+    >
+      <Form {...layoutAttr[init.data.length - 2]}>
+        <Row gutter={16}>
+          {(init.data || []).map((langForm) => {
+            console.log(langForm.langName.substr(langForm.langName.indexOf('-') + 1));
+            return (
+              <Col {...colAttr[init.data.length - 2]}>
+                <Card
+                  type="inner"
+                  title={
+                    <FlagIcon
+                      code={langForm.langName.substr(langForm.langName.indexOf('-') + 1)}
+                      size="2x"
+                    />
+                  }
+                  extra={moment(langForm.langTime).format('YYYY-MM-DD HH:mm:ss')}
+                  hoverable
+                >
+                  {FormBuilder(langForm.data)}
+                  <Row>
+                    <Col md={24} style={{ textAlign: 'center' }}>
+                      <Form.Item name="complete" wrapperCol={{ span: 24 }}>
+                        <Checkbox>Mark as completed</Checkbox>
+                      </Form.Item>
+                    </Col>
+                  </Row>
+                </Card>
+              </Col>
+            );
+          })}
+        </Row>
+        <Form.Item name="uri" key="uri" hidden>
+          <Input />
+        </Form.Item>
+        <Form.Item name="method" key="method" hidden>
+          <Input />
+        </Form.Item>
+      </Form>
+      <FooterToolbar
+        extra={
+          <div style={{ textAlign: 'center' }}>
+            <Space size={50}>
+              <Button
+                danger
+                shape="round"
+                onClick={() => {
+                  history.goBack();
+                }}
+              >
+                <DoubleLeftOutlined /> Back to List
+              </Button>
+              <Button
+                type="primary"
+                onClick={() => {
+                  // form.submit();
+                }}
+                // loading={submitLoading}
+              >
+                Submit
+              </Button>
+            </Space>
+          </div>
+        }
+      />
+    </PageContainer>
+  );
+};
+
+export default Translate;
