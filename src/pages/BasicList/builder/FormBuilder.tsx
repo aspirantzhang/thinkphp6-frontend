@@ -1,12 +1,12 @@
 import React from 'react';
 import { Input, Form, DatePicker, TreeSelect, Switch, InputNumber, Radio } from 'antd';
 
-const FormBuilder = (data: BasicListApi.Field[] | undefined) => {
+const FormBuilder = (data: BasicListApi.Field[] | undefined, prefix?: string) => {
   return (Array.isArray(data) ? data : []).map((field) => {
     const formItemAttr = {
       label: field.title,
-      name: field.name,
-      key: field.name,
+      name: prefix ? [prefix, field.name] : field.name,
+      key: prefix ? `${prefix}.${field.name}` : field.name,
     };
     const componentAttr = {
       disabled: field.editDisabled,
