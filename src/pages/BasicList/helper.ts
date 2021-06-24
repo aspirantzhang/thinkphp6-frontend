@@ -1,27 +1,27 @@
 import moment from 'moment';
 
-export const setFieldsAdaptor = (data: BasicListApi.PageData) => {
-  if (data?.layout?.tabs && data.dataSource) {
+export const setFieldsAdaptor = (
+  tabs: BasicListApi.Tabs[],
+  dataSource: BasicListApi.DataSource,
+) => {
+  if (Array.isArray(tabs) && dataSource) {
     const result = {};
-    data.layout.tabs.forEach((tab) => {
+    tabs.forEach((tab) => {
       tab.data.forEach((field) => {
         switch (field.type) {
           case 'datetime':
-            result[field.name] = moment(data.dataSource[field.name]);
+            result[field.name] = moment(dataSource[field.name]);
             break;
           case 'textarea':
-            if (
-              typeof data.dataSource[field.name] === 'object' &&
-              data.dataSource[field.name] !== null
-            ) {
-              result[field.name] = JSON.stringify(data.dataSource[field.name]);
+            if (typeof dataSource[field.name] === 'object' && dataSource[field.name] !== null) {
+              result[field.name] = JSON.stringify(dataSource[field.name]);
             } else {
-              result[field.name] = data.dataSource[field.name];
+              result[field.name] = dataSource[field.name];
             }
             break;
 
           default:
-            result[field.name] = data.dataSource[field.name];
+            result[field.name] = dataSource[field.name];
             break;
         }
       });
