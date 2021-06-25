@@ -33,8 +33,8 @@ declare module BasicListApi {
   };
 
   type Tabs = {
-    name: string;
-    title: string;
+    name?: string;
+    title?: string;
     data: Field[];
   };
 

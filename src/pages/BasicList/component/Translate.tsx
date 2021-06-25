@@ -73,72 +73,78 @@ const Translate = () => {
   //   },
   // );
 
-  // useEffect(() => {
-  //   if (init.data) {
-  //     form.setFieldsValue(setFieldsAdaptor(init.data));
-  //   }
-  // }, [init.data]);
-
   const init = {
-    data: [
-      {
-        langName: 'zh-cn',
-        langTime: '2021-06-18T19:08:32+08:00',
-        data: [
-          {
-            name: 'admin_name',
-            title: '管理员用户名',
-            type: 'input',
-            data: [],
-            hideInColumn: null,
-            sorter: null,
-            editDisabled: true,
-            mode: null,
-          },
-          {
-            name: 'display_name',
-            title: '显示名称',
-            type: 'input',
-            data: [],
-            hideInColumn: null,
-            sorter: null,
-            editDisabled: null,
-            mode: null,
-          },
-        ],
+    data: {
+      fields: [
+        {
+          name: 'zh-cn',
+          translate_time: '2021-06-18T19:08:32+08:00',
+          data: [
+            {
+              name: 'admin_name',
+              title: '管理员用户名',
+              type: 'input',
+              data: [],
+              hideInColumn: null,
+              sorter: null,
+              editDisabled: true,
+              mode: null,
+            },
+            {
+              name: 'display_name',
+              title: '显示名称',
+              type: 'input',
+              data: [],
+              hideInColumn: null,
+              sorter: null,
+              editDisabled: null,
+              mode: null,
+            },
+          ],
+        },
+        {
+          name: 'en-us',
+          translate_time: '2021-06-18T19:08:32+08:00',
+          data: [
+            {
+              name: 'admin_name',
+              title: 'Admin Name',
+              type: 'input',
+              data: [],
+              hideInColumn: null,
+              sorter: null,
+              editDisabled: true,
+              mode: null,
+            },
+            {
+              name: 'display_name',
+              title: 'Display Name',
+              type: 'input',
+              data: [],
+              hideInColumn: null,
+              sorter: null,
+              editDisabled: null,
+              mode: null,
+            },
+          ],
+        },
+      ],
+      dataSource: {
+        'zh-cn': {
+          admin_name: '张',
+          display_name: '张',
+        },
+        'en-us': {
+          admin_name: 'zhang',
+          display_name: 'Zhang',
+        },
       },
-      {
-        langName: 'en-us',
-        langTime: '2021-06-18T19:08:32+08:00',
-        data: [
-          {
-            name: 'admin_name',
-            title: 'Admin Name',
-            type: 'input',
-            data: [],
-            hideInColumn: null,
-            sorter: null,
-            editDisabled: true,
-            mode: null,
-          },
-          {
-            name: 'display_name',
-            title: 'Display Name',
-            type: 'input',
-            data: [],
-            hideInColumn: null,
-            sorter: null,
-            editDisabled: null,
-            mode: null,
-          },
-        ],
-      },
-    ],
+    },
   };
 
-  init.data[2] = {
-    langName: 'de-de',
-    langTime: '2021-06-19T19:08:32+08:00',
+  init.data.fields[2] = {
+    name: 'de-de',
+    translate_time: '2021-06-19T19:08:32+08:00',
     data: [
       {
         name: 'admin_name',
@@ -162,6 +168,12 @@ const Translate = () => {
       },
     ],
   };
+
+  useEffect(() => {
+    if (init.data) {
+      form.setFieldsValue(setFieldsAdaptor(init.data.fields, init.data.dataSource, true));
+    }
+  }, [init.data]);
 
   const layoutAttr = [
     {
@@ -190,27 +202,27 @@ const Translate = () => {
     //   breadcrumb: {},
     // }}
     >
-      <Form {...layoutAttr[init.data.length - 2]} form={form} onFinish={onFinish}>
+      <Form {...layoutAttr[init.data.fields.length - 2]} form={form} onFinish={onFinish}>
         <Row gutter={16}>
-          {(init.data || []).map((langForm) => {
+          {(init.data.fields || []).map((langForm) => {
             return (
-              <Col {...colAttr[init.data.length - 2]}>
+              <Col {...colAttr[init.data.fields.length - 2]}>
                 <Card
                   type="inner"
                   title={
                     <FlagIcon
-                      code={langForm.langName.substr(langForm.langName.indexOf('-') + 1)}
+                      code={langForm.name.substr(langForm.name.indexOf('-') + 1)}
                       size="2x"
                     />
                   }
-                  extra={moment(langForm.langTime).format('YYYY-MM-DD HH:mm:ss')}
+                  extra={moment(langForm.translate_time).format('YYYY-MM-DD HH:mm:ss')}
                   hoverable
                 >
-                  {FormBuilder(langForm.data, langForm.langName)}
+                  {FormBuilder(langForm.data, langForm.name)}
                   <Row>
                     <Col md={24} style={{ textAlign: 'center' }}>
                       <Form.Item
-                        name={[langForm.langName, 'complete']}
+                        name={[langForm.name, 'complete']}
                         wrapperCol={{ span: 24 }}
                         valuePropName="checked"
                       >
