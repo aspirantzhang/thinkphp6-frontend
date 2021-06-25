@@ -34,7 +34,6 @@ const goto = () => {
   setTimeout(() => {
     const { query } = history.location;
     const { redirect } = query as { redirect: string };
-    console.log(redirect);
     history.push(redirect ? `/admin/${redirect}` : '/');
   }, 10);
 };
