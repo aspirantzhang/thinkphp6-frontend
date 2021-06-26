@@ -70,7 +70,7 @@ const Modal = ({
 
   useEffect(() => {
     if (init.data) {
-      form.setFieldsValue(setFieldsAdaptor(init.data));
+      form.setFieldsValue(setFieldsAdaptor(init.data.layout.tabs, init.data.dataSource));
     }
   }, [init.data]);
 
