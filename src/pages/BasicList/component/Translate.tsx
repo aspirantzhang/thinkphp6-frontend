@@ -25,7 +25,10 @@ import styles from '../index.less';
 
 const Translate = () => {
   const [form] = Form.useForm();
+  const lang = useIntl();
+  const location = useLocation();
   // const { TabPane } = Tabs;
+
   // const location = useLocation();
   // const lang = useIntl();
 
@@ -37,41 +40,38 @@ const Translate = () => {
   //     },
   //   },
   // );
-  // const request = useRequest(
-  //   (values: any) => {
-  //     message.loading({
-  //       content: lang.formatMessage({
-  //         id: 'basic-list.processing',
-  //       }),
-  //       key: 'process',
-  //       duration: 0,
-  //       className: 'process-message',
-  //     });
-  //     const { uri, method, ...formValues } = values;
-  //     return {
-  //       url: `${uri}`,
-  //       method,
-  //       data: {
-  //         ...submitFieldsAdaptor(formValues),
-  //       },
-  //     };
-  //   },
-  //   {
-  //     manual: true,
-  //     onSuccess: (data) => {
-  //       message.success({
-  //         content: data.message,
-  //         key: 'process',
-  //         className: 'process-message',
-  //       });
-  //       history.goBack();
-  //     },
-  //     formatResult: (res: any) => {
-  //       return res;
-  //     },
-  //     throttleInterval: 1000,
-  //   },
-  // );
+  const request = useRequest(
+    (values: any) => {
+      message.loading({
+        content: lang.formatMessage({
+          id: 'basic-list.processing',
+        }),
+        key: 'process',
+        duration: 0,
+        className: 'process-message',
+      });
+      return {
+        url: `${location.pathname.replace('/basic-list/translate', '')}`,
+        method: 'patch',
+        data: values,
+      };
+    },
+    {
+      manual: true,
+      onSuccess: (data) => {
+        message.success({
+          content: data.message,
+          key: 'process',
+          className: 'process-message',
+        });
+        history.goBack();
+      },
+      formatResult: (res: any) => {
+        return res;
+      },
+      throttleInterval: 1000,
+    },
+  );
 
   const init = {
     data: {
@@ -192,7 +192,7 @@ const Translate = () => {
   ];
 
   const onFinish = (values: any) => {
-    console.log(values);
+    request.run(values);
   };
 
   return (
@@ -235,12 +235,6 @@ const Translate = () => {
             );
           })}
         </Row>
-        <Form.Item name="uri" key="uri" hidden>
-          <Input />
-        </Form.Item>
-        <Form.Item name="method" key="method" hidden>
-          <Input />
-        </Form.Item>
       </Form>
       <FooterToolbar
         extra={
