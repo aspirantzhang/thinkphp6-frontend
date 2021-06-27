@@ -1,5 +1,5 @@
-import { useEffect } from 'react';
-import { Form, message, Row, Col, Card, Space, Button, Checkbox } from 'antd';
+import { useEffect, useState } from 'react';
+import { Form, message, Row, Col, Card, Space, Button, Checkbox, Spin } from 'antd';
 import { useRequest, useLocation, history, useIntl } from 'umi';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import { DoubleLeftOutlined } from '@ant-design/icons';
@@ -7,11 +7,13 @@ import moment from 'moment';
 import FormBuilder from '../builder/FormBuilder';
 import FlagIcon from '../builder/FlagIcon';
 import { setFieldsAdaptor } from '../helper';
+import styles from '../index.less';
 
 const Translate = () => {
   const [form] = Form.useForm();
   const lang = useIntl();
   const location = useLocation();
+  const [submitLoading, setSubmitLoading] = useState(false);
 
   const init = useRequest(`${location.pathname.replace('/basic-list/translate', '')}/i18n`, {
     onError: () => {
@@ -43,6 +45,9 @@ const Translate = () => {
           className: 'process-message',
         });
         history.goBack();
+      },
+      onError: () => {
+        setSubmitLoading(false);
       },
       formatResult: (res: any) => {
         return res;
@@ -84,40 +89,45 @@ const Translate = () => {
     //   breadcrumb: {},
     // }}
     >
-      <Form {...layoutAttr[init.data?.fields.length - 2]} form={form} onFinish={onFinish}>
-        <Row gutter={16}>
-          {(init.data?.fields || []).map((langForm: any) => {
-            return (
-              <Col {...colAttr[init.data.fields.length - 2]}>
-                <Card
-                  type="inner"
-                  title={
-                    <FlagIcon
-                      code={langForm.name.substr(langForm.name.indexOf('-') + 1)}
-                      size="2x"
-                    />
-                  }
-                  extra={moment(langForm.translate_time).format('YYYY-MM-DD HH:mm:ss')}
-                  hoverable
-                >
-                  {FormBuilder(langForm.data, langForm.name)}
-                  <Row>
-                    <Col md={24} style={{ textAlign: 'center' }}>
-                      <Form.Item
-                        name={[langForm.name, 'complete']}
-                        wrapperCol={{ span: 24 }}
-                        valuePropName="checked"
-                      >
-                        <Checkbox>Mark as completed</Checkbox>
-                      </Form.Item>
-                    </Col>
-                  </Row>
-                </Card>
-              </Col>
-            );
-          })}
-        </Row>
-      </Form>
+      {init?.loading ? (
+        <Spin className={styles.formSpin} tip="Loading..." />
+      ) : (
+        <Form {...layoutAttr[init.data?.fields.length - 2]} form={form} onFinish={onFinish}>
+          <Row gutter={16}>
+            {(init.data?.fields || []).map((langForm: any) => {
+              return (
+                <Col {...colAttr[init.data.fields.length - 2]}>
+                  <Card
+                    type="inner"
+                    title={
+                      <FlagIcon
+                        code={langForm.name.substr(langForm.name.indexOf('-') + 1)}
+                        size="2x"
+                      />
+                    }
+                    extra={moment(langForm.translate_time).format('YYYY-MM-DD HH:mm:ss')}
+                    hoverable
+                  >
+                    {FormBuilder(langForm.data, langForm.name)}
+                    <Row>
+                      <Col md={24} style={{ textAlign: 'center' }}>
+                        <Form.Item
+                          name={[langForm.name, 'complete']}
+                          wrapperCol={{ span: 24 }}
+                          valuePropName="checked"
+                        >
+                          <Checkbox>Mark as completed</Checkbox>
+                        </Form.Item>
+                      </Col>
+                    </Row>
+                  </Card>
+                </Col>
+              );
+            })}
+          </Row>
+        </Form>
+      )}
+
       <FooterToolbar
         extra={
           <div style={{ textAlign: 'center' }}>
@@ -136,7 +146,7 @@ const Translate = () => {
                 onClick={() => {
                   form.submit();
                 }}
-                // loading={submitLoading}
+                loading={submitLoading}
               >
                 Submit
               </Button>
