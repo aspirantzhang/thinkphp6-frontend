@@ -58,7 +58,7 @@ const Translate = () => {
 
   useEffect(() => {
     if (init.data) {
-      form.setFieldsValue(setFieldsAdaptor(init.data.fields, init.data.dataSource, true));
+      form.setFieldsValue(setFieldsAdaptor(init.data.layout, init.data.dataSource, true));
     }
   }, [init.data]);
 
@@ -84,19 +84,19 @@ const Translate = () => {
 
   return (
     <PageContainer
-    // header={{
-    //   title: init.data?.page?.title,
-    //   breadcrumb: {},
-    // }}
+      header={{
+        title: init.data?.page?.title,
+        breadcrumb: {},
+      }}
     >
       {init?.loading ? (
         <Spin className={styles.formSpin} tip="Loading..." />
       ) : (
-        <Form {...layoutAttr[init.data?.fields.length - 2]} form={form} onFinish={onFinish}>
+        <Form {...layoutAttr[init.data?.layout.length - 2]} form={form} onFinish={onFinish}>
           <Row gutter={16}>
-            {(init.data?.fields || []).map((langForm: any) => {
+            {(init.data?.layout || []).map((langForm: any) => {
               return (
-                <Col {...colAttr[init.data.fields.length - 2]}>
+                <Col {...colAttr[init.data.layout.length - 2]}>
                   <Card
                     type="inner"
                     title={
