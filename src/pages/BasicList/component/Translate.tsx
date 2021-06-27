@@ -1,45 +1,23 @@
 import { useEffect } from 'react';
-import {
-  Form,
-  Input,
-  message,
-  Tag,
-  Spin,
-  Row,
-  Col,
-  Tabs,
-  Card,
-  Space,
-  Button,
-  Checkbox,
-} from 'antd';
+import { Form, message, Row, Col, Card, Space, Button, Checkbox } from 'antd';
 import { useRequest, useLocation, history, useIntl } from 'umi';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import { DoubleLeftOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import FormBuilder from '../builder/FormBuilder';
 import FlagIcon from '../builder/FlagIcon';
-import ActionBuilder from '../builder/ActionBuilder';
-import { setFieldsAdaptor, submitFieldsAdaptor } from '../helper';
-import styles from '../index.less';
+import { setFieldsAdaptor } from '../helper';
 
 const Translate = () => {
   const [form] = Form.useForm();
   const lang = useIntl();
   const location = useLocation();
-  // const { TabPane } = Tabs;
 
-  // const location = useLocation();
-  // const lang = useIntl();
-
-  // const init = useRequest<{ data: BasicListApi.PageData }>(
-  //   `${location.pathname.replace('/basic-list', '')}`,
-  //   {
-  //     onError: () => {
-  //       history.goBack();
-  //     },
-  //   },
-  // );
+  const init = useRequest(`${location.pathname.replace('/basic-list/translate', '')}/i18n`, {
+    onError: () => {
+      history.goBack();
+    },
+  });
   const request = useRequest(
     (values: any) => {
       message.loading({
@@ -51,7 +29,7 @@ const Translate = () => {
         className: 'process-message',
       });
       return {
-        url: `${location.pathname.replace('/basic-list/translate', '')}`,
+        url: `${location.pathname.replace('/basic-list/translate', '')}/i18n`,
         method: 'patch',
         data: values,
       };
@@ -72,102 +50,6 @@ const Translate = () => {
       throttleInterval: 1000,
     },
   );
-
-  const init = {
-    data: {
-      fields: [
-        {
-          name: 'zh-cn',
-          translate_time: '2021-06-18T19:08:32+08:00',
-          data: [
-            {
-              name: 'admin_name',
-              title: '管理员用户名',
-              type: 'input',
-              data: [],
-              hideInColumn: null,
-              sorter: null,
-              editDisabled: true,
-              mode: null,
-            },
-            {
-              name: 'display_name',
-              title: '显示名称',
-              type: 'input',
-              data: [],
-              hideInColumn: null,
-              sorter: null,
-              editDisabled: null,
-              mode: null,
-            },
-          ],
-        },
-        {
-          name: 'en-us',
-          translate_time: '2021-06-18T19:08:32+08:00',
-          data: [
-            {
-              name: 'admin_name',
-              title: 'Admin Name',
-              type: 'input',
-              data: [],
-              hideInColumn: null,
-              sorter: null,
-              editDisabled: true,
-              mode: null,
-            },
-            {
-              name: 'display_name',
-              title: 'Display Name',
-              type: 'input',
-              data: [],
-              hideInColumn: null,
-              sorter: null,
-              editDisabled: null,
-              mode: null,
-            },
-          ],
-        },
-      ],
-      dataSource: {
-        'zh-cn': {
-          admin_name: '张',
-          display_name: '张',
-        },
-        'en-us': {
-          admin_name: 'zhang',
-          display_name: 'Zhang',
-        },
-      },
-    },
-  };
-
-  init.data.fields[2] = {
-    name: 'de-de',
-    translate_time: '2021-06-19T19:08:32+08:00',
-    data: [
-      {
-        name: 'admin_name',
-        title: 'Admin Name',
-        type: 'input',
-        data: [],
-        hideInColumn: null,
-        sorter: null,
-        editDisabled: true,
-        mode: null,
-      },
-      {
-        name: 'display_name',
-        title: 'Display Name',
-        type: 'input',
-        data: [],
-        hideInColumn: null,
-        sorter: null,
-        editDisabled: null,
-        mode: null,
-      },
-    ],
-  };
 
   useEffect(() => {
     if (init.data) {
@@ -202,9 +84,9 @@ const Translate = () => {
     //   breadcrumb: {},
     // }}
     >
-      <Form {...layoutAttr[init.data.fields.length - 2]} form={form} onFinish={onFinish}>
+      <Form {...layoutAttr[init.data?.fields.length - 2]} form={form} onFinish={onFinish}>
         <Row gutter={16}>
-          {(init.data.fields || []).map((langForm) => {
+          {(init.data?.fields || []).map((langForm: any) => {
             return (
               <Col {...colAttr[init.data.fields.length - 2]}>
                 <Card
