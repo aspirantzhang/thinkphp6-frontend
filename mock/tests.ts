@@ -737,4 +737,85 @@ export default {
       data: [],
     });
   },
+  'GET /api/tests/:id/i18n': (req: Request, res: Response) => {
+    res.send({
+      success: true,
+      message: '',
+      data: {
+        page: { title: 'Admin Internationalization' },
+        layout: [
+          {
+            name: 'en-us',
+            data: [
+              {
+                name: 'display_name',
+                title: 'Display Name',
+                type: 'input',
+                data: [],
+                hideInColumn: null,
+                sorter: null,
+                editDisabled: null,
+                mode: null,
+              },
+              {
+                name: 'comment',
+                title: 'Comment',
+                type: 'textarea',
+                data: [],
+                hideInColumn: null,
+                sorter: null,
+                editDisabled: null,
+                mode: null,
+              },
+            ],
+          },
+          {
+            name: 'zh-cn',
+            data: [
+              {
+                name: 'display_name',
+                title: 'Display Name',
+                type: 'input',
+                data: [],
+                hideInColumn: null,
+                sorter: null,
+                editDisabled: null,
+                mode: null,
+              },
+              {
+                name: 'comment',
+                title: 'Comment',
+                type: 'textarea',
+                data: [],
+                hideInColumn: null,
+                sorter: null,
+                editDisabled: null,
+                mode: null,
+              },
+            ],
+          },
+        ],
+        dataSource: {
+          'en-us': {
+            display_name: 'Administrator',
+            comment: 'The highest authority',
+            translate_time: '2021-06-28 15:03:26',
+          },
+          'zh-cn': {
+            display_name: '网站管理员',
+            comment: '最高权限',
+            translate_time: '2021-06-28 15:03:26',
+          },
+        },
+      },
+    });
+  },
+  'PATCH /api/tests/:id/i18n': async (req: Request, res: Response) => {
+    await waitTime(500);
+    res.send({
+      success: true,
+      message: 'Update successfully.',
+      data: [],
+    });
+  },
 };

@@ -110,6 +110,29 @@ test('BasicList', async () => {
   );
   await page.waitForTimeout(2000);
 
+  // i18n
+  await page.goto(`${BASE_URL}/basic-list/translate/api/tests/1`);
+  await page.waitForSelector('.ant-page-header-heading-title');
+  expect(await page.$eval('.ant-page-header-heading-title', (el) => el.innerText)).toBe(
+    'Admin Internationalization',
+  );
+  // await page.waitForSelector('#en-us_display_name');
+  await page.waitForTimeout(1000);
+  expect(await page.$eval('#en-us_display_name', (el) => el.value)).toBe('Administrator');
+  await page.waitForSelector('#zh-cn_display_name');
+  expect(await page.$eval('#zh-cn_display_name', (el) => el.value)).toBe('网站管理员');
+  await page.waitForSelector('#en-us_complete');
+  await page.click('#en-us_complete');
+  await page.waitForSelector('#zh-cn_complete');
+  await page.click('#zh-cn_complete');
+  await page.waitForSelector('.footer-toolbar .submit-btn');
+  await page.click('.footer-toolbar .submit-btn');
+  await page.waitForSelector('.process-message span:nth-child(2)');
+  expect(await page.$eval('.process-message span:nth-child(2)', (el) => el.innerText)).toBe(
+    'Processing...',
+  );
+  await page.waitForTimeout(2000);
+
   // delete
   await page.click('.basic-list-table .delete-btn');
   await page.waitForTimeout(500);

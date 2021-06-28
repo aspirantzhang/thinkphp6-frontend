@@ -88,6 +88,7 @@ const Translate = () => {
         title: init.data?.page?.title,
         breadcrumb: {},
       }}
+      className="translate-page"
     >
       {init?.loading ? (
         <Spin className={styles.formSpin} tip="Loading..." />
@@ -122,7 +123,9 @@ const Translate = () => {
                           wrapperCol={{ span: 24 }}
                           valuePropName="checked"
                         >
-                          <Checkbox>Mark as completed</Checkbox>
+                          <Checkbox className={`${langForm.name}_complete`}>
+                            Mark as completed
+                          </Checkbox>
                         </Form.Item>
                       </Col>
                     </Row>
@@ -135,6 +138,7 @@ const Translate = () => {
       )}
 
       <FooterToolbar
+        className="footer-toolbar"
         extra={
           <div style={{ textAlign: 'center' }}>
             <Space size={50}>
@@ -153,6 +157,7 @@ const Translate = () => {
                   form.submit();
                 }}
                 loading={submitLoading}
+                className="submit-btn"
               >
                 Submit
               </Button>
