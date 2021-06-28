@@ -85,10 +85,8 @@ const Field = () => {
       onSuccess: (res) => {
         setSpinLoading(false);
         form.setState((state) => {
-          if (
-            res.data.data?.layout === undefined ||
-            Object.keys(res.data.data.layout).length === 0
-          ) {
+          const { modelName, ...rest } = res.data.data.layout;
+          if (Object.keys(rest).length === 0) {
             message.info('Initialized with sample values.');
             state.initialValues = initialLayout;
           }
