@@ -105,7 +105,13 @@ const Translate = () => {
                         size="2x"
                       />
                     }
-                    extra={moment(langForm.translate_time).format('YYYY-MM-DD HH:mm:ss')}
+                    extra={
+                      init.data.dataSource[langForm.name]?.translate_time
+                        ? moment(init.data.dataSource[langForm.name].translate_time).format(
+                            'YYYY-MM-DD HH:mm:ss',
+                          )
+                        : 'Not Exist'
+                    }
                     hoverable
                   >
                     {FormBuilder(langForm.data, langForm.name)}
