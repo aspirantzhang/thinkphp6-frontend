@@ -134,6 +134,7 @@ test('BasicList', async () => {
   await page.waitForTimeout(2000);
 
   // delete
+  await page.waitForSelector('.basic-list-table .delete-btn');
   await page.click('.basic-list-table .delete-btn');
   await page.waitForTimeout(500);
   await page.waitForSelector('.batch-confirm-modal');
