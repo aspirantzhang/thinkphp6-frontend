@@ -56,17 +56,22 @@ const setFieldsAdaptorResult = {
 
 describe('setFieldsAdaptor', () => {
   test('Invalid parameter should return empty object', () => {
-    expect(setFieldsAdaptor(null as any)).toEqual({});
-    expect(setFieldsAdaptor([] as any)).toEqual({});
-    expect(setFieldsAdaptor({} as any)).toEqual({});
-    expect(setFieldsAdaptor(undefined as any)).toEqual({});
-    expect(setFieldsAdaptor(NaN as any)).toEqual({});
-    expect(setFieldsAdaptor(true as any)).toEqual({});
-    expect(setFieldsAdaptor(false as any)).toEqual({});
-    expect(setFieldsAdaptor('' as any)).toEqual({});
+    expect(setFieldsAdaptor(null as any, null as any)).toEqual({});
+    expect(setFieldsAdaptor([] as any, [] as any)).toEqual({});
+    expect(setFieldsAdaptor({} as any, {} as any)).toEqual({});
+    expect(setFieldsAdaptor(undefined as any, undefined as any)).toEqual({});
+    expect(setFieldsAdaptor(NaN as any, NaN as any)).toEqual({});
+    expect(setFieldsAdaptor(true as any, true as any)).toEqual({});
+    expect(setFieldsAdaptor(false as any, false as any)).toEqual({});
+    expect(setFieldsAdaptor('' as any, '' as any)).toEqual({});
   });
   test('Valid parameter should return correct object', () => {
-    expect(setFieldsAdaptor(setFieldsAdaptorParams as any)).toEqual(setFieldsAdaptorResult);
+    expect(
+      setFieldsAdaptor(
+        setFieldsAdaptorParams.layout.tabs as any,
+        setFieldsAdaptorParams.dataSource,
+      ),
+    ).toEqual(setFieldsAdaptorResult);
   });
 });
 

@@ -1,5 +1,5 @@
 declare module BasicListApi {
-  type ActionHandler = (action: BasicListApi.Action, record: any) => void;
+  type ActionHandler = (action: Partial<BasicListApi.Action>, record?: BasicListApi.Field) => void;
 
   type Page = {
     title: string;
@@ -33,8 +33,8 @@ declare module BasicListApi {
   };
 
   type Tabs = {
-    name: string;
-    title: string;
+    name?: string;
+    title?: string;
     data: Field[];
   };
 

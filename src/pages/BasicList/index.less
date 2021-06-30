@@ -1,3 +1,12 @@
+.textAlignCenter {
+  text-align: center;
+}
+.textAlignRight {
+  text-align: right;
+}
+.mb10 {
+  margin-bottom: 10px;
+}
 .tableToolbar {
   padding: 15px 0;
   text-align: right;
@@ -18,12 +27,6 @@
     border: none !important;
   }
 }
-.textAlignCenter {
-  text-align: center;
-}
-.textAlignRight {
-  text-align: right;
-}
 .searchForm {
   background-color: #fafafa;
   :global(.ant-form-item-label) {
@@ -34,4 +37,10 @@
   :global(.ant-form-item) {
     margin-bottom: 10px !important;
   }
+}
+:global(.i18nNoValue) {
+  filter: grayscale(1) opacity(0.5);
+}
+:global(.basic-list-table .flag-icon) {
+  cursor: pointer;
 }

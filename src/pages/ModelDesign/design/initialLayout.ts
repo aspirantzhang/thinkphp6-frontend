@@ -1,5 +1,4 @@
 export const initialLayout = {
-  modelName: '{%modelName%}',
   listAction: [
     {
       name: 'edit',

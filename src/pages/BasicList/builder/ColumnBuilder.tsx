@@ -1,7 +1,8 @@
 import moment from 'moment';
 import { Space, Tag } from 'antd';
-import ActionBuilder from './ActionBuilder';
 import { searchTree } from '../helper';
+import ActionBuilder from './ActionBuilder';
+import I18nFlagBuilder from './I18nFlagBuilder';
 
 const ColumnBuilder = (
   tableColumn: BasicListApi.Field[] | undefined,
@@ -32,6 +33,11 @@ const ColumnBuilder = (
           column.render = (value: any) => {
             const option = searchTree(column.data, value, 'id');
             return option?.title;
+          };
+          break;
+        case 'i18n':
+          column.render = (value: any, record: any) => {
+            return I18nFlagBuilder(value, record, actionHandler);
           };
           break;
         case 'actions':

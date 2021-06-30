@@ -1,28 +1,46 @@
 import moment from 'moment';
 
-export const setFieldsAdaptor = (data: BasicListApi.PageData) => {
-  if (data?.layout?.tabs && data.dataSource) {
+export const setFieldsAdaptor = (
+  tabs: BasicListApi.Tabs[],
+  dataSource: BasicListApi.DataSource,
+  nested = false,
+) => {
+  if (Array.isArray(tabs) && dataSource) {
     const result = {};
-    data.layout.tabs.forEach((tab) => {
+    tabs.forEach((tab) => {
+      if (nested) {
+        result[tab.name!] = {};
+      }
+
       tab.data.forEach((field) => {
+        let sourceValue = null;
+        if (nested) {
+          sourceValue = dataSource[tab.name!] ? dataSource[tab.name!][field.name] : null;
+        } else {
+          sourceValue = dataSource[field.name];
+        }
+        let fieldValue = null;
+
         switch (field.type) {
           case 'datetime':
-            result[field.name] = moment(data.dataSource[field.name]);
+            fieldValue = moment(sourceValue);
             break;
           case 'textarea':
-            if (
-              typeof data.dataSource[field.name] === 'object' &&
-              data.dataSource[field.name] !== null
-            ) {
-              result[field.name] = JSON.stringify(data.dataSource[field.name]);
+            if (typeof sourceValue === 'object' && sourceValue !== null) {
+              fieldValue = JSON.stringify(sourceValue);
             } else {
-              result[field.name] = data.dataSource[field.name];
+              fieldValue = sourceValue;
             }
             break;
 
           default:
-            result[field.name] = data.dataSource[field.name];
+            fieldValue = sourceValue;
             break;
+        }
+        if (nested) {
+          result[tab.name!][field.name] = fieldValue;
+        } else {
+          result[field.name] = fieldValue;
         }
       });
     });
