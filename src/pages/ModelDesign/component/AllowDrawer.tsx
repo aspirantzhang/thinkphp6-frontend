@@ -1,27 +1,15 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { Drawer as AntdDrawer, Button, message, Alert } from 'antd';
 import { useLocation, useRequest, history, useModel, useIntl } from 'umi';
-import { createForm } from '@formily/core';
+import { createForm, onFieldChange, onFieldReact, isField } from '@formily/core';
 import { createSchemaField } from '@formily/react';
-import {
-  PreviewText,
-  Form,
-  FormItem,
-  Input,
-  ArrayTable,
-  Switch,
-  Select,
-  Checkbox,
-} from '@formily/antd';
+import { PreviewText, Form, FormItem, Input, ArrayTable, Checkbox } from '@formily/antd';
 
-const form = createForm();
 const SchemaField = createSchemaField({
   components: {
     Input,
     FormItem,
     ArrayTable,
-    Switch,
-    Select,
     Checkbox,
     PreviewText,
   },
@@ -41,8 +29,46 @@ const AllowDrawer = ({
   const [submitLoading, setSubmitLoading] = useState(false);
   const { initialState, setInitialState } = useModel('@@initialState');
 
+  const form = useMemo(
+    () =>
+      createForm({
+        effects: () => {
+          onFieldReact('*.*.allowTranslate', (field) => {
+            if (isField(field)) {
+              const typeValue = field.query('.type').get('value');
+              if (typeValue) {
+                const isText = typeValue === 'input' || typeValue === 'textarea';
+                if (isText) {
+                  field.disabled = false;
+                  field.visible = true;
+                } else {
+                  field.disabled = true;
+                  field.visible = false;
+                }
+              }
+            }
+          });
+          onFieldChange('checkAll', (field) => {
+            if (isField(field) && allowDrawerVisible) {
+              field.query('fields.*.*').forEach((checkbox) => {
+                if (
+                  isField(checkbox) &&
+                  // eslint-disable-next-line no-underscore-dangle
+                  checkbox.componentType.__ANT_CHECKBOX === true &&
+                  checkbox.disabled !== true
+                ) {
+                  checkbox.value = field.value;
+                }
+              });
+            }
+          });
+        },
+      }),
+    [],
+  );
+
   useEffect(() => {
-    if (drawerFieldData) {
+    if (drawerFieldData.fields && Object.keys(drawerFieldData.fields).length > 0) {
       form.setState((state) => {
         state.values = drawerFieldData;
       });
@@ -113,6 +139,7 @@ const AllowDrawer = ({
       key: 'process',
       duration: 0,
     });
+    delete values.checkAll;
     request.run(values);
   };
 
@@ -125,8 +152,14 @@ const AllowDrawer = ({
       onClose={hideAllowDrawer}
       visible={allowDrawerVisible}
     >
-      <Form layout="vertical" form={form}>
+      <Form form={form}>
         <SchemaField>
+          <SchemaField.Boolean
+            name="checkAll"
+            title="Check All"
+            x-decorator="FormItem"
+            x-component="Checkbox"
+          />
           <SchemaField.Array x-component="ArrayTable" name="fields" x-decorator="FormItem">
             <SchemaField.Object>
               <SchemaField.Void
@@ -137,6 +170,12 @@ const AllowDrawer = ({
                   name="name"
                   x-component="PreviewText.Input"
                   x-decorator="FormItem"
+                />
+                <SchemaField.String
+                  name="type"
+                  x-component="Input"
+                  x-decorator="FormItem"
+                  x-display="hidden"
                 />
               </SchemaField.Void>
               <SchemaField.Void

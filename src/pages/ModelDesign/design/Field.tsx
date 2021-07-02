@@ -289,8 +289,8 @@ const Field = () => {
       />
       <AllowDrawer
         hideAllowDrawer={() => {
-          setAllowDrawerVisible(false);
           setDrawerFieldData({ fields: {} });
+          setAllowDrawerVisible(false);
         }}
         allowDrawerVisible={allowDrawerVisible}
         drawerFieldData={drawerFieldData}
