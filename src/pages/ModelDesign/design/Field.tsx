@@ -112,21 +112,18 @@ const Field = () => {
       onSuccess: (res) => {
         setSpinLoading(false);
         form.setState((state) => {
-          if (
-            res.data.data?.fields === undefined ||
-            Object.keys(res.data.data.fields).length === 0
-          ) {
+          if (res.data?.fields === undefined || Object.keys(res.data.fields).length === 0) {
             message.info('Initialized with sample values.');
             state.initialValues = initialFields;
           }
-          state.initialValues = res.data.data;
+          state.initialValues = res.data;
         });
       },
       onError: () => {
         history.goBack();
       },
       formatResult: (res: any) => {
-        return res;
+        return res.data;
       },
       throttleInterval: 1000,
     },
@@ -157,6 +154,7 @@ const Field = () => {
   return (
     <PageContainer
       header={{
+        title: init.data?.page?.title,
         breadcrumb: {},
       }}
     >
