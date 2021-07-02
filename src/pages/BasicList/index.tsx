@@ -300,16 +300,16 @@ const Index = () => {
                 className="search-btn"
               />
             </Tooltip>
-            <Button
-              shape="round"
-              icon={<SyncOutlined />}
-              onClick={() => {
-                throttleReload.run();
-              }}
-              loading={init.loading}
-            >
-              Reload
-            </Button>
+            <Tooltip title={lang.formatMessage({ id: 'basic-list.reload' })}>
+              <Button
+                shape="circle"
+                icon={<SyncOutlined />}
+                onClick={() => {
+                  throttleReload.run();
+                }}
+                loading={init.loading}
+              />
+            </Tooltip>
           </Space>
         </Col>
       </Row>

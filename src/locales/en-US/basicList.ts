@@ -1,4 +1,5 @@
 export default {
+  'basic-list.reload': 'Reload',
   'basic-list.processing': 'Processing...',
   'basic-list.getMenuFailed': 'Get menu data failed',
   'basic-list.list.pagination.total': 'Total records',

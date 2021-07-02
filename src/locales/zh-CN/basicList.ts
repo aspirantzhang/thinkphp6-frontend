@@ -1,4 +1,5 @@
 export default {
+  'basic-list.reload': '刷新',
   'basic-list.processing': '处理中...',
   'basic-list.getMenuFailed': '获取菜单数据失败',
   'basic-list.list.pagination.total': '总记录数',
