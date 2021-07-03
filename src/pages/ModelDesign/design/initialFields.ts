@@ -7,6 +7,11 @@ export const initialFields = {
       settings: {
         validate: ['require', 'length'],
       },
+      allowHome: 1,
+      allowRead: 1,
+      allowSave: 1,
+      allowUpdate: 1,
+      allowTranslate: 1,
     },
     {
       name: 'gender',
@@ -27,6 +32,10 @@ export const initialFields = {
         },
       ],
       settings: { validate: ['require'] },
+      allowHome: 1,
+      allowRead: 1,
+      allowSave: 1,
+      allowUpdate: 1,
     },
     {
       name: 'married',
@@ -38,6 +47,10 @@ export const initialFields = {
         { title: 'No', value: 0 },
       ],
       settings: { display: ['listSorter'], validate: ['require'] },
+      allowHome: 1,
+      allowRead: 1,
+      allowSave: 1,
+      allowUpdate: 1,
     },
   ],
 };

@@ -85,19 +85,19 @@ const Field = () => {
       onSuccess: (res) => {
         setSpinLoading(false);
         form.setState((state) => {
-          const { modelName, ...rest } = res.data.data.layout;
+          const { modelName, ...rest } = res.data.layout;
           if (Object.keys(rest).length === 0) {
             message.info('Initialized with sample values.');
             state.initialValues = initialLayout;
           }
-          state.initialValues = res.data.data.layout;
+          state.initialValues = res.data.layout;
         });
       },
       onError: () => {
         history.goBack();
       },
       formatResult: (res: any) => {
-        return res;
+        return res.data;
       },
       throttleInterval: 1000,
     },
@@ -173,6 +173,7 @@ const Field = () => {
   return (
     <PageContainer
       header={{
+        title: init.data?.page?.title,
         breadcrumb: {},
       }}
     >

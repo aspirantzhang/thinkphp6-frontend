@@ -83,13 +83,6 @@ export const initialLayout = {
       uri: '/api/{%modelName%}/add',
       method: 'get',
     },
-    {
-      name: 'reload',
-      title: 'Reload',
-      type: 'default',
-      call: 'reload',
-      method: 'get',
-    },
   ],
   batchToolbar: [
     {
