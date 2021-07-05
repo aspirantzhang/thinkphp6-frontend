@@ -72,5 +72,6 @@ declare module BasicListApi {
     success: boolean;
     message: string;
     data: PageData | ListData;
+    call?: string[];
   };
 }

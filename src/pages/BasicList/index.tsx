@@ -13,7 +13,7 @@ import {
   Form,
   InputNumber,
 } from 'antd';
-import { useRequest, useIntl, history, useLocation } from 'umi';
+import { useRequest, useIntl, history, useLocation, useModel } from 'umi';
 import { useToggle, useUpdateEffect, useThrottleFn } from 'ahooks';
 import { stringify } from 'query-string';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
@@ -39,6 +39,7 @@ const Index = () => {
   const lang = useIntl();
   const [searchForm] = Form.useForm();
   const location = useLocation();
+  const { initialState, setInitialState } = useModel('@@initialState');
 
   const init = useRequest<{ data: BasicListApi.ListData }>(
     (option: any) => {
@@ -81,13 +82,18 @@ const Index = () => {
     },
     {
       manual: true,
-      onSuccess: (data: BasicListApi.Root) => {
+      onSuccess: (res: BasicListApi.Root) => {
         message.success({
-          content: data?.message,
+          content: res?.message,
           key: 'process',
           className: 'process-message',
         });
         init.run();
+        if (res.call && res.call.length > 0) {
+          res.call.forEach((callName) => {
+            actionHandler({ call: callName });
+          });
+        }
       },
       formatResult: (res: any) => {
         return res;
@@ -109,6 +115,25 @@ const Index = () => {
       setModalVisible(true);
     }
   }, [modalUri]);
+
+  const reFetchMenu = async () => {
+    setInitialState({
+      ...initialState,
+      settings: {
+        menu: {
+          loading: true,
+        },
+      },
+    });
+
+    const userMenu = await initialState?.fetchMenu?.();
+    if (userMenu) {
+      setInitialState({
+        ...initialState,
+        currentMenu: userMenu,
+      });
+    }
+  };
 
   function actionHandler(action: Partial<BasicListApi.Action>, record?: BasicListApi.Field) {
     switch (action.call) {
@@ -175,6 +200,10 @@ const Index = () => {
           onCancel() {},
           className: 'batch-confirm-modal',
         });
+        break;
+      }
+      case 'fetchMenu': {
+        reFetchMenu();
         break;
       }
       default:
