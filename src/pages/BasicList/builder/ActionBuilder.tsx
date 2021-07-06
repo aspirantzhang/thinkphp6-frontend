@@ -6,7 +6,7 @@ const ActionBuilder = (
   actions: BasicListApi.Action[] | undefined,
   actionHandler: BasicListApi.ActionHandler,
   loading = false,
-  record: Record<string, unknown> = {},
+  record?: BasicListApi.Field,
 ) => {
   return (Array.isArray(actions) ? actions : []).map((action) => {
     if (action.component === 'button') {
