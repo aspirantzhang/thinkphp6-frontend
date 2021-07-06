@@ -202,10 +202,9 @@ const Index = () => {
         });
         break;
       }
-      case 'fetchMenu': {
+      case 'fetchMenu':
         reFetchMenu();
         break;
-      }
       default:
         break;
     }
