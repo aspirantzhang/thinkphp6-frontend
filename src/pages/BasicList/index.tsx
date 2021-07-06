@@ -176,7 +176,7 @@ const Index = () => {
             },
           ),
           icon: <ExclamationCircleOutlined />,
-          content: batchOverview(Object.keys(record!).length ? [record!] : selectedRows),
+          content: batchOverview(record && Object.keys(record).length ? [record] : selectedRows),
           okText: lang.formatMessage(
             {
               id: 'basic-list.list.actionHandler.okButtonText',
