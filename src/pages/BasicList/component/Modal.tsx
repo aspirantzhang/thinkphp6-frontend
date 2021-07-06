@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { Modal as AntdModal, Form, Input, message, Tag, Spin } from 'antd';
-import { useRequest, useIntl } from 'umi';
+import { useRequest, useIntl, useModel } from 'umi';
 import moment from 'moment';
 import FormBuilder from '../builder/FormBuilder';
 import ActionBuilder from '../builder/ActionBuilder';
@@ -16,6 +16,7 @@ const Modal = ({
   hideModal: (reload?: boolean) => void;
   modalUri: string;
 }) => {
+  const { initialState, setInitialState } = useModel('@@initialState');
   const [form] = Form.useForm();
   const lang = useIntl();
 
@@ -46,13 +47,18 @@ const Modal = ({
     },
     {
       manual: true,
-      onSuccess: (data) => {
+      onSuccess: (res: BasicListApi.Root) => {
         message.success({
-          content: data.message,
+          content: res?.message,
           key: 'process',
           className: 'process-message',
         });
         hideModal(true);
+        if (res.call && res.call.length > 0) {
+          res.call.forEach((callName) => {
+            actionHandler({ call: callName });
+          });
+        }
       },
       formatResult: (res: any) => {
         return res;
@@ -74,6 +80,25 @@ const Modal = ({
     }
   }, [init.data]);
 
+  const reFetchMenu = async () => {
+    setInitialState({
+      ...initialState,
+      settings: {
+        menu: {
+          loading: true,
+        },
+      },
+    });
+
+    const userMenu = await initialState?.fetchMenu?.();
+    if (userMenu) {
+      setInitialState({
+        ...initialState,
+        currentMenu: userMenu,
+      });
+    }
+  };
+
   function actionHandler(action: Partial<BasicListApi.Action>) {
     switch (action.call) {
       case 'submit':
@@ -86,7 +111,9 @@ const Modal = ({
       case 'reset':
         form.resetFields();
         break;
-
+      case 'fetchMenu':
+        reFetchMenu();
+        break;
       default:
         break;
     }
