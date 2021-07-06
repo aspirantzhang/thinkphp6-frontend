@@ -43,13 +43,18 @@ const Page = () => {
     },
     {
       manual: true,
-      onSuccess: (data) => {
+      onSuccess: (res: BasicListApi.Root) => {
         message.success({
-          content: data.message,
+          content: res?.message,
           key: 'process',
           className: 'process-message',
         });
         history.goBack();
+        if (res.call && res.call.length > 0) {
+          res.call.forEach((callName) => {
+            actionHandler({ call: callName });
+          });
+        }
       },
       formatResult: (res: any) => {
         return res;
