@@ -48,6 +48,8 @@ const Index = () => {
       if (option === true) {
         searchForm.resetFields();
         setSearchQuery('');
+        setPageQuery('');
+        setSortQuery('');
         return {
           url,
         };
