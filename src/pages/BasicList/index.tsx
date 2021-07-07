@@ -44,7 +44,12 @@ const Index = () => {
   const init = useRequest<{ data: BasicListApi.ListData }>(
     (option: any) => {
       const url = `${location.pathname.replace('/basic-list', '')}`;
+      // if pathname change
       if (option === true) {
+        searchForm.resetFields();
+        setSearchQuery('');
+        setPageQuery('');
+        setSortQuery('');
         return {
           url,
         };

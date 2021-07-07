@@ -64,6 +64,12 @@ export const submitFieldsAdaptor = (formValues: any) => {
           return innerValue;
         });
       }
+      if (formValues[key] === true) {
+        result[key] = 1;
+      }
+      if (formValues[key] === false) {
+        result[key] = 0;
+      }
     });
     return result;
   }
@@ -99,3 +105,29 @@ export function searchTree(
 
   return result;
 }
+
+export const getDefaultValue = (tabs: BasicListApi.Tabs[]) => {
+  if (Array.isArray(tabs)) {
+    const result = {};
+    tabs.forEach((tab) => {
+      tab.data.forEach((field) => {
+        switch (field.type) {
+          case 'datetime':
+            result[field.name] = moment();
+            break;
+          case 'radio':
+          case 'switch':
+            if (field.data[0].value) {
+              result[field.name] = field.data[0].value;
+            }
+            break;
+
+          default:
+            break;
+        }
+      });
+    });
+    return result;
+  }
+  return {};
+};

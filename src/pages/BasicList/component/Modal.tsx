@@ -4,7 +4,7 @@ import { useRequest, useIntl, useModel } from 'umi';
 import moment from 'moment';
 import FormBuilder from '../builder/FormBuilder';
 import ActionBuilder from '../builder/ActionBuilder';
-import { setFieldsAdaptor, submitFieldsAdaptor } from '../helper';
+import { setFieldsAdaptor, submitFieldsAdaptor, getDefaultValue } from '../helper';
 import styles from '../index.less';
 
 const Modal = ({
@@ -148,11 +148,7 @@ const Modal = ({
             <Form
               form={form}
               {...layout}
-              initialValues={{
-                create_time: moment(),
-                update_time: moment(),
-                status: true,
-              }}
+              initialValues={init.data && getDefaultValue(init.data.layout.tabs)}
               onFinish={onFinish}
             >
               {FormBuilder(init?.data?.layout?.tabs[0]?.data)}
