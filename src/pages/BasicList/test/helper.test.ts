@@ -1,5 +1,7 @@
-import { setFieldsAdaptor, submitFieldsAdaptor, searchTree } from '../helper';
+import { setFieldsAdaptor, submitFieldsAdaptor, searchTree, getDefaultValue } from '../helper';
 import moment from 'moment';
+
+Date.now = jest.fn().mockReturnValue(new Date('2000-01-01T12:00:00.000Z'));
 
 const setFieldsAdaptorParams = {
   layout: {
@@ -239,5 +241,91 @@ describe('searchTree', () => {
         },
       ],
     });
+  });
+});
+
+const getDefaultValueParams = {
+  tabs: [
+    {
+      name: 'basic',
+      title: 'Basic',
+      data: [
+        {
+          dataIndex: 'string',
+          name: 'string',
+          type: 'text',
+        },
+        {
+          dataIndex: 'datetime',
+          name: 'datetime',
+          type: 'datetime',
+        },
+        {
+          title: 'objectTextarea',
+          name: 'objectTextarea',
+          type: 'textarea',
+        },
+        {
+          title: 'stringTextarea',
+          name: 'stringTextarea',
+          type: 'textarea',
+        },
+        {
+          title: 'switch',
+          name: 'switch',
+          type: 'switch',
+          data: [
+            {
+              title: 'title1',
+              value: 'switchValue1',
+            },
+            {
+              title: 'title2',
+              value: 'switchValue2',
+            },
+          ],
+        },
+        {
+          title: 'radio',
+          name: 'radio',
+          type: 'radio',
+          data: [
+            {
+              title: 'title1',
+              value: 'radioValue1',
+            },
+            {
+              title: 'title2',
+              value: 'radioValue2',
+            },
+          ],
+        },
+      ],
+    },
+  ],
+};
+
+const getDefaultValueResult = {
+  datetime: moment(),
+  switch: 'switchValue1',
+  radio: 'radioValue1',
+};
+
+describe('getDefaultValue', () => {
+  test('Invalid parameter should return empty object', () => {
+    expect(getDefaultValue(null as any)).toEqual({});
+    expect(getDefaultValue([] as any)).toEqual({});
+    expect(getDefaultValue({} as any)).toEqual({});
+    expect(getDefaultValue(undefined as any)).toEqual({});
+    expect(getDefaultValue(NaN as any)).toEqual({});
+    expect(getDefaultValue(true as any)).toEqual({});
+    expect(getDefaultValue(false as any)).toEqual({});
+    expect(getDefaultValue('' as any)).toEqual({});
+  });
+  test('Valid parameter should return correct object', () => {
+    jest.mock('moment', () => {
+      return () => jest.requireActual('moment')('2020-01-01T00:00:00.000Z');
+    });
+    expect(getDefaultValue(getDefaultValueParams.tabs as any)).toEqual(getDefaultValueResult);
   });
 });

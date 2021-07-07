@@ -5,7 +5,7 @@ import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import moment from 'moment';
 import FormBuilder from '../builder/FormBuilder';
 import ActionBuilder from '../builder/ActionBuilder';
-import { setFieldsAdaptor, submitFieldsAdaptor } from '../helper';
+import { setFieldsAdaptor, submitFieldsAdaptor, getDefaultValue } from '../helper';
 import styles from '../index.less';
 
 const Page = () => {
@@ -109,11 +109,7 @@ const Page = () => {
         <Form
           form={form}
           {...layout}
-          initialValues={{
-            create_time: moment(),
-            update_time: moment(),
-            status: true,
-          }}
+          initialValues={init.data && getDefaultValue(init.data.layout.tabs)}
           onFinish={onFinish}
         >
           <Row gutter={24}>

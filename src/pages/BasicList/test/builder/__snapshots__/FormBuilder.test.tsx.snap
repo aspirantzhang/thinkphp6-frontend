@@ -326,8 +326,8 @@ exports[`FormBuilder snapshot test 1`] = `
             class="ant-form-item-control-input-content"
           >
             <button
-              aria-checked="true"
-              class="ant-switch ant-switch-checked"
+              aria-checked="false"
+              class="ant-switch"
               id="switch"
               role="switch"
               type="button"
@@ -446,13 +446,12 @@ exports[`FormBuilder snapshot test 1`] = `
               id="radio"
             >
               <label
-                class="ant-radio-button-wrapper ant-radio-button-wrapper-checked"
+                class="ant-radio-button-wrapper"
               >
                 <span
-                  class="ant-radio-button ant-radio-button-checked"
+                  class="ant-radio-button"
                 >
                   <input
-                    checked=""
                     class="ant-radio-button-input"
                     type="radio"
                     value="bar"
