@@ -64,6 +64,12 @@ export const submitFieldsAdaptor = (formValues: any) => {
           return innerValue;
         });
       }
+      if (formValues[key] === true) {
+        result[key] = 1;
+      }
+      if (formValues[key] === false) {
+        result[key] = 0;
+      }
     });
     return result;
   }

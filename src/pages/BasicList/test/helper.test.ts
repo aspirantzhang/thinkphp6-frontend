@@ -84,6 +84,8 @@ const submitFieldsAdaptorParams = {
   stringTime: '2021-04-29T17:34:15+08:00',
   momentTime: moment('2021-05-01T20:19:57+08:00'),
   innerTime: [moment('2021-05-01T20:19:57+08:00'), moment('2021-05-02T20:19:57+08:00')],
+  booleanTrue: true,
+  booleanFalse: false,
 };
 
 const submitFieldsAdaptorResult = {
@@ -96,6 +98,8 @@ const submitFieldsAdaptorResult = {
     moment('2021-05-01T20:19:57+08:00').format(),
     moment('2021-05-02T20:19:57+08:00').format(),
   ],
+  booleanTrue: 1,
+  booleanFalse: 0,
 };
 
 describe('submitFieldsAdaptor', () => {
