@@ -12,13 +12,20 @@ import {
   Button,
   Form,
   InputNumber,
+  Popover,
+  Badge,
 } from 'antd';
 import { useRequest, useIntl, history, useLocation, useModel } from 'umi';
 import { useToggle, useUpdateEffect, useThrottleFn } from 'ahooks';
 import { stringify } from 'query-string';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import QueueAnim from 'rc-queue-anim';
-import { ExclamationCircleOutlined, SearchOutlined, SyncOutlined } from '@ant-design/icons';
+import {
+  ExclamationCircleOutlined,
+  SearchOutlined,
+  SyncOutlined,
+  TranslationOutlined,
+} from '@ant-design/icons';
 import ColumnBuilder from './builder/ColumnBuilder';
 import ActionBuilder from './builder/ActionBuilder';
 import SearchBuilder from './builder/SearchBuilder';
@@ -318,6 +325,11 @@ const Index = () => {
         <Col xs={24} sm={12} className={styles.tableToolbar}>
           <Space>
             {ActionBuilder(init?.data?.layout?.tableToolBar, actionHandler)}
+            <Popover content="test">
+              <Badge dot>
+                <Button shape="circle" icon={<TranslationOutlined />} />
+              </Badge>
+            </Popover>
             <Tooltip
               title={lang.formatMessage({
                 id: `basic-list.list.search.toggleSearch`,
