@@ -42,8 +42,8 @@ const Field = () => {
           onFieldReact('*.*.uri', (field) => {
             if (isField(field)) {
               field.value = field.value?.replace(
-                '{%modelName%}',
-                field.query('modelName').get('value'),
+                '{%tableName%}',
+                field.query('tableName').get('value'),
               );
             }
           });
@@ -85,7 +85,7 @@ const Field = () => {
       onSuccess: (res) => {
         setSpinLoading(false);
         form.setState((state) => {
-          const { modelName, ...rest } = res.data.layout;
+          const { tableName, ...rest } = res.data.layout;
           if (Object.keys(rest).length === 0) {
             message.info('Initialized with sample values.');
             state.initialValues = initialLayout;
@@ -185,8 +185,8 @@ const Field = () => {
             <Card title="Basic" size="small">
               <SchemaField>
                 <SchemaField.String
-                  name="modelName"
-                  title="Model Name"
+                  name="tableName"
+                  title="Table Name"
                   x-component="Input"
                   x-decorator="FormItem"
                 />
