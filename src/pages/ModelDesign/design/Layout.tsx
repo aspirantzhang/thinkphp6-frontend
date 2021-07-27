@@ -5,6 +5,7 @@ import { createSchemaField } from '@formily/react';
 import { Form, FormItem, Input, ArrayTable, Switch, Space, Select, Checkbox } from '@formily/antd';
 import { Spin, Button, Card, message } from 'antd';
 import { useSetState } from 'ahooks';
+import { DoubleRightOutlined, DoubleLeftOutlined } from '@ant-design/icons';
 import { useRequest, useLocation, history, useIntl } from 'umi';
 import Modal from '../component/Modal';
 import styles from '../index.less';
@@ -744,15 +745,29 @@ const Field = () => {
       )}
       <FooterToolbar
         extra={
-          <Button
-            type="primary"
-            onClick={() => {
-              form.submit(pageSubmitHandler);
-            }}
-            loading={submitLoading}
-          >
-            Submit
-          </Button>
+          <div style={{ textAlign: 'center' }}>
+            <Space size={50}>
+              <Button
+                danger
+                shape="round"
+                onClick={() => {
+                  history.goBack();
+                }}
+              >
+                <DoubleLeftOutlined /> Back to List
+              </Button>
+              <Button
+                type="primary"
+                onClick={() => {
+                  form.submit(pageSubmitHandler);
+                }}
+                loading={submitLoading}
+                shape="round"
+              >
+                Submit <DoubleRightOutlined />
+              </Button>
+            </Space>
+          </div>
         }
       />
       <Modal
