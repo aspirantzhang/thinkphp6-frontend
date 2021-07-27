@@ -49,7 +49,7 @@ const Field = () => {
         effects: () => {
           onFieldReact('*.*.uri', (field) => {
             if (isField(field)) {
-              field.value = field.value?.replace('admins', field.query('modelName').get('value'));
+              field.value = field.value?.replace('admins', field.query('tableName').get('value'));
             }
           });
           onFieldReact('fields.*.data', (field) => {
