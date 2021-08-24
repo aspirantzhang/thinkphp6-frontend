@@ -199,7 +199,7 @@ const Index = () => {
               uri: action.uri,
               method: action.method,
               type: action.call,
-              ids: Object.keys(record!).length ? [record!.id] : selectedRowKeys,
+              ids: record && Object.keys(record).length ? [record.id] : selectedRowKeys,
             });
           },
           onCancel() {},
