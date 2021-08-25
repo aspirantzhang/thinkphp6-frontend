@@ -562,7 +562,7 @@ export default {
               {
                 component: 'button',
                 type: 'danger',
-                name: 'delete-permanently',
+                name: 'delete_permanently',
                 title: 'Delete Permanently',
                 call: 'deletePermanently',
                 method: 'post',

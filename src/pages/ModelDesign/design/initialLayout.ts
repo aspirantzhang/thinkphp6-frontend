@@ -104,7 +104,7 @@ export const initialLayout = {
   ],
   batchToolbarTrashed: [
     {
-      name: 'delete-permanently',
+      name: 'delete_permanently',
       title: 'Delete Permanently',
       type: 'danger',
       call: 'deletePermanently',

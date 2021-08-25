@@ -26,7 +26,7 @@ export const callType = [
   { label: 'Submit', value: 'submit' },
   { label: 'Delete', value: 'delete' },
   { label: 'Disable', value: 'disable' },
-  { label: 'DeletePermanently', value: 'deletePermanently' },
+  { label: 'Delete Permanently', value: 'deletePermanently' },
   { label: 'Restore', value: 'restore' },
 ];
 
