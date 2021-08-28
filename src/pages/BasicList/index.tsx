@@ -22,6 +22,7 @@ import { ExclamationCircleOutlined, SearchOutlined, SyncOutlined } from '@ant-de
 import ColumnBuilder from './builder/ColumnBuilder';
 import ActionBuilder from './builder/ActionBuilder';
 import SearchBuilder from './builder/SearchBuilder';
+import SearchLayout from './layout/SearchLayout';
 import Modal from './component/Modal';
 import { submitFieldsAdaptor } from './helper';
 import styles from './index.less';
@@ -267,44 +268,16 @@ const Index = () => {
     return (
       <QueueAnim type="top">
         {searchVisible && (
-          <div key="searchForm" className="search-layout">
-            <Card className={styles.searchForm} key="searchForm">
-              <Form onFinish={onFinish} form={searchForm}>
-                <Row gutter={24}>
-                  <Col sm={6}>
-                    <Form.Item label="ID" name="id" key="id">
-                      <InputNumber style={{ width: '100%' }} />
-                    </Form.Item>
-                  </Col>
-                  {SearchBuilder(init.data?.layout.tableColumn)}
-                </Row>
-                <Row>
-                  <Col sm={24} className={styles.textAlignRight}>
-                    <Space>
-                      <Button type="primary" htmlType="submit" className="submit-btn">
-                        {lang.formatMessage({
-                          id: 'basic-list.list.search.submitButtonText',
-                        })}
-                      </Button>
-                      <Button
-                        onClick={() => {
-                          setSearchQuery('');
-                          searchForm.resetFields();
-                          setSelectedRowKeys([]);
-                          setSelectedRows([]);
-                        }}
-                        className="clear-btn"
-                      >
-                        {lang.formatMessage({
-                          id: 'basic-list.list.search.clearButtonText',
-                        })}
-                      </Button>
-                    </Space>
-                  </Col>
-                </Row>
-              </Form>
-            </Card>
-          </div>
+          <SearchLayout
+            onFinish={onFinish}
+            searchForm={searchForm}
+            tableColumn={init.data?.layout.tableColumn}
+            clearButtonCallback={() => {
+              setSearchQuery('');
+              setSelectedRowKeys([]);
+              setSelectedRows([]);
+            }}
+          />
         )}
       </QueueAnim>
     );
