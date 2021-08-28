@@ -30,6 +30,7 @@ const I18nFlagBuilder = (
               onClick={() => {
                 actionHandler({ call: 'i18n' }, record);
               }}
+              key={itemLang}
             >
               <Popover content={popContent}>
                 <Badge
