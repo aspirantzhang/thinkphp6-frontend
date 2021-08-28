@@ -11,10 +11,11 @@ import {
   Tooltip,
   Button,
   Form,
+  Tag,
 } from 'antd';
 import { useRequest, useIntl, history, useLocation, useModel } from 'umi';
 import { useUpdateEffect, useThrottleFn } from 'ahooks';
-import { stringify } from 'query-string';
+import { stringify, parse } from 'query-string';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import QueueAnim from 'rc-queue-anim';
 import { ExclamationCircleOutlined, SearchOutlined, SyncOutlined } from '@ant-design/icons';
@@ -255,7 +256,7 @@ const Index = () => {
     },
   };
 
-  const onFinish = (value: any) => {
+  const onSearchSubmit = (value: any) => {
     const searchString = stringify(submitFieldsAdaptor(value), {
       arrayFormat: 'comma',
       skipEmptyString: true,
@@ -264,20 +265,22 @@ const Index = () => {
     setSearchQuery(searchString && `&${searchString}`);
   };
 
+  const clearButtonCallback = () => {
+    setSearchQuery('');
+    setSelectedRowKeys([]);
+    setSelectedRows([]);
+  };
+
   const searchLayout = () => {
     return (
       searchVisible && (
         <QueueAnim type="top">
           <div key="searchLayout">
             <SearchLayout
-              onFinish={onFinish}
+              onFinish={onSearchSubmit}
               searchForm={searchForm}
               tableColumn={init.data?.layout.tableColumn}
-              clearButtonCallback={() => {
-                setSearchQuery('');
-                setSelectedRowKeys([]);
-                setSelectedRows([]);
-              }}
+              clearButtonCallback={clearButtonCallback}
             />
           </div>
         </QueueAnim>
@@ -285,13 +288,50 @@ const Index = () => {
     );
   };
 
+  const buildSearchTag = (searchObj: Record<string, unknown>) => {
+    const tagColors = [
+      'magenta',
+      'red',
+      'volcano',
+      'orange',
+      'gold',
+      'lime',
+      'green',
+      'cyan',
+      'blue',
+      'geekblue',
+      'purple',
+    ];
+
+    return Object.keys(searchObj).map((fieldName, index) => {
+      return (
+        <Tag color={tagColors[index]}>
+          {fieldName}={searchObj[fieldName]}
+        </Tag>
+      );
+    });
+  };
+
   const beforeTableLayout = () => {
     return (
       <Row className="before-table-layout">
-        <Col xs={24} sm={12}>
-          ...
+        <Col xs={24} sm={12} className={styles.tableToolbarLeft}>
+          {searchQuery && (
+            <>
+              <Tag
+                closable
+                onClose={() => {
+                  searchForm.resetFields();
+                  clearButtonCallback();
+                }}
+              >
+                Clear
+              </Tag>
+              {buildSearchTag(parse(searchQuery as string))}
+            </>
+          )}
         </Col>
-        <Col xs={24} sm={12} className={styles.tableToolbar}>
+        <Col xs={24} sm={12} className={styles.tableToolbarRight}>
           <Space>
             {ActionBuilder(init?.data?.layout?.tableToolBar, actionHandler)}
             <Tooltip
@@ -330,7 +370,7 @@ const Index = () => {
         <Col xs={24} sm={12}>
           ...
         </Col>
-        <Col xs={24} sm={12} className={styles.tableToolbar}>
+        <Col xs={24} sm={12} className={styles.tableToolbarRight}>
           {!!init?.data?.meta?.total && (
             <Pagination
               total={init?.data?.meta?.total || 0}
