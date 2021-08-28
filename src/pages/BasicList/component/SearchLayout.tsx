@@ -17,10 +17,10 @@ const SearchLayout = (props: SearchLayoutProps) => {
 
   return (
     <div key="searchForm" className="search-layout">
-      <Card className={styles.searchForm} key="searchForm">
+      <Card className={styles.searchForm} key="searchFormCard">
         <Form onFinish={onFinish} form={searchForm}>
           <Row gutter={24}>
-            <Col sm={6}>
+            <Col sm={6} key="id">
               <Form.Item label="ID" name="id" key="id">
                 <InputNumber style={{ width: '100%' }} />
               </Form.Item>
