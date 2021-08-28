@@ -323,6 +323,7 @@ const Index = () => {
                 onClose={() => {
                   searchForm.resetFields();
                   clearButtonCallback();
+                  setSearchVisible(false);
                 }}
               >
                 Clear
