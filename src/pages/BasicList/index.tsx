@@ -11,18 +11,16 @@ import {
   Tooltip,
   Button,
   Form,
-  InputNumber,
 } from 'antd';
 import { useRequest, useIntl, history, useLocation, useModel } from 'umi';
-import { useToggle, useUpdateEffect, useThrottleFn } from 'ahooks';
+import { useUpdateEffect, useThrottleFn } from 'ahooks';
 import { stringify } from 'query-string';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import QueueAnim from 'rc-queue-anim';
 import { ExclamationCircleOutlined, SearchOutlined, SyncOutlined } from '@ant-design/icons';
 import ColumnBuilder from './builder/ColumnBuilder';
 import ActionBuilder from './builder/ActionBuilder';
-import SearchBuilder from './builder/SearchBuilder';
-import SearchLayout from './layout/SearchLayout';
+import SearchLayout from './component/SearchLayout';
 import Modal from './component/Modal';
 import { submitFieldsAdaptor } from './helper';
 import styles from './index.less';
@@ -35,7 +33,7 @@ const Index = () => {
   const [modalUri, setModalUri] = useState('');
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [selectedRows, setSelectedRows] = useState([]);
-  const [searchVisible, searchAction] = useToggle(false);
+  const [searchVisible, setSearchVisible] = useState(false);
   const { confirm } = AntdModal;
   const lang = useIntl();
   const [searchForm] = Form.useForm();
@@ -266,22 +264,25 @@ const Index = () => {
 
   const searchLayout = () => {
     return (
-      <QueueAnim type="top">
-        {searchVisible && (
-          <SearchLayout
-            onFinish={onFinish}
-            searchForm={searchForm}
-            tableColumn={init.data?.layout.tableColumn}
-            clearButtonCallback={() => {
-              setSearchQuery('');
-              setSelectedRowKeys([]);
-              setSelectedRows([]);
-            }}
-          />
-        )}
-      </QueueAnim>
+      searchVisible && (
+        <QueueAnim type="top">
+          <div key="searchLayout">
+            <SearchLayout
+              onFinish={onFinish}
+              searchForm={searchForm}
+              tableColumn={init.data?.layout.tableColumn}
+              clearButtonCallback={() => {
+                setSearchQuery('');
+                setSelectedRowKeys([]);
+                setSelectedRows([]);
+              }}
+            />
+          </div>
+        </QueueAnim>
+      )
     );
   };
+
   const beforeTableLayout = () => {
     return (
       <Row className="before-table-layout">
@@ -300,7 +301,7 @@ const Index = () => {
                 shape="circle"
                 icon={<SearchOutlined />}
                 onClick={() => {
-                  searchAction.toggle();
+                  setSearchVisible((value) => !value);
                 }}
                 type={searchVisible ? 'primary' : 'default'}
                 className="search-btn"
