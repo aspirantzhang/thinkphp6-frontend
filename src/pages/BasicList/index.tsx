@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import {
   Table,
   Row,
@@ -105,6 +105,9 @@ const Index = () => {
       throttleInterval: 1000,
     },
   );
+  const tableColumns = useMemo(() => {
+    return ColumnBuilder(init?.data?.layout?.tableColumn, actionHandler);
+  }, [init?.data?.layout?.tableColumn]);
 
   useUpdateEffect(() => {
     init.run();
@@ -215,12 +218,11 @@ const Index = () => {
   }
 
   function batchOverview(dataSource: BasicListApi.Field[]) {
-    const tableColumns = ColumnBuilder(init?.data?.layout?.tableColumn, actionHandler);
     return (
       <Table
         size="small"
         rowKey="id"
-        columns={[tableColumns[0] || {}, tableColumns[1] || {}]}
+        columns={tableColumns ? [tableColumns[0] || {}, tableColumns[1] || {}] : []}
         dataSource={dataSource}
         pagination={false}
         className="batch-overview-table"
@@ -370,7 +372,7 @@ const Index = () => {
         <Table
           rowKey="id"
           dataSource={init?.data?.dataSource}
-          columns={ColumnBuilder(init?.data?.layout?.tableColumn, actionHandler)}
+          columns={tableColumns}
           pagination={false}
           loading={init?.loading}
           onChange={tableChangeHandler}
