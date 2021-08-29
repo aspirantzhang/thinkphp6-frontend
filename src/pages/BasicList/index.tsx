@@ -118,12 +118,6 @@ const Index = () => {
     init.run(true);
   }, [location.pathname]);
 
-  useEffect(() => {
-    if (modalUri) {
-      setModalVisible(true);
-    }
-  }, [modalUri]);
-
   const reFetchMenu = async () => {
     setInitialState({
       ...initialState,
@@ -151,6 +145,7 @@ const Index = () => {
             return record![field.replace(':', '')];
           }),
         );
+        setModalVisible(true);
         break;
       case 'page': {
         const uri = (action.uri || '').replace(/:\w+/g, (field) => {
