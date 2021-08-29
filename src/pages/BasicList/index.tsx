@@ -305,7 +305,7 @@ const Index = () => {
 
     return Object.keys(searchObj).map((fieldName, index) => {
       return (
-        <Tag color={tagColors[index]}>
+        <Tag color={tagColors[index] || 'red'}>
           {fieldName}={searchObj[fieldName]}
         </Tag>
       );
