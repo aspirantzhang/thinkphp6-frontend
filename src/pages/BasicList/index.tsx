@@ -300,7 +300,7 @@ const Index = () => {
 
     return Object.keys(searchObj).map((fieldName, index) => {
       return (
-        <Tag color={tagColors[index] || 'red'}>
+        <Tag color={tagColors[index] || 'red'} key={fieldName}>
           {fieldName}={searchObj[fieldName]}
         </Tag>
       );
@@ -320,6 +320,7 @@ const Index = () => {
                   clearButtonCallback();
                   setSearchVisible(false);
                 }}
+                key="clearTagButton"
               >
                 Clear
               </Tag>
