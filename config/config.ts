@@ -10,9 +10,6 @@ const { REACT_APP_ENV } = process.env;
 export default defineConfig({
   hash: true,
   antd: {},
-  dva: {
-    hmr: true,
-  },
   layout: {
     // https://umijs.org/zh-CN/plugins/plugin-layout
     locale: true,

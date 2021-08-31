@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import {
   Table,
   Row,
@@ -11,17 +11,17 @@ import {
   Tooltip,
   Button,
   Form,
-  InputNumber,
+  Tag,
 } from 'antd';
 import { useRequest, useIntl, history, useLocation, useModel } from 'umi';
-import { useToggle, useUpdateEffect, useThrottleFn } from 'ahooks';
-import { stringify } from 'query-string';
+import { useUpdateEffect, useThrottleFn } from 'ahooks';
+import { stringify, parse } from 'query-string';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import QueueAnim from 'rc-queue-anim';
 import { ExclamationCircleOutlined, SearchOutlined, SyncOutlined } from '@ant-design/icons';
 import ColumnBuilder from './builder/ColumnBuilder';
 import ActionBuilder from './builder/ActionBuilder';
-import SearchBuilder from './builder/SearchBuilder';
+import SearchLayout from './component/SearchLayout';
 import Modal from './component/Modal';
 import { submitFieldsAdaptor } from './helper';
 import styles from './index.less';
@@ -34,7 +34,7 @@ const Index = () => {
   const [modalUri, setModalUri] = useState('');
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [selectedRows, setSelectedRows] = useState([]);
-  const [searchVisible, searchAction] = useToggle(false);
+  const [searchVisible, setSearchVisible] = useState(false);
   const { confirm } = AntdModal;
   const lang = useIntl();
   const [searchForm] = Form.useForm();
@@ -106,6 +106,9 @@ const Index = () => {
       throttleInterval: 1000,
     },
   );
+  const tableColumns = useMemo(() => {
+    return ColumnBuilder(init?.data?.layout?.tableColumn, actionHandler);
+  }, [init?.data?.layout?.tableColumn]);
 
   useUpdateEffect(() => {
     init.run();
@@ -114,12 +117,6 @@ const Index = () => {
   useUpdateEffect(() => {
     init.run(true);
   }, [location.pathname]);
-
-  useEffect(() => {
-    if (modalUri) {
-      setModalVisible(true);
-    }
-  }, [modalUri]);
 
   const reFetchMenu = async () => {
     setInitialState({
@@ -148,6 +145,7 @@ const Index = () => {
             return record![field.replace(':', '')];
           }),
         );
+        setModalVisible(true);
         break;
       case 'page': {
         const uri = (action.uri || '').replace(/:\w+/g, (field) => {
@@ -216,12 +214,11 @@ const Index = () => {
   }
 
   function batchOverview(dataSource: BasicListApi.Field[]) {
-    const tableColumns = ColumnBuilder(init?.data?.layout?.tableColumn, actionHandler);
     return (
       <Table
         size="small"
         rowKey="id"
-        columns={[tableColumns[0] || {}, tableColumns[1] || {}]}
+        columns={tableColumns ? [tableColumns[0] || {}, tableColumns[1] || {}] : []}
         dataSource={dataSource}
         pagination={false}
         className="batch-overview-table"
@@ -254,7 +251,7 @@ const Index = () => {
     },
   };
 
-  const onFinish = (value: any) => {
+  const onSearchSubmit = (value: any) => {
     const searchString = stringify(submitFieldsAdaptor(value), {
       arrayFormat: 'comma',
       skipEmptyString: true,
@@ -263,59 +260,75 @@ const Index = () => {
     setSearchQuery(searchString && `&${searchString}`);
   };
 
+  const clearButtonCallback = () => {
+    setSearchQuery('');
+    setSelectedRowKeys([]);
+    setSelectedRows([]);
+  };
+
   const searchLayout = () => {
     return (
-      <QueueAnim type="top">
-        {searchVisible && (
-          <div key="searchForm" className="search-layout">
-            <Card className={styles.searchForm} key="searchForm">
-              <Form onFinish={onFinish} form={searchForm}>
-                <Row gutter={24}>
-                  <Col sm={6}>
-                    <Form.Item label="ID" name="id" key="id">
-                      <InputNumber style={{ width: '100%' }} />
-                    </Form.Item>
-                  </Col>
-                  {SearchBuilder(init.data?.layout.tableColumn)}
-                </Row>
-                <Row>
-                  <Col sm={24} className={styles.textAlignRight}>
-                    <Space>
-                      <Button type="primary" htmlType="submit" className="submit-btn">
-                        {lang.formatMessage({
-                          id: 'basic-list.list.search.submitButtonText',
-                        })}
-                      </Button>
-                      <Button
-                        onClick={() => {
-                          setSearchQuery('');
-                          searchForm.resetFields();
-                          setSelectedRowKeys([]);
-                          setSelectedRows([]);
-                        }}
-                        className="clear-btn"
-                      >
-                        {lang.formatMessage({
-                          id: 'basic-list.list.search.clearButtonText',
-                        })}
-                      </Button>
-                    </Space>
-                  </Col>
-                </Row>
-              </Form>
-            </Card>
+      searchVisible && (
+        <QueueAnim type="top">
+          <div key="searchLayout">
+            <SearchLayout
+              onFinish={onSearchSubmit}
+              searchForm={searchForm}
+              tableColumn={init.data?.layout.tableColumn}
+              clearButtonCallback={clearButtonCallback}
+            />
           </div>
-        )}
-      </QueueAnim>
+        </QueueAnim>
+      )
     );
   };
+
+  const buildSearchTag = (searchObj: Record<string, unknown>) => {
+    const tagColors = [
+      'magenta',
+      'red',
+      'volcano',
+      'orange',
+      'gold',
+      'lime',
+      'green',
+      'cyan',
+      'blue',
+      'geekblue',
+      'purple',
+    ];
+
+    return Object.keys(searchObj).map((fieldName, index) => {
+      return (
+        <Tag color={tagColors[index] || 'red'} key={fieldName}>
+          {fieldName}={searchObj[fieldName]}
+        </Tag>
+      );
+    });
+  };
+
   const beforeTableLayout = () => {
     return (
       <Row className="before-table-layout">
-        <Col xs={24} sm={12}>
-          ...
+        <Col xs={24} sm={12} className={styles.tableToolbarLeft}>
+          {searchQuery && (
+            <>
+              <Tag
+                closable
+                onClose={() => {
+                  searchForm.resetFields();
+                  clearButtonCallback();
+                  setSearchVisible(false);
+                }}
+                key="clearTagButton"
+              >
+                Clear
+              </Tag>
+              {buildSearchTag(parse(searchQuery as string))}
+            </>
+          )}
         </Col>
-        <Col xs={24} sm={12} className={styles.tableToolbar}>
+        <Col xs={24} sm={12} className={styles.tableToolbarRight}>
           <Space>
             {ActionBuilder(init?.data?.layout?.tableToolBar, actionHandler)}
             <Tooltip
@@ -327,7 +340,7 @@ const Index = () => {
                 shape="circle"
                 icon={<SearchOutlined />}
                 onClick={() => {
-                  searchAction.toggle();
+                  setSearchVisible((value) => !value);
                 }}
                 type={searchVisible ? 'primary' : 'default'}
                 className="search-btn"
@@ -354,7 +367,7 @@ const Index = () => {
         <Col xs={24} sm={12}>
           ...
         </Col>
-        <Col xs={24} sm={12} className={styles.tableToolbar}>
+        <Col xs={24} sm={12} className={styles.tableToolbarRight}>
           {!!init?.data?.meta?.total && (
             <Pagination
               total={init?.data?.meta?.total || 0}
@@ -396,7 +409,7 @@ const Index = () => {
         <Table
           rowKey="id"
           dataSource={init?.data?.dataSource}
-          columns={ColumnBuilder(init?.data?.layout?.tableColumn, actionHandler)}
+          columns={tableColumns}
           pagination={false}
           loading={init?.loading}
           onChange={tableChangeHandler}
