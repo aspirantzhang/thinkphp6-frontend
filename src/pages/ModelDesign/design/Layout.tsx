@@ -142,17 +142,17 @@ const Field = () => {
         <Spin className={styles.formSpin} tip="Loading..." />
       ) : (
         <Form form={form}>
+          <Card title="Basic" size="small" hidden>
+            <SchemaField>
+              <SchemaField.String
+                name="tableName"
+                title="Table Name"
+                x-component="Input"
+                x-decorator="FormItem"
+              />
+            </SchemaField>
+          </Card>
           <Space direction="vertical" style={{ width: '100%' }}>
-            <Card title="Basic" size="small">
-              <SchemaField>
-                <SchemaField.String
-                  name="tableName"
-                  title="Table Name"
-                  x-component="Input"
-                  x-decorator="FormItem"
-                />
-              </SchemaField>
-            </Card>
             <Card
               title={lang.formatMessage({
                 id: 'model-design.listAction',
