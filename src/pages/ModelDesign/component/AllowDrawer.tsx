@@ -64,7 +64,7 @@ const AllowDrawer = ({
           });
         },
       }),
-    [],
+    [allowDrawerVisible],
   );
 
   useEffect(() => {
@@ -73,7 +73,7 @@ const AllowDrawer = ({
         state.values = allowDrawerData;
       });
     }
-  }, [allowDrawerData]);
+  }, [allowDrawerData, form]);
 
   const reFetchMenu = async () => {
     setInitialState({
