@@ -67,6 +67,7 @@ const Field = () => {
                 values: field.value,
                 type: field.query('.type').get('value'),
               });
+              setModalVisible(true);
               field.active = false;
             }
           });
@@ -77,6 +78,7 @@ const Field = () => {
                 values: field.value,
                 type: field.query('.type').get('value'),
               });
+              setDrawerVisible(true);
               field.active = false;
             }
           });
@@ -84,18 +86,6 @@ const Field = () => {
       }),
     [],
   );
-
-  useEffect(() => {
-    if (modalState.type) {
-      setModalVisible(true);
-    }
-  }, [modalState.type]);
-
-  useEffect(() => {
-    if (drawerState.type) {
-      setDrawerVisible(true);
-    }
-  }, [drawerState.type]);
 
   useEffect(() => {
     if (drawerFieldData.fields && Object.keys(drawerFieldData.fields).length > 0) {
@@ -137,18 +127,18 @@ const Field = () => {
 
   const modalSubmitHandler = (values: any) => {
     setModalVisible(false);
+    setModalState({ type: '', values: {} });
     form.setFieldState(currentFieldPath, (state) => {
       state.value = values.data;
     });
-    setModalState({ type: '', values: {} });
   };
 
   const drawerSubmitHandler = (values: any) => {
     setDrawerVisible(false);
+    setDrawerState({ type: '', values: {} });
     form.setFieldState(currentFieldPath, (state) => {
       state.value = values;
     });
-    setDrawerState({ type: '', values: {} });
   };
 
   return (
