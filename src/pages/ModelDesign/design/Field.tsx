@@ -6,7 +6,7 @@ import { Form, FormItem, Input, ArrayTable, Switch, Select, Checkbox } from '@fo
 import { Spin, Button, Card, Space, message } from 'antd';
 import { DoubleRightOutlined, DoubleLeftOutlined } from '@ant-design/icons';
 import { useSetState } from 'ahooks';
-import { useRequest, useLocation, history } from 'umi';
+import { useRequest, useLocation, history, useIntl } from 'umi';
 import Modal from '../component/Modal';
 import SettingDrawer from '../component/SettingDrawer';
 import AllowDrawer from '../component/AllowDrawer';
@@ -42,6 +42,7 @@ const Field = () => {
   const [allowDrawerData, setAllowDrawerData] = useSetState<{ fields?: Record<string, unknown> }>();
   const [spinLoading, setSpinLoading] = useState(true);
   const location = useLocation();
+  const lang = useIntl();
 
   const form = useMemo(
     () =>
@@ -152,34 +153,57 @@ const Field = () => {
         <Spin className={styles.formSpin} tip="Loading..." />
       ) : (
         <Form form={form}>
-          <Card title="Fields" size="small">
+          <Card
+            title={lang.formatMessage({
+              id: 'model-design.fields',
+            })}
+            size="small"
+          >
             <SchemaField>
               <SchemaField.Array x-component="ArrayTable" name="fields" x-decorator="FormItem">
                 <SchemaField.Object>
                   <SchemaField.Void
                     x-component="ArrayTable.Column"
-                    x-component-props={{ title: 'Sort', width: 60, align: 'center' }}
+                    x-component-props={{
+                      title: lang.formatMessage({
+                        id: 'model-design.sort',
+                      }),
+                      width: 60,
+                      align: 'center',
+                    }}
                   >
                     <SchemaField.Void x-component="ArrayTable.SortHandle" x-decorator="FormItem" />
                   </SchemaField.Void>
 
                   <SchemaField.Void
                     x-component="ArrayTable.Column"
-                    x-component-props={{ title: 'Name' }}
+                    x-component-props={{
+                      title: lang.formatMessage({
+                        id: 'model-design.name',
+                      }),
+                    }}
                   >
                     <SchemaField.String name="name" x-component="Input" x-decorator="FormItem" />
                   </SchemaField.Void>
 
                   <SchemaField.Void
                     x-component="ArrayTable.Column"
-                    x-component-props={{ title: 'Title' }}
+                    x-component-props={{
+                      title: lang.formatMessage({
+                        id: 'model-design.title',
+                      }),
+                    }}
                   >
                     <SchemaField.String name="title" x-component="Input" x-decorator="FormItem" />
                   </SchemaField.Void>
 
                   <SchemaField.Void
                     x-component="ArrayTable.Column"
-                    x-component-props={{ title: 'Type' }}
+                    x-component-props={{
+                      title: lang.formatMessage({
+                        id: 'model-design.type',
+                      }),
+                    }}
                   >
                     <SchemaField.String
                       name="type"
@@ -191,31 +215,53 @@ const Field = () => {
 
                   <SchemaField.Void
                     x-component="ArrayTable.Column"
-                    x-component-props={{ title: 'Data', width: 60, align: 'center' }}
+                    x-component-props={{
+                      title: lang.formatMessage({
+                        id: 'model-design.data',
+                      }),
+                      width: 60,
+                      align: 'center',
+                    }}
                   >
                     <SchemaField.String
                       name="data"
                       x-component="Button"
                       x-decorator="FormItem"
-                      x-content="Data"
+                      x-content={lang.formatMessage({
+                        id: 'model-design.data',
+                      })}
                     />
                   </SchemaField.Void>
 
                   <SchemaField.Void
                     x-component="ArrayTable.Column"
-                    x-component-props={{ title: 'Settings', width: 60, align: 'center' }}
+                    x-component-props={{
+                      title: lang.formatMessage({
+                        id: 'model-design.settings',
+                      }),
+                      width: 60,
+                      align: 'center',
+                    }}
                   >
                     <SchemaField.String
                       name="settings"
                       x-component="Button"
                       x-decorator="FormItem"
-                      x-content="Settings"
+                      x-content={lang.formatMessage({
+                        id: 'model-design.settings',
+                      })}
                     />
                   </SchemaField.Void>
 
                   <SchemaField.Void
                     x-component="ArrayTable.Column"
-                    x-component-props={{ title: 'Operations', width: 100, align: 'center' }}
+                    x-component-props={{
+                      title: lang.formatMessage({
+                        id: 'model-design.operations',
+                      }),
+                      width: 100,
+                      align: 'center',
+                    }}
                   >
                     <SchemaField.Void x-component="ArrayTable.Remove" />
                     <SchemaField.Void x-component="ArrayTable.MoveUp" />
@@ -224,7 +270,11 @@ const Field = () => {
                 </SchemaField.Object>
                 <SchemaField.Void
                   x-component="ArrayTable.Addition"
-                  x-component-props={{ title: 'Add' }}
+                  x-component-props={{
+                    title: lang.formatMessage({
+                      id: 'model-design.add',
+                    }),
+                  }}
                 />
               </SchemaField.Array>
             </SchemaField>
@@ -242,7 +292,10 @@ const Field = () => {
                   history.goBack();
                 }}
               >
-                <DoubleLeftOutlined /> Back to List
+                <DoubleLeftOutlined />{' '}
+                {lang.formatMessage({
+                  id: 'model-design.back',
+                })}
               </Button>
               <Button
                 type="primary"
@@ -251,7 +304,10 @@ const Field = () => {
                 }}
                 shape="round"
               >
-                Next Step <DoubleRightOutlined />
+                {lang.formatMessage({
+                  id: 'model-design.next',
+                })}
+                <DoubleRightOutlined />
               </Button>
             </Space>
           </div>

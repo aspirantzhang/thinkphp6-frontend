@@ -153,7 +153,12 @@ const Field = () => {
                 />
               </SchemaField>
             </Card>
-            <Card title="List Action" size="small">
+            <Card
+              title={lang.formatMessage({
+                id: 'model-design.listAction',
+              })}
+              size="small"
+            >
               <SchemaField>
                 <SchemaField.Array
                   x-component="ArrayTable"
@@ -245,7 +250,12 @@ const Field = () => {
               </SchemaField>
             </Card>
 
-            <Card title="Add Action" size="small">
+            <Card
+              title={lang.formatMessage({
+                id: 'model-design.addAction',
+              })}
+              size="small"
+            >
               <SchemaField>
                 <SchemaField.Array x-component="ArrayTable" name="addAction" x-decorator="FormItem">
                   <SchemaField.Object>
@@ -333,7 +343,12 @@ const Field = () => {
               </SchemaField>
             </Card>
 
-            <Card title="Edit Action" size="small">
+            <Card
+              title={lang.formatMessage({
+                id: 'model-design.editAction',
+              })}
+              size="small"
+            >
               <SchemaField>
                 <SchemaField.Array
                   x-component="ArrayTable"
@@ -425,7 +440,12 @@ const Field = () => {
               </SchemaField>
             </Card>
 
-            <Card title="Table Toolbar" size="small">
+            <Card
+              title={lang.formatMessage({
+                id: 'model-design.tableToolbar',
+              })}
+              size="small"
+            >
               <SchemaField>
                 <SchemaField.Array
                   x-component="ArrayTable"
@@ -517,7 +537,12 @@ const Field = () => {
               </SchemaField>
             </Card>
 
-            <Card title="Batch Toolbar" size="small">
+            <Card
+              title={lang.formatMessage({
+                id: 'model-design.batchToolbar',
+              })}
+              size="small"
+            >
               <SchemaField>
                 <SchemaField.Array
                   x-component="ArrayTable"
@@ -609,7 +634,12 @@ const Field = () => {
               </SchemaField>
             </Card>
 
-            <Card title="Batch Toolbar - Trashed" size="small">
+            <Card
+              title={lang.formatMessage({
+                id: 'model-design.batchToolbarTrashed',
+              })}
+              size="small"
+            >
               <SchemaField>
                 <SchemaField.Array
                   x-component="ArrayTable"
@@ -714,7 +744,10 @@ const Field = () => {
                   history.goBack();
                 }}
               >
-                <DoubleLeftOutlined /> Back to List
+                <DoubleLeftOutlined />{' '}
+                {lang.formatMessage({
+                  id: 'model-design.back',
+                })}
               </Button>
               <Button
                 type="primary"
@@ -724,7 +757,10 @@ const Field = () => {
                 loading={submitLoading}
                 shape="round"
               >
-                Submit <DoubleRightOutlined />
+                {lang.formatMessage({
+                  id: 'model-design.submit',
+                })}
+                <DoubleRightOutlined />
               </Button>
             </Space>
           </div>

@@ -1,5 +1,6 @@
 import { useEffect, useMemo } from 'react';
 import { Drawer as AntdDrawer, Button, Space, Card } from 'antd';
+import { useIntl } from 'umi';
 import { createForm, onFieldChange, isField } from '@formily/core';
 import { createSchemaField } from '@formily/react';
 import {
@@ -38,6 +39,7 @@ const SettingDrawer = ({
   hideDrawer: () => void;
   drawerSubmitHandler: (values: any) => void;
 }) => {
+  const lang = useIntl();
   const form = useMemo(
     () =>
       createForm({
@@ -103,7 +105,9 @@ const SettingDrawer = ({
             }}
             style={{ marginRight: 8 }}
           >
-            Cancel
+            {lang.formatMessage({
+              id: 'model-design.cancel',
+            })}
           </Button>
           <Button
             type="primary"
@@ -111,7 +115,9 @@ const SettingDrawer = ({
               form.submit(drawerSubmitHandler);
             }}
           >
-            Submit
+            {lang.formatMessage({
+              id: 'model-design.submit',
+            })}
           </Button>
         </div>
       }

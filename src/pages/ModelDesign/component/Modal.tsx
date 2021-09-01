@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useIntl } from 'umi';
 import { createForm } from '@formily/core';
 import { createSchemaField } from '@formily/react';
 import { Form, FormItem, Input, ArrayTable, Switch, Select, Checkbox } from '@formily/antd';
@@ -28,6 +29,8 @@ const Modal = ({
   modalSubmitHandler: (values: any) => void;
   modalData: { type: string; values: Record<string, unknown> };
 }) => {
+  const lang = useIntl();
+
   useEffect(() => {
     form.reset('*', {
       forceClear: true,
@@ -97,26 +100,46 @@ const Modal = ({
               <SchemaField.Object>
                 <SchemaField.Void
                   x-component="ArrayTable.Column"
-                  x-component-props={{ title: 'Sort', width: 60, align: 'center' }}
+                  x-component-props={{
+                    title: lang.formatMessage({
+                      id: 'model-design.sort',
+                    }),
+                    width: 60,
+                    align: 'center',
+                  }}
                   name="sortColumn"
                 >
                   <SchemaField.Void x-component="ArrayTable.SortHandle" x-decorator="FormItem" />
                 </SchemaField.Void>
                 <SchemaField.Void
                   x-component="ArrayTable.Column"
-                  x-component-props={{ title: 'Title' }}
+                  x-component-props={{
+                    title: lang.formatMessage({
+                      id: 'model-design.title',
+                    }),
+                  }}
                 >
                   <SchemaField.String name="title" x-component="Input" x-decorator="FormItem" />
                 </SchemaField.Void>
                 <SchemaField.Void
                   x-component="ArrayTable.Column"
-                  x-component-props={{ title: 'Value' }}
+                  x-component-props={{
+                    title: lang.formatMessage({
+                      id: 'model-design.value',
+                    }),
+                  }}
                 >
                   <SchemaField.String name="value" x-component="Input" x-decorator="FormItem" />
                 </SchemaField.Void>
                 <SchemaField.Void
                   x-component="ArrayTable.Column"
-                  x-component-props={{ title: 'Operations', width: 100, align: 'center' }}
+                  x-component-props={{
+                    title: lang.formatMessage({
+                      id: 'model-design.operations',
+                    }),
+                    width: 100,
+                    align: 'center',
+                  }}
                   name="operationColumn"
                 >
                   <SchemaField.Void x-component="ArrayTable.Remove" />
@@ -126,7 +149,11 @@ const Modal = ({
               </SchemaField.Object>
               <SchemaField.Void
                 x-component="ArrayTable.Addition"
-                x-component-props={{ title: 'Add' }}
+                x-component-props={{
+                  title: lang.formatMessage({
+                    id: 'model-design.add',
+                  }),
+                }}
               />
             </SchemaField.Array>
           </SchemaField>

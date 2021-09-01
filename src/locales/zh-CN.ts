@@ -6,6 +6,7 @@ import settingDrawer from './zh-CN/settingDrawer';
 import settings from './zh-CN/settings';
 import pages from './zh-CN/pages';
 import basicList from './zh-CN/basicList';
+import modelDesign from './zh-CN/modelDesign';
 
 export default {
   'navBar.lang': '语言',
@@ -23,4 +24,5 @@ export default {
   ...pwa,
   ...component,
   ...basicList,
+  ...modelDesign,
 };

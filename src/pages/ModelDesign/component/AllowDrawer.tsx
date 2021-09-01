@@ -247,7 +247,9 @@ const AllowDrawer = ({
           style={{ marginRight: 8 }}
           loading={submitLoading}
         >
-          Cancel
+          {lang.formatMessage({
+            id: 'model-design.cancel',
+          })}
         </Button>
         <Button
           type="primary"
@@ -256,7 +258,9 @@ const AllowDrawer = ({
           }}
           loading={submitLoading}
         >
-          Submit
+          {lang.formatMessage({
+            id: 'model-design.submit',
+          })}
         </Button>
       </div>
     </AntdDrawer>
