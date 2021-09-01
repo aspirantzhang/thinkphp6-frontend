@@ -17,12 +17,12 @@ const SchemaField = createSchemaField({
 
 const AllowDrawer = ({
   allowDrawerVisible,
+  allowDrawerData,
   hideAllowDrawer,
-  drawerFieldData,
 }: {
   allowDrawerVisible: boolean;
+  allowDrawerData: { fields?: Record<string, unknown> };
   hideAllowDrawer: () => void;
-  drawerFieldData: { fields?: Record<string, unknown> };
 }) => {
   const location = useLocation();
   const lang = useIntl();
@@ -68,12 +68,12 @@ const AllowDrawer = ({
   );
 
   useEffect(() => {
-    if (drawerFieldData.fields && Object.keys(drawerFieldData.fields).length > 0) {
+    if (allowDrawerData.fields && Object.keys(allowDrawerData.fields).length > 0) {
       form.setState((state) => {
-        state.values = drawerFieldData;
+        state.values = allowDrawerData;
       });
     }
-  }, [drawerFieldData]);
+  }, [allowDrawerData]);
 
   const reFetchMenu = async () => {
     setInitialState({

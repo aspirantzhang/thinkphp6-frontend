@@ -29,17 +29,17 @@ const SchemaField = createSchemaField({
 const Field = () => {
   const [currentFieldPath, setCurrentFieldPath] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
-  const [modalState, setModalState] = useSetState({
+  const [modalData, setModalData] = useSetState({
     type: '',
     values: {},
   });
-  const [drawerVisible, setDrawerVisible] = useState(false);
-  const [drawerState, setDrawerState] = useSetState({
+  const [settingDrawerVisible, setSettingDrawerVisible] = useState(false);
+  const [settingDrawerData, setSettingDrawerData] = useSetState({
     type: '',
     values: {},
   });
   const [allowDrawerVisible, setAllowDrawerVisible] = useState(false);
-  const [drawerFieldData, setDrawerFieldData] = useSetState<{ fields?: Record<string, unknown> }>();
+  const [allowDrawerData, setAllowDrawerData] = useSetState<{ fields?: Record<string, unknown> }>();
   const [spinLoading, setSpinLoading] = useState(true);
   const location = useLocation();
 
@@ -63,7 +63,7 @@ const Field = () => {
           onFieldChange('fields.*.data', ['active'], (field) => {
             if (isField(field) && field.active === true) {
               setCurrentFieldPath(field.path.toString());
-              setModalState({
+              setModalData({
                 values: field.value,
                 type: field.query('.type').get('value'),
               });
@@ -74,11 +74,11 @@ const Field = () => {
           onFieldChange('fields.*.settings', ['active'], (field) => {
             if (isField(field) && field.active === true) {
               setCurrentFieldPath(field.path.toString());
-              setDrawerState({
+              setSettingDrawerData({
                 values: field.value,
                 type: field.query('.type').get('value'),
               });
-              setDrawerVisible(true);
+              setSettingDrawerVisible(true);
               field.active = false;
             }
           });
@@ -88,10 +88,10 @@ const Field = () => {
   );
 
   useEffect(() => {
-    if (drawerFieldData.fields && Object.keys(drawerFieldData.fields).length > 0) {
+    if (allowDrawerData.fields && Object.keys(allowDrawerData.fields).length > 0) {
       setAllowDrawerVisible(true);
     }
-  }, [drawerFieldData]);
+  }, [allowDrawerData]);
 
   const init = useRequest(
     {
@@ -127,15 +127,15 @@ const Field = () => {
 
   const modalSubmitHandler = (values: any) => {
     setModalVisible(false);
-    setModalState({ type: '', values: {} });
+    setModalData({ type: '', values: {} });
     form.setFieldState(currentFieldPath, (state) => {
       state.value = values.data;
     });
   };
 
   const drawerSubmitHandler = (values: any) => {
-    setDrawerVisible(false);
-    setDrawerState({ type: '', values: {} });
+    setSettingDrawerVisible(false);
+    setSettingDrawerData({ type: '', values: {} });
     form.setFieldState(currentFieldPath, (state) => {
       state.value = values;
     });
@@ -247,7 +247,7 @@ const Field = () => {
               <Button
                 type="primary"
                 onClick={() => {
-                  form.submit(setDrawerFieldData);
+                  form.submit(setAllowDrawerData);
                 }}
                 shape="round"
               >
@@ -261,27 +261,27 @@ const Field = () => {
         modalVisible={modalVisible}
         hideModal={() => {
           setModalVisible(false);
-          setModalState({ type: '', values: {} });
+          setModalData({ type: '', values: {} });
         }}
-        modalState={modalState}
+        modalData={modalData}
         modalSubmitHandler={modalSubmitHandler}
       />
       <SettingDrawer
         hideDrawer={() => {
-          setDrawerVisible(false);
-          setDrawerState({ type: '', values: {} });
+          setSettingDrawerVisible(false);
+          setSettingDrawerData({ type: '', values: {} });
         }}
-        drawerVisible={drawerVisible}
-        drawerState={drawerState}
+        settingDrawerVisible={settingDrawerVisible}
+        settingDrawerData={settingDrawerData}
         drawerSubmitHandler={drawerSubmitHandler}
       />
       <AllowDrawer
         hideAllowDrawer={() => {
-          setDrawerFieldData({ fields: {} });
+          setAllowDrawerData({ fields: {} });
           setAllowDrawerVisible(false);
         }}
         allowDrawerVisible={allowDrawerVisible}
-        drawerFieldData={drawerFieldData}
+        allowDrawerData={allowDrawerData}
       />
     </PageContainer>
   );

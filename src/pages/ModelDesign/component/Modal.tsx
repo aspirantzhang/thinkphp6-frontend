@@ -21,18 +21,18 @@ const Modal = ({
   modalVisible,
   hideModal,
   modalSubmitHandler,
-  modalState,
+  modalData,
 }: {
   modalVisible: boolean;
   hideModal: (reload?: boolean) => void;
   modalSubmitHandler: (values: any) => void;
-  modalState: { type: string; values: Record<string, unknown> };
+  modalData: { type: string; values: Record<string, unknown> };
 }) => {
   useEffect(() => {
     form.reset('*', {
       forceClear: true,
     });
-    if (modalState.type === 'switch') {
+    if (modalData.type === 'switch') {
       form.setFieldState('data.sortColumn', (state) => {
         state.visible = false;
       });
@@ -68,14 +68,14 @@ const Modal = ({
       });
     }
 
-    if (modalState.values && Object.keys(modalState.values).length > 0) {
+    if (modalData.values && Object.keys(modalData.values).length > 0) {
       form.setFormState((state) => {
         state.values = {
-          data: modalState.values,
+          data: modalData.values,
         };
       });
     }
-  }, [modalState]);
+  }, [modalData]);
 
   return (
     <div>

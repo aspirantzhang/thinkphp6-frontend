@@ -28,14 +28,14 @@ const SchemaField = createSchemaField({
 });
 
 const SettingDrawer = ({
-  drawerVisible,
+  settingDrawerVisible,
+  settingDrawerData,
   hideDrawer,
-  drawerState,
   drawerSubmitHandler,
 }: {
-  drawerVisible: boolean;
+  settingDrawerVisible: boolean;
+  settingDrawerData: { type: string; values: Record<string, unknown> };
   hideDrawer: () => void;
-  drawerState: { type: string; values: Record<string, unknown> };
   drawerSubmitHandler: (values: any) => void;
 }) => {
   const form = useMemo(
@@ -55,16 +55,16 @@ const SettingDrawer = ({
   );
 
   useEffect(() => {
-    if (drawerState.values && Object.keys(drawerState.values).length > 0) {
+    if (settingDrawerData.values && Object.keys(settingDrawerData.values).length > 0) {
       form.setFormState((state) => {
-        state.values = drawerState.values;
+        state.values = settingDrawerData.values;
       });
     } else {
       form.setFormState((state) => {
         state.values = {};
       });
     }
-  }, [drawerState]);
+  }, [settingDrawerData]);
 
   const displayOptions = [
     { label: 'List Sorter', value: 'listSorter' },
@@ -90,7 +90,7 @@ const SettingDrawer = ({
       onClose={() => {
         hideDrawer();
       }}
-      visible={drawerVisible}
+      visible={settingDrawerVisible}
       footer={
         <div
           style={{
