@@ -1,13 +1,11 @@
 import { useState, useEffect, useMemo } from 'react';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
-import { createForm, onFieldChange, onFieldReact, isField } from '@formily/core';
+import { createForm, onFieldReact, isField } from '@formily/core';
 import { createSchemaField } from '@formily/react';
 import { Form, FormItem, Input, ArrayTable, Switch, Space, Select, Checkbox } from '@formily/antd';
 import { Spin, Button, Card, message } from 'antd';
-import { useSetState } from 'ahooks';
 import { DoubleRightOutlined, DoubleLeftOutlined } from '@ant-design/icons';
 import { useRequest, useLocation, history, useIntl } from 'umi';
-import Modal from '../component/Modal';
 import styles from '../index.less';
 import { initialLayout } from './initialLayout';
 import * as enums from './enums';
@@ -25,12 +23,6 @@ const SchemaField = createSchemaField({
 });
 
 const Field = () => {
-  const [modalVisible, setModalVisible] = useState(false);
-  const [currentFieldPath, setCurrentFieldPath] = useState('');
-  const [modalState, setModalState] = useSetState({
-    type: '',
-    values: {},
-  });
   const [spinLoading, setSpinLoading] = useState(true);
   const [submitLoading, setSubmitLoading] = useState(false);
   const location = useLocation();
@@ -48,34 +40,10 @@ const Field = () => {
               );
             }
           });
-          onFieldReact('fields.*.data', (field) => {
-            if (isField(field)) {
-              const typeValue = field.query('.type').get('value');
-              const attrValue = typeValue === 'switch' || typeValue === 'radio';
-              field.editable = attrValue;
-              field.required = attrValue;
-            }
-          });
-          onFieldChange('fields.*.data', ['active'], (field) => {
-            if (isField(field) && field.active === true) {
-              setCurrentFieldPath(field.path.toString());
-              setModalState({
-                values: field.value,
-                type: field.query('.type').get('value'),
-              });
-              field.active = false;
-            }
-          });
         },
       }),
     [],
   );
-
-  useEffect(() => {
-    if (modalState.type) {
-      setModalVisible(true);
-    }
-  }, [modalState.type]);
 
   const init = useRequest(
     {
@@ -150,14 +118,6 @@ const Field = () => {
       init.run();
     }
   }, [location.pathname]);
-
-  const modalSubmitHandler = (values: any) => {
-    setModalVisible(false);
-    form.setFieldState(currentFieldPath, (state) => {
-      state.value = values.data;
-    });
-    setModalState({ type: '', values: {} });
-  };
 
   const pageSubmitHandler = (values: any) => {
     setSubmitLoading(true);
@@ -769,15 +729,6 @@ const Field = () => {
             </Space>
           </div>
         }
-      />
-      <Modal
-        modalVisible={modalVisible}
-        hideModal={() => {
-          setModalVisible(false);
-          setModalState({ type: '', values: {} });
-        }}
-        modalSubmitHandler={modalSubmitHandler}
-        modalState={modalState}
       />
     </PageContainer>
   );
