@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { Drawer as AntdDrawer, Button, Space, Card } from 'antd';
 import { useIntl } from 'umi';
 import { createForm, onFieldChange, isField } from '@formily/core';
@@ -55,6 +55,8 @@ const SettingDrawer = ({
       }),
     [],
   );
+
+  console.log('setting drawer render');
 
   useEffect(() => {
     if (settingDrawerData.values && Object.keys(settingDrawerData.values).length > 0) {
@@ -190,4 +192,4 @@ const SettingDrawer = ({
   );
 };
 
-export default SettingDrawer;
+export default React.memo(SettingDrawer);

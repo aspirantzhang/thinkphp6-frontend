@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useIntl } from 'umi';
 import { createForm } from '@formily/core';
 import { createSchemaField } from '@formily/react';
@@ -30,6 +30,7 @@ const Modal = ({
   modalData: { type: string; values: Record<string, unknown> };
 }) => {
   const lang = useIntl();
+  console.log('modal render');
 
   useEffect(() => {
     form.reset('*', {
@@ -163,4 +164,4 @@ const Modal = ({
   );
 };
 
-export default Modal;
+export default React.memo(Modal);

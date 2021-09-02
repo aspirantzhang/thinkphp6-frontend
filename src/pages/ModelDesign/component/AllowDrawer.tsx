@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { Drawer as AntdDrawer, Button, message, Alert } from 'antd';
 import { useLocation, useRequest, history, useModel, useIntl } from 'umi';
 import { createForm, onFieldChange, onFieldReact, isField } from '@formily/core';
@@ -28,6 +28,8 @@ const AllowDrawer = ({
   const lang = useIntl();
   const [submitLoading, setSubmitLoading] = useState(false);
   const { initialState, setInitialState } = useModel('@@initialState');
+
+  console.log('allow drawer render');
 
   const form = useMemo(
     () =>
@@ -267,4 +269,4 @@ const AllowDrawer = ({
   );
 };
 
-export default AllowDrawer;
+export default React.memo(AllowDrawer);

@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import { createForm, onFieldChange, onFieldReact, isField } from '@formily/core';
 import { createSchemaField } from '@formily/react';
@@ -27,12 +27,13 @@ const SchemaField = createSchemaField({
 });
 
 const Field = () => {
-  const [currentFieldPath, setCurrentFieldPath] = useState('');
+  const [modalFieldPath, setModalFieldPath] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
   const [modalData, setModalData] = useSetState({
     type: '',
     values: {},
   });
+  const [settingDrawerFieldPath, setSettingDrawerFieldPath] = useState('');
   const [settingDrawerVisible, setSettingDrawerVisible] = useState(false);
   const [settingDrawerData, setSettingDrawerData] = useSetState({
     type: '',
@@ -63,7 +64,7 @@ const Field = () => {
           });
           onFieldChange('fields.*.data', ['active'], (field) => {
             if (isField(field) && field.active === true) {
-              setCurrentFieldPath(field.path.toString());
+              setModalFieldPath(field.path.toString());
               setModalData({
                 values: field.value,
                 type: field.query('.type').get('value'),
@@ -74,7 +75,7 @@ const Field = () => {
           });
           onFieldChange('fields.*.settings', ['active'], (field) => {
             if (isField(field) && field.active === true) {
-              setCurrentFieldPath(field.path.toString());
+              setSettingDrawerFieldPath(field.path.toString());
               setSettingDrawerData({
                 values: field.value,
                 type: field.query('.type').get('value'),
@@ -126,21 +127,27 @@ const Field = () => {
     }
   }, [location.pathname]);
 
-  const modalSubmitHandler = (values: any) => {
-    setModalVisible(false);
-    setModalData({ type: '', values: {} });
-    form.setFieldState(currentFieldPath, (state) => {
-      state.value = values.data;
-    });
-  };
+  const modalSubmitHandler = useCallback(
+    (values: any) => {
+      setModalVisible(false);
+      setModalData({ type: '', values: {} });
+      form.setFieldState(modalFieldPath, (state) => {
+        state.value = values.data;
+      });
+    },
+    [modalFieldPath],
+  );
 
-  const drawerSubmitHandler = (values: any) => {
-    setSettingDrawerVisible(false);
-    setSettingDrawerData({ type: '', values: {} });
-    form.setFieldState(currentFieldPath, (state) => {
-      state.value = values;
-    });
-  };
+  const drawerSubmitHandler = useCallback(
+    (values: any) => {
+      setSettingDrawerVisible(false);
+      setSettingDrawerData({ type: '', values: {} });
+      form.setFieldState(settingDrawerFieldPath, (state) => {
+        state.value = values;
+      });
+    },
+    [settingDrawerFieldPath],
+  );
 
   return (
     <PageContainer
@@ -315,27 +322,27 @@ const Field = () => {
       />
       <Modal
         modalVisible={modalVisible}
-        hideModal={() => {
+        hideModal={useCallback(() => {
           setModalVisible(false);
           setModalData({ type: '', values: {} });
-        }}
+        }, [])}
         modalData={modalData}
         modalSubmitHandler={modalSubmitHandler}
       />
       <SettingDrawer
-        hideDrawer={() => {
+        hideDrawer={useCallback(() => {
           setSettingDrawerVisible(false);
           setSettingDrawerData({ type: '', values: {} });
-        }}
+        }, [])}
         settingDrawerVisible={settingDrawerVisible}
         settingDrawerData={settingDrawerData}
         drawerSubmitHandler={drawerSubmitHandler}
       />
       <AllowDrawer
-        hideAllowDrawer={() => {
+        hideAllowDrawer={useCallback(() => {
           setAllowDrawerData({ fields: {} });
           setAllowDrawerVisible(false);
-        }}
+        }, [])}
         allowDrawerVisible={allowDrawerVisible}
         allowDrawerData={allowDrawerData}
       />
