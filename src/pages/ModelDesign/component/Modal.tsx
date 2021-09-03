@@ -30,8 +30,6 @@ const Modal = ({
   modalData: { type: string; values: Record<string, unknown> };
 }) => {
   const lang = useIntl();
-  console.log('modal render');
-
   useEffect(() => {
     form.reset('*', {
       forceClear: true,

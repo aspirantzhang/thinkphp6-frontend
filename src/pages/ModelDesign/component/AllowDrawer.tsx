@@ -29,8 +29,6 @@ const AllowDrawer = ({
   const [submitLoading, setSubmitLoading] = useState(false);
   const { initialState, setInitialState } = useModel('@@initialState');
 
-  console.log('allow drawer render');
-
   const form = useMemo(
     () =>
       createForm({

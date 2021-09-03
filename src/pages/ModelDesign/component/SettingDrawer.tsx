@@ -56,8 +56,6 @@ const SettingDrawer = ({
     [],
   );
 
-  console.log('setting drawer render');
-
   useEffect(() => {
     if (settingDrawerData.values && Object.keys(settingDrawerData.values).length > 0) {
       form.setFormState((state) => {
