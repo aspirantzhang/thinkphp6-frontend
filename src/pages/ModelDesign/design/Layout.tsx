@@ -56,7 +56,11 @@ const Field = () => {
         form.setState((state) => {
           const { tableName, ...rest } = res.data.layout;
           if (Object.keys(rest).length === 0) {
-            message.info('Initialized with sample values.');
+            message.info(
+              lang.formatMessage({
+                id: 'model-design.initSampleValue',
+              }),
+            );
             state.initialValues = initialLayout;
           }
           state.initialValues = res.data.layout;

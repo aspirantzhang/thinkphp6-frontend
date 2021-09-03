@@ -145,7 +145,9 @@ const AllowDrawer = ({
 
   return (
     <AntdDrawer
-      title="Allow Fields Settings"
+      title={lang.formatMessage({
+        id: 'model-design.allowFieldSettings',
+      })}
       placement="bottom"
       height={600}
       closable={true}
@@ -156,7 +158,9 @@ const AllowDrawer = ({
         <SchemaField>
           <SchemaField.Boolean
             name="checkAll"
-            title="Check All"
+            title={lang.formatMessage({
+              id: 'model-design.allowField.checkAll',
+            })}
             x-decorator="FormItem"
             x-component="Checkbox"
           />
@@ -233,12 +237,13 @@ const AllowDrawer = ({
         </SchemaField>
       </Form>
       <div style={{ textAlign: 'center' }}>
-        {/* TODO: add i18n for message */}
         <Alert
-          message="Attention: When switching a field's 'Translate', the existing data in that field will be lost."
+          message={lang.formatMessage({
+            id: 'model-design.allowField.translateAttention',
+          })}
           type="warning"
           showIcon
-          style={{ width: '600px', margin: '0 auto', marginBottom: '10px' }}
+          style={{ width: '650px', margin: '0 auto', marginBottom: '10px' }}
         />
         <Button
           onClick={() => {

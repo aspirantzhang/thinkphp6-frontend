@@ -86,7 +86,9 @@ const SettingDrawer = ({
 
   return (
     <AntdDrawer
-      title="Field Settings"
+      title={lang.formatMessage({
+        id: 'model-design.settings',
+      })}
       placement="right"
       width={500}
       onClose={() => {
@@ -123,7 +125,11 @@ const SettingDrawer = ({
       }
     >
       <Form form={form}>
-        <h2>Display Settings</h2>
+        <h2>
+          {lang.formatMessage({
+            id: 'model-design.settings.displaySettings',
+          })}
+        </h2>
         <SchemaField>
           <SchemaField.String
             name="display"
@@ -132,7 +138,11 @@ const SettingDrawer = ({
             x-component="Checkbox.Group"
           />
         </SchemaField>
-        <h2 style={{ marginTop: '20px' }}>Validate Settings</h2>
+        <h2 style={{ marginTop: '20px' }}>
+          {lang.formatMessage({
+            id: 'model-design.settings.validateSettings',
+          })}
+        </h2>
         <div className={styles.validateSettings}>
           <SchemaField>
             <Space direction="vertical" style={{ width: '100%' }} size="middle">
@@ -145,7 +155,11 @@ const SettingDrawer = ({
             </Space>
           </SchemaField>
         </div>
-        <h2 style={{ marginTop: '20px' }}>Validate Options</h2>
+        <h2 style={{ marginTop: '20px' }}>
+          {lang.formatMessage({
+            id: 'model-design.settings.validateSettings',
+          })}
+        </h2>
         <SchemaField>
           <SchemaField.Object name="options">
             <SchemaField.Void

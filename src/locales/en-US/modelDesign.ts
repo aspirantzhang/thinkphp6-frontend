@@ -19,4 +19,12 @@ export default {
   'model-design.tableToolbar': 'Table Toolbar',
   'model-design.batchToolbar': 'Batch Toolbar',
   'model-design.batchToolbarTrashed': 'Batch Toolbar of Trashed',
+  'model-design.settings.displaySettings': 'Display Settings',
+  'model-design.settings.validateSettings': 'Validate Settings',
+  'model-design.settings.validateOptions': 'Validate Options',
+  'model-design.allowFieldSettings': 'Allow Field Settings',
+  'model-design.allowField.checkAll': 'Check All',
+  'model-design.initSampleValue': 'Initialized with sample values',
+  'model-design.allowField.translateAttention':
+    'Attention: When switching the translate status of a field, the existing data in that field will be lost.',
 };

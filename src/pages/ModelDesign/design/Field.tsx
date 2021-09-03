@@ -105,7 +105,11 @@ const Field = () => {
         setSpinLoading(false);
         form.setState((state) => {
           if (res.data?.fields === undefined || Object.keys(res.data.fields).length === 0) {
-            message.info('Initialized with sample values.');
+            message.info(
+              lang.formatMessage({
+                id: 'model-design.initSampleValue',
+              }),
+            );
             state.initialValues = initialFields;
           }
           state.initialValues = res.data;
