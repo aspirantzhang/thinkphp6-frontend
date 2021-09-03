@@ -1,13 +1,11 @@
 import { useState, useEffect, useMemo } from 'react';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
-import { createForm, onFieldChange, onFieldReact, isField } from '@formily/core';
+import { createForm, onFieldReact, isField } from '@formily/core';
 import { createSchemaField } from '@formily/react';
 import { Form, FormItem, Input, ArrayTable, Switch, Space, Select, Checkbox } from '@formily/antd';
 import { Spin, Button, Card, message } from 'antd';
-import { useSetState } from 'ahooks';
 import { DoubleRightOutlined, DoubleLeftOutlined } from '@ant-design/icons';
 import { useRequest, useLocation, history, useIntl } from 'umi';
-import Modal from '../component/Modal';
 import styles from '../index.less';
 import { initialLayout } from './initialLayout';
 import * as enums from './enums';
@@ -25,12 +23,6 @@ const SchemaField = createSchemaField({
 });
 
 const Field = () => {
-  const [modalVisible, setModalVisible] = useState(false);
-  const [currentFieldPath, setCurrentFieldPath] = useState('');
-  const [modalState, setModalState] = useSetState({
-    type: '',
-    values: {},
-  });
   const [spinLoading, setSpinLoading] = useState(true);
   const [submitLoading, setSubmitLoading] = useState(false);
   const location = useLocation();
@@ -48,34 +40,10 @@ const Field = () => {
               );
             }
           });
-          onFieldReact('fields.*.data', (field) => {
-            if (isField(field)) {
-              const typeValue = field.query('.type').get('value');
-              const attrValue = typeValue === 'switch' || typeValue === 'radio';
-              field.editable = attrValue;
-              field.required = attrValue;
-            }
-          });
-          onFieldChange('fields.*.data', ['active'], (field) => {
-            if (isField(field) && field.active === true) {
-              setCurrentFieldPath(field.path.toString());
-              setModalState({
-                values: field.value,
-                type: field.query('.type').get('value'),
-              });
-              field.active = false;
-            }
-          });
         },
       }),
     [],
   );
-
-  useEffect(() => {
-    if (modalState.type) {
-      setModalVisible(true);
-    }
-  }, [modalState.type]);
 
   const init = useRequest(
     {
@@ -88,7 +56,11 @@ const Field = () => {
         form.setState((state) => {
           const { tableName, ...rest } = res.data.layout;
           if (Object.keys(rest).length === 0) {
-            message.info('Initialized with sample values.');
+            message.info(
+              lang.formatMessage({
+                id: 'model-design.initSampleValue',
+              }),
+            );
             state.initialValues = initialLayout;
           }
           state.initialValues = res.data.layout;
@@ -151,14 +123,6 @@ const Field = () => {
     }
   }, [location.pathname]);
 
-  const modalSubmitHandler = (values: any) => {
-    setModalVisible(false);
-    form.setFieldState(currentFieldPath, (state) => {
-      state.value = values.data;
-    });
-    setModalState({ type: '', values: {} });
-  };
-
   const pageSubmitHandler = (values: any) => {
     setSubmitLoading(true);
     message.loading({
@@ -182,18 +146,23 @@ const Field = () => {
         <Spin className={styles.formSpin} tip="Loading..." />
       ) : (
         <Form form={form}>
+          <Card title="Basic" size="small" hidden>
+            <SchemaField>
+              <SchemaField.String
+                name="tableName"
+                title="Table Name"
+                x-component="Input"
+                x-decorator="FormItem"
+              />
+            </SchemaField>
+          </Card>
           <Space direction="vertical" style={{ width: '100%' }}>
-            <Card title="Basic" size="small">
-              <SchemaField>
-                <SchemaField.String
-                  name="tableName"
-                  title="Table Name"
-                  x-component="Input"
-                  x-decorator="FormItem"
-                />
-              </SchemaField>
-            </Card>
-            <Card title="List Action" size="small">
+            <Card
+              title={lang.formatMessage({
+                id: 'model-design.listAction',
+              })}
+              size="small"
+            >
               <SchemaField>
                 <SchemaField.Array
                   x-component="ArrayTable"
@@ -285,7 +254,12 @@ const Field = () => {
               </SchemaField>
             </Card>
 
-            <Card title="Add Action" size="small">
+            <Card
+              title={lang.formatMessage({
+                id: 'model-design.addAction',
+              })}
+              size="small"
+            >
               <SchemaField>
                 <SchemaField.Array x-component="ArrayTable" name="addAction" x-decorator="FormItem">
                   <SchemaField.Object>
@@ -373,7 +347,12 @@ const Field = () => {
               </SchemaField>
             </Card>
 
-            <Card title="Edit Action" size="small">
+            <Card
+              title={lang.formatMessage({
+                id: 'model-design.editAction',
+              })}
+              size="small"
+            >
               <SchemaField>
                 <SchemaField.Array
                   x-component="ArrayTable"
@@ -465,7 +444,12 @@ const Field = () => {
               </SchemaField>
             </Card>
 
-            <Card title="Table Toolbar" size="small">
+            <Card
+              title={lang.formatMessage({
+                id: 'model-design.tableToolbar',
+              })}
+              size="small"
+            >
               <SchemaField>
                 <SchemaField.Array
                   x-component="ArrayTable"
@@ -557,7 +541,12 @@ const Field = () => {
               </SchemaField>
             </Card>
 
-            <Card title="Batch Toolbar" size="small">
+            <Card
+              title={lang.formatMessage({
+                id: 'model-design.batchToolbar',
+              })}
+              size="small"
+            >
               <SchemaField>
                 <SchemaField.Array
                   x-component="ArrayTable"
@@ -649,7 +638,12 @@ const Field = () => {
               </SchemaField>
             </Card>
 
-            <Card title="Batch Toolbar - Trashed" size="small">
+            <Card
+              title={lang.formatMessage({
+                id: 'model-design.batchToolbarTrashed',
+              })}
+              size="small"
+            >
               <SchemaField>
                 <SchemaField.Array
                   x-component="ArrayTable"
@@ -754,7 +748,10 @@ const Field = () => {
                   history.goBack();
                 }}
               >
-                <DoubleLeftOutlined /> Back to List
+                <DoubleLeftOutlined />{' '}
+                {lang.formatMessage({
+                  id: 'model-design.back',
+                })}
               </Button>
               <Button
                 type="primary"
@@ -764,20 +761,14 @@ const Field = () => {
                 loading={submitLoading}
                 shape="round"
               >
-                Submit <DoubleRightOutlined />
+                {lang.formatMessage({
+                  id: 'model-design.submit',
+                })}
+                <DoubleRightOutlined />
               </Button>
             </Space>
           </div>
         }
-      />
-      <Modal
-        modalVisible={modalVisible}
-        hideModal={() => {
-          setModalVisible(false);
-          setModalState({ type: '', values: {} });
-        }}
-        modalSubmitHandler={modalSubmitHandler}
-        modalState={modalState}
       />
     </PageContainer>
   );

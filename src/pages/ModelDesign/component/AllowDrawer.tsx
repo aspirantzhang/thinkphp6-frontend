@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { Drawer as AntdDrawer, Button, message, Alert } from 'antd';
 import { useLocation, useRequest, history, useModel, useIntl } from 'umi';
 import { createForm, onFieldChange, onFieldReact, isField } from '@formily/core';
@@ -17,12 +17,12 @@ const SchemaField = createSchemaField({
 
 const AllowDrawer = ({
   allowDrawerVisible,
+  allowDrawerData,
   hideAllowDrawer,
-  drawerFieldData,
 }: {
   allowDrawerVisible: boolean;
+  allowDrawerData: { fields?: Record<string, unknown> };
   hideAllowDrawer: () => void;
-  drawerFieldData: { fields?: Record<string, unknown> };
 }) => {
   const location = useLocation();
   const lang = useIntl();
@@ -64,16 +64,16 @@ const AllowDrawer = ({
           });
         },
       }),
-    [],
+    [allowDrawerVisible],
   );
 
   useEffect(() => {
-    if (drawerFieldData.fields && Object.keys(drawerFieldData.fields).length > 0) {
+    if (allowDrawerData.fields && Object.keys(allowDrawerData.fields).length > 0) {
       form.setState((state) => {
-        state.values = drawerFieldData;
+        state.values = allowDrawerData;
       });
     }
-  }, [drawerFieldData]);
+  }, [allowDrawerData, form]);
 
   const reFetchMenu = async () => {
     setInitialState({
@@ -145,7 +145,9 @@ const AllowDrawer = ({
 
   return (
     <AntdDrawer
-      title="Allow Fields Settings"
+      title={lang.formatMessage({
+        id: 'model-design.allowFieldSettings',
+      })}
       placement="bottom"
       height={600}
       closable={true}
@@ -156,7 +158,9 @@ const AllowDrawer = ({
         <SchemaField>
           <SchemaField.Boolean
             name="checkAll"
-            title="Check All"
+            title={lang.formatMessage({
+              id: 'model-design.allowField.checkAll',
+            })}
             x-decorator="FormItem"
             x-component="Checkbox"
           />
@@ -233,12 +237,13 @@ const AllowDrawer = ({
         </SchemaField>
       </Form>
       <div style={{ textAlign: 'center' }}>
-        {/* TODO: add i18n for message */}
         <Alert
-          message="Attention: When switching a field's 'Translate', the existing data in that field will be lost."
+          message={lang.formatMessage({
+            id: 'model-design.allowField.translateAttention',
+          })}
           type="warning"
           showIcon
-          style={{ width: '600px', margin: '0 auto', marginBottom: '10px' }}
+          style={{ width: '650px', margin: '0 auto', marginBottom: '10px' }}
         />
         <Button
           onClick={() => {
@@ -247,7 +252,9 @@ const AllowDrawer = ({
           style={{ marginRight: 8 }}
           loading={submitLoading}
         >
-          Cancel
+          {lang.formatMessage({
+            id: 'model-design.cancel',
+          })}
         </Button>
         <Button
           type="primary"
@@ -256,11 +263,13 @@ const AllowDrawer = ({
           }}
           loading={submitLoading}
         >
-          Submit
+          {lang.formatMessage({
+            id: 'model-design.submit',
+          })}
         </Button>
       </div>
     </AntdDrawer>
   );
 };
 
-export default AllowDrawer;
+export default React.memo(AllowDrawer);

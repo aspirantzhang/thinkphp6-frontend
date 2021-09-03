@@ -1,5 +1,6 @@
-import { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { Drawer as AntdDrawer, Button, Space, Card } from 'antd';
+import { useIntl } from 'umi';
 import { createForm, onFieldChange, isField } from '@formily/core';
 import { createSchemaField } from '@formily/react';
 import {
@@ -28,16 +29,17 @@ const SchemaField = createSchemaField({
 });
 
 const SettingDrawer = ({
-  drawerVisible,
+  settingDrawerVisible,
+  settingDrawerData,
   hideDrawer,
-  drawerState,
   drawerSubmitHandler,
 }: {
-  drawerVisible: boolean;
+  settingDrawerVisible: boolean;
+  settingDrawerData: { type: string; values: Record<string, unknown> };
   hideDrawer: () => void;
-  drawerState: { type: string; values: Record<string, unknown> };
   drawerSubmitHandler: (values: any) => void;
 }) => {
+  const lang = useIntl();
   const form = useMemo(
     () =>
       createForm({
@@ -55,16 +57,16 @@ const SettingDrawer = ({
   );
 
   useEffect(() => {
-    if (drawerState.values && Object.keys(drawerState.values).length > 0) {
+    if (settingDrawerData.values && Object.keys(settingDrawerData.values).length > 0) {
       form.setFormState((state) => {
-        state.values = drawerState.values;
+        state.values = settingDrawerData.values;
       });
     } else {
       form.setFormState((state) => {
         state.values = {};
       });
     }
-  }, [drawerState]);
+  }, [settingDrawerData]);
 
   const displayOptions = [
     { label: 'List Sorter', value: 'listSorter' },
@@ -84,13 +86,15 @@ const SettingDrawer = ({
 
   return (
     <AntdDrawer
-      title="Field Settings"
+      title={lang.formatMessage({
+        id: 'model-design.settings',
+      })}
       placement="right"
       width={500}
       onClose={() => {
         hideDrawer();
       }}
-      visible={drawerVisible}
+      visible={settingDrawerVisible}
       footer={
         <div
           style={{
@@ -103,7 +107,9 @@ const SettingDrawer = ({
             }}
             style={{ marginRight: 8 }}
           >
-            Cancel
+            {lang.formatMessage({
+              id: 'model-design.cancel',
+            })}
           </Button>
           <Button
             type="primary"
@@ -111,13 +117,19 @@ const SettingDrawer = ({
               form.submit(drawerSubmitHandler);
             }}
           >
-            Submit
+            {lang.formatMessage({
+              id: 'model-design.submit',
+            })}
           </Button>
         </div>
       }
     >
       <Form form={form}>
-        <h2>Display Settings</h2>
+        <h2>
+          {lang.formatMessage({
+            id: 'model-design.settings.displaySettings',
+          })}
+        </h2>
         <SchemaField>
           <SchemaField.String
             name="display"
@@ -126,7 +138,11 @@ const SettingDrawer = ({
             x-component="Checkbox.Group"
           />
         </SchemaField>
-        <h2 style={{ marginTop: '20px' }}>Validate Settings</h2>
+        <h2 style={{ marginTop: '20px' }}>
+          {lang.formatMessage({
+            id: 'model-design.settings.validateSettings',
+          })}
+        </h2>
         <div className={styles.validateSettings}>
           <SchemaField>
             <Space direction="vertical" style={{ width: '100%' }} size="middle">
@@ -139,7 +155,11 @@ const SettingDrawer = ({
             </Space>
           </SchemaField>
         </div>
-        <h2 style={{ marginTop: '20px' }}>Validate Options</h2>
+        <h2 style={{ marginTop: '20px' }}>
+          {lang.formatMessage({
+            id: 'model-design.settings.validateSettings',
+          })}
+        </h2>
         <SchemaField>
           <SchemaField.Object name="options">
             <SchemaField.Void
@@ -184,4 +204,4 @@ const SettingDrawer = ({
   );
 };
 
-export default SettingDrawer;
+export default React.memo(SettingDrawer);

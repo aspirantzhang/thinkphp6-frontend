@@ -9,7 +9,7 @@ export const initialLayout = {
       method: 'get',
     },
     {
-      name: 'page-edit',
+      name: 'page_edit',
       title: 'Page Edit',
       type: 'default',
       call: 'page',
@@ -76,7 +76,7 @@ export const initialLayout = {
       method: 'get',
     },
     {
-      name: 'page-add',
+      name: 'page_add',
       title: 'Page Add',
       type: 'default',
       call: 'page',

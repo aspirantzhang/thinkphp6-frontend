@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import { createForm, onFieldChange, onFieldReact, isField } from '@formily/core';
 import { createSchemaField } from '@formily/react';
@@ -6,7 +6,7 @@ import { Form, FormItem, Input, ArrayTable, Switch, Select, Checkbox } from '@fo
 import { Spin, Button, Card, Space, message } from 'antd';
 import { DoubleRightOutlined, DoubleLeftOutlined } from '@ant-design/icons';
 import { useSetState } from 'ahooks';
-import { useRequest, useLocation, history } from 'umi';
+import { useRequest, useLocation, history, useIntl } from 'umi';
 import Modal from '../component/Modal';
 import SettingDrawer from '../component/SettingDrawer';
 import AllowDrawer from '../component/AllowDrawer';
@@ -27,21 +27,23 @@ const SchemaField = createSchemaField({
 });
 
 const Field = () => {
-  const [currentFieldPath, setCurrentFieldPath] = useState('');
+  const [modalFieldPath, setModalFieldPath] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
-  const [modalState, setModalState] = useSetState({
+  const [modalData, setModalData] = useSetState({
     type: '',
     values: {},
   });
-  const [drawerVisible, setDrawerVisible] = useState(false);
-  const [drawerState, setDrawerState] = useSetState({
+  const [settingDrawerFieldPath, setSettingDrawerFieldPath] = useState('');
+  const [settingDrawerVisible, setSettingDrawerVisible] = useState(false);
+  const [settingDrawerData, setSettingDrawerData] = useSetState({
     type: '',
     values: {},
   });
   const [allowDrawerVisible, setAllowDrawerVisible] = useState(false);
-  const [drawerFieldData, setDrawerFieldData] = useSetState<{ fields?: Record<string, unknown> }>();
+  const [allowDrawerData, setAllowDrawerData] = useSetState<{ fields?: Record<string, unknown> }>();
   const [spinLoading, setSpinLoading] = useState(true);
   const location = useLocation();
+  const lang = useIntl();
 
   const form = useMemo(
     () =>
@@ -62,21 +64,23 @@ const Field = () => {
           });
           onFieldChange('fields.*.data', ['active'], (field) => {
             if (isField(field) && field.active === true) {
-              setCurrentFieldPath(field.path.toString());
-              setModalState({
+              setModalFieldPath(field.path.toString());
+              setModalData({
                 values: field.value,
                 type: field.query('.type').get('value'),
               });
+              setModalVisible(true);
               field.active = false;
             }
           });
           onFieldChange('fields.*.settings', ['active'], (field) => {
             if (isField(field) && field.active === true) {
-              setCurrentFieldPath(field.path.toString());
-              setDrawerState({
+              setSettingDrawerFieldPath(field.path.toString());
+              setSettingDrawerData({
                 values: field.value,
                 type: field.query('.type').get('value'),
               });
+              setSettingDrawerVisible(true);
               field.active = false;
             }
           });
@@ -86,22 +90,10 @@ const Field = () => {
   );
 
   useEffect(() => {
-    if (modalState.type) {
-      setModalVisible(true);
-    }
-  }, [modalState.type]);
-
-  useEffect(() => {
-    if (drawerState.type) {
-      setDrawerVisible(true);
-    }
-  }, [drawerState.type]);
-
-  useEffect(() => {
-    if (drawerFieldData.fields && Object.keys(drawerFieldData.fields).length > 0) {
+    if (allowDrawerData.fields && Object.keys(allowDrawerData.fields).length > 0) {
       setAllowDrawerVisible(true);
     }
-  }, [drawerFieldData]);
+  }, [allowDrawerData]);
 
   const init = useRequest(
     {
@@ -113,7 +105,11 @@ const Field = () => {
         setSpinLoading(false);
         form.setState((state) => {
           if (res.data?.fields === undefined || Object.keys(res.data.fields).length === 0) {
-            message.info('Initialized with sample values.');
+            message.info(
+              lang.formatMessage({
+                id: 'model-design.initSampleValue',
+              }),
+            );
             state.initialValues = initialFields;
           }
           state.initialValues = res.data;
@@ -135,21 +131,27 @@ const Field = () => {
     }
   }, [location.pathname]);
 
-  const modalSubmitHandler = (values: any) => {
-    setModalVisible(false);
-    form.setFieldState(currentFieldPath, (state) => {
-      state.value = values.data;
-    });
-    setModalState({ type: '', values: {} });
-  };
+  const modalSubmitHandler = useCallback(
+    (values: any) => {
+      setModalVisible(false);
+      setModalData({ type: '', values: {} });
+      form.setFieldState(modalFieldPath, (state) => {
+        state.value = values.data;
+      });
+    },
+    [modalFieldPath],
+  );
 
-  const drawerSubmitHandler = (values: any) => {
-    setDrawerVisible(false);
-    form.setFieldState(currentFieldPath, (state) => {
-      state.value = values;
-    });
-    setDrawerState({ type: '', values: {} });
-  };
+  const drawerSubmitHandler = useCallback(
+    (values: any) => {
+      setSettingDrawerVisible(false);
+      setSettingDrawerData({ type: '', values: {} });
+      form.setFieldState(settingDrawerFieldPath, (state) => {
+        state.value = values;
+      });
+    },
+    [settingDrawerFieldPath],
+  );
 
   return (
     <PageContainer
@@ -162,34 +164,57 @@ const Field = () => {
         <Spin className={styles.formSpin} tip="Loading..." />
       ) : (
         <Form form={form}>
-          <Card title="Fields" size="small">
+          <Card
+            title={lang.formatMessage({
+              id: 'model-design.fields',
+            })}
+            size="small"
+          >
             <SchemaField>
               <SchemaField.Array x-component="ArrayTable" name="fields" x-decorator="FormItem">
                 <SchemaField.Object>
                   <SchemaField.Void
                     x-component="ArrayTable.Column"
-                    x-component-props={{ title: 'Sort', width: 60, align: 'center' }}
+                    x-component-props={{
+                      title: lang.formatMessage({
+                        id: 'model-design.sort',
+                      }),
+                      width: 60,
+                      align: 'center',
+                    }}
                   >
                     <SchemaField.Void x-component="ArrayTable.SortHandle" x-decorator="FormItem" />
                   </SchemaField.Void>
 
                   <SchemaField.Void
                     x-component="ArrayTable.Column"
-                    x-component-props={{ title: 'Name' }}
+                    x-component-props={{
+                      title: lang.formatMessage({
+                        id: 'model-design.name',
+                      }),
+                    }}
                   >
                     <SchemaField.String name="name" x-component="Input" x-decorator="FormItem" />
                   </SchemaField.Void>
 
                   <SchemaField.Void
                     x-component="ArrayTable.Column"
-                    x-component-props={{ title: 'Title' }}
+                    x-component-props={{
+                      title: lang.formatMessage({
+                        id: 'model-design.title',
+                      }),
+                    }}
                   >
                     <SchemaField.String name="title" x-component="Input" x-decorator="FormItem" />
                   </SchemaField.Void>
 
                   <SchemaField.Void
                     x-component="ArrayTable.Column"
-                    x-component-props={{ title: 'Type' }}
+                    x-component-props={{
+                      title: lang.formatMessage({
+                        id: 'model-design.type',
+                      }),
+                    }}
                   >
                     <SchemaField.String
                       name="type"
@@ -201,31 +226,53 @@ const Field = () => {
 
                   <SchemaField.Void
                     x-component="ArrayTable.Column"
-                    x-component-props={{ title: 'Data', width: 60, align: 'center' }}
+                    x-component-props={{
+                      title: lang.formatMessage({
+                        id: 'model-design.data',
+                      }),
+                      width: 60,
+                      align: 'center',
+                    }}
                   >
                     <SchemaField.String
                       name="data"
                       x-component="Button"
                       x-decorator="FormItem"
-                      x-content="Data"
+                      x-content={lang.formatMessage({
+                        id: 'model-design.data',
+                      })}
                     />
                   </SchemaField.Void>
 
                   <SchemaField.Void
                     x-component="ArrayTable.Column"
-                    x-component-props={{ title: 'Settings', width: 60, align: 'center' }}
+                    x-component-props={{
+                      title: lang.formatMessage({
+                        id: 'model-design.settings',
+                      }),
+                      width: 60,
+                      align: 'center',
+                    }}
                   >
                     <SchemaField.String
                       name="settings"
                       x-component="Button"
                       x-decorator="FormItem"
-                      x-content="Settings"
+                      x-content={lang.formatMessage({
+                        id: 'model-design.settings',
+                      })}
                     />
                   </SchemaField.Void>
 
                   <SchemaField.Void
                     x-component="ArrayTable.Column"
-                    x-component-props={{ title: 'Operations', width: 100, align: 'center' }}
+                    x-component-props={{
+                      title: lang.formatMessage({
+                        id: 'model-design.operations',
+                      }),
+                      width: 100,
+                      align: 'center',
+                    }}
                   >
                     <SchemaField.Void x-component="ArrayTable.Remove" />
                     <SchemaField.Void x-component="ArrayTable.MoveUp" />
@@ -234,7 +281,11 @@ const Field = () => {
                 </SchemaField.Object>
                 <SchemaField.Void
                   x-component="ArrayTable.Addition"
-                  x-component-props={{ title: 'Add' }}
+                  x-component-props={{
+                    title: lang.formatMessage({
+                      id: 'model-design.add',
+                    }),
+                  }}
                 />
               </SchemaField.Array>
             </SchemaField>
@@ -252,16 +303,22 @@ const Field = () => {
                   history.goBack();
                 }}
               >
-                <DoubleLeftOutlined /> Back to List
+                <DoubleLeftOutlined />{' '}
+                {lang.formatMessage({
+                  id: 'model-design.back',
+                })}
               </Button>
               <Button
                 type="primary"
                 onClick={() => {
-                  form.submit(setDrawerFieldData);
+                  form.submit(setAllowDrawerData);
                 }}
                 shape="round"
               >
-                Next Step <DoubleRightOutlined />
+                {lang.formatMessage({
+                  id: 'model-design.next',
+                })}
+                <DoubleRightOutlined />
               </Button>
             </Space>
           </div>
@@ -269,29 +326,29 @@ const Field = () => {
       />
       <Modal
         modalVisible={modalVisible}
-        hideModal={() => {
+        hideModal={useCallback(() => {
           setModalVisible(false);
-          setModalState({ type: '', values: {} });
-        }}
-        modalState={modalState}
+          setModalData({ type: '', values: {} });
+        }, [])}
+        modalData={modalData}
         modalSubmitHandler={modalSubmitHandler}
       />
       <SettingDrawer
-        hideDrawer={() => {
-          setDrawerVisible(false);
-          setDrawerState({ type: '', values: {} });
-        }}
-        drawerVisible={drawerVisible}
-        drawerState={drawerState}
+        hideDrawer={useCallback(() => {
+          setSettingDrawerVisible(false);
+          setSettingDrawerData({ type: '', values: {} });
+        }, [])}
+        settingDrawerVisible={settingDrawerVisible}
+        settingDrawerData={settingDrawerData}
         drawerSubmitHandler={drawerSubmitHandler}
       />
       <AllowDrawer
-        hideAllowDrawer={() => {
-          setDrawerFieldData({ fields: {} });
+        hideAllowDrawer={useCallback(() => {
+          setAllowDrawerData({ fields: {} });
           setAllowDrawerVisible(false);
-        }}
+        }, [])}
         allowDrawerVisible={allowDrawerVisible}
-        drawerFieldData={drawerFieldData}
+        allowDrawerData={allowDrawerData}
       />
     </PageContainer>
   );
