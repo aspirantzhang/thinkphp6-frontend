@@ -19,10 +19,12 @@ const AllowDrawer = ({
   allowDrawerVisible,
   allowDrawerData,
   hideAllowDrawer,
+  handleAllowField,
 }: {
   allowDrawerVisible: boolean;
   allowDrawerData: { fields?: Record<string, unknown> };
   hideAllowDrawer: () => void;
+  handleAllowField: boolean;
 }) => {
   const location = useLocation();
   const lang = useIntl();
@@ -154,97 +156,101 @@ const AllowDrawer = ({
       onClose={hideAllowDrawer}
       visible={allowDrawerVisible}
     >
-      <Form form={form}>
-        <SchemaField>
-          <SchemaField.Boolean
-            name="checkAll"
-            title={lang.formatMessage({
-              id: 'model-design.allowField.checkAll',
+      <div style={{ display: handleAllowField ? 'block' : 'none' }}>
+        <Form form={form}>
+          <SchemaField>
+            <SchemaField.Boolean
+              name="checkAll"
+              title={lang.formatMessage({
+                id: 'model-design.allowField.checkAll',
+              })}
+              x-decorator="FormItem"
+              x-component="Checkbox"
+            />
+            <SchemaField.Array x-component="ArrayTable" name="fields" x-decorator="FormItem">
+              <SchemaField.Object>
+                <SchemaField.Void
+                  x-component="ArrayTable.Column"
+                  x-component-props={{ title: 'Field Name', align: 'center' }}
+                >
+                  <SchemaField.String
+                    name="name"
+                    x-component="PreviewText.Input"
+                    x-decorator="FormItem"
+                  />
+                  <SchemaField.String
+                    name="type"
+                    x-component="Input"
+                    x-decorator="FormItem"
+                    x-display="hidden"
+                  />
+                </SchemaField.Void>
+                <SchemaField.Void
+                  x-component="ArrayTable.Column"
+                  x-component-props={{ title: 'Home', align: 'center' }}
+                >
+                  <SchemaField.String
+                    name="allowHome"
+                    x-component="Checkbox"
+                    x-decorator="FormItem"
+                  />
+                </SchemaField.Void>
+                <SchemaField.Void
+                  x-component="ArrayTable.Column"
+                  x-component-props={{ title: 'Read', align: 'center' }}
+                >
+                  <SchemaField.String
+                    name="allowRead"
+                    x-component="Checkbox"
+                    x-decorator="FormItem"
+                  />
+                </SchemaField.Void>
+                <SchemaField.Void
+                  x-component="ArrayTable.Column"
+                  x-component-props={{ title: 'Save', align: 'center' }}
+                >
+                  <SchemaField.String
+                    name="allowSave"
+                    x-component="Checkbox"
+                    x-decorator="FormItem"
+                  />
+                </SchemaField.Void>
+                <SchemaField.Void
+                  x-component="ArrayTable.Column"
+                  x-component-props={{ title: 'Update', align: 'center' }}
+                >
+                  <SchemaField.String
+                    name="allowUpdate"
+                    x-component="Checkbox"
+                    x-decorator="FormItem"
+                  />
+                </SchemaField.Void>
+                <SchemaField.Void
+                  x-component="ArrayTable.Column"
+                  x-component-props={{ title: 'Translate', align: 'center' }}
+                >
+                  <SchemaField.String
+                    name="allowTranslate"
+                    x-component="Checkbox"
+                    x-decorator="FormItem"
+                  />
+                </SchemaField.Void>
+              </SchemaField.Object>
+            </SchemaField.Array>
+          </SchemaField>
+        </Form>
+        <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+          <Alert
+            message={lang.formatMessage({
+              id: 'model-design.allowField.translateAttention',
             })}
-            x-decorator="FormItem"
-            x-component="Checkbox"
+            type="warning"
+            showIcon
+            style={{ width: '650px', margin: '0 auto', marginBottom: '10px' }}
           />
-          <SchemaField.Array x-component="ArrayTable" name="fields" x-decorator="FormItem">
-            <SchemaField.Object>
-              <SchemaField.Void
-                x-component="ArrayTable.Column"
-                x-component-props={{ title: 'Field Name', align: 'center' }}
-              >
-                <SchemaField.String
-                  name="name"
-                  x-component="PreviewText.Input"
-                  x-decorator="FormItem"
-                />
-                <SchemaField.String
-                  name="type"
-                  x-component="Input"
-                  x-decorator="FormItem"
-                  x-display="hidden"
-                />
-              </SchemaField.Void>
-              <SchemaField.Void
-                x-component="ArrayTable.Column"
-                x-component-props={{ title: 'Home', align: 'center' }}
-              >
-                <SchemaField.String
-                  name="allowHome"
-                  x-component="Checkbox"
-                  x-decorator="FormItem"
-                />
-              </SchemaField.Void>
-              <SchemaField.Void
-                x-component="ArrayTable.Column"
-                x-component-props={{ title: 'Read', align: 'center' }}
-              >
-                <SchemaField.String
-                  name="allowRead"
-                  x-component="Checkbox"
-                  x-decorator="FormItem"
-                />
-              </SchemaField.Void>
-              <SchemaField.Void
-                x-component="ArrayTable.Column"
-                x-component-props={{ title: 'Save', align: 'center' }}
-              >
-                <SchemaField.String
-                  name="allowSave"
-                  x-component="Checkbox"
-                  x-decorator="FormItem"
-                />
-              </SchemaField.Void>
-              <SchemaField.Void
-                x-component="ArrayTable.Column"
-                x-component-props={{ title: 'Update', align: 'center' }}
-              >
-                <SchemaField.String
-                  name="allowUpdate"
-                  x-component="Checkbox"
-                  x-decorator="FormItem"
-                />
-              </SchemaField.Void>
-              <SchemaField.Void
-                x-component="ArrayTable.Column"
-                x-component-props={{ title: 'Translate', align: 'center' }}
-              >
-                <SchemaField.String
-                  name="allowTranslate"
-                  x-component="Checkbox"
-                  x-decorator="FormItem"
-                />
-              </SchemaField.Void>
-            </SchemaField.Object>
-          </SchemaField.Array>
-        </SchemaField>
-      </Form>
+        </div>
+      </div>
       <div style={{ textAlign: 'center' }}>
-        <Alert
-          message={lang.formatMessage({
-            id: 'model-design.allowField.translateAttention',
-          })}
-          type="warning"
-          showIcon
-          style={{ width: '650px', margin: '0 auto', marginBottom: '10px' }}
-        />
         <Button
           onClick={() => {
             hideAllowDrawer();

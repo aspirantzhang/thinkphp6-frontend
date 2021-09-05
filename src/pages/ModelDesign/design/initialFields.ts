@@ -1,4 +1,6 @@
 export const initialFields = {
+  handleFieldValidation: true,
+  handleAllowField: true,
   fields: [
     {
       name: 'nickname',

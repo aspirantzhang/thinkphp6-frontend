@@ -33,11 +33,13 @@ const SettingDrawer = ({
   settingDrawerData,
   hideDrawer,
   drawerSubmitHandler,
+  handleFieldValidation,
 }: {
   settingDrawerVisible: boolean;
   settingDrawerData: { type: string; values: Record<string, unknown> };
   hideDrawer: () => void;
   drawerSubmitHandler: (values: any) => void;
+  handleFieldValidation: boolean;
 }) => {
   const lang = useIntl();
   const form = useMemo(
@@ -138,67 +140,69 @@ const SettingDrawer = ({
             x-component="Checkbox.Group"
           />
         </SchemaField>
-        <h2 style={{ marginTop: '20px' }}>
-          {lang.formatMessage({
-            id: 'model-design.settings.validateSettings',
-          })}
-        </h2>
-        <div className={styles.validateSettings}>
+        <div style={{ display: handleFieldValidation ? 'block' : 'none' }}>
+          <h2 style={{ marginTop: '20px' }}>
+            {lang.formatMessage({
+              id: 'model-design.settings.validateSettings',
+            })}
+          </h2>
+          <div className={styles.validateSettings}>
+            <SchemaField>
+              <Space direction="vertical" style={{ width: '100%' }} size="middle">
+                <SchemaField.String
+                  name="validate"
+                  enum={validateOptions}
+                  x-decorator="FormItem"
+                  x-component="Checkbox.Group"
+                />
+              </Space>
+            </SchemaField>
+          </div>
+          <h2 style={{ marginTop: '20px' }}>
+            {lang.formatMessage({
+              id: 'model-design.settings.validateSettings',
+            })}
+          </h2>
           <SchemaField>
-            <Space direction="vertical" style={{ width: '100%' }} size="middle">
-              <SchemaField.String
-                name="validate"
-                enum={validateOptions}
-                x-decorator="FormItem"
-                x-component="Checkbox.Group"
-              />
-            </Space>
+            <SchemaField.Object name="options">
+              <SchemaField.Void
+                name="lengthCard"
+                x-component="Card"
+                x-component-props={{
+                  title: 'Length',
+                  size: 'small',
+                  className: styles.settingsCard,
+                }}
+                x-visible={false}
+              >
+                <SchemaField.String
+                  name="length.min"
+                  title="Min"
+                  x-decorator="FormItem"
+                  x-component="NumberPicker"
+                  default={0}
+                  x-component-props={{
+                    style: {
+                      width: 50,
+                    },
+                  }}
+                />
+                <SchemaField.String
+                  name="length.max"
+                  title="Max"
+                  x-decorator="FormItem"
+                  x-component="NumberPicker"
+                  default={32}
+                  x-component-props={{
+                    style: {
+                      width: 50,
+                    },
+                  }}
+                />
+              </SchemaField.Void>
+            </SchemaField.Object>
           </SchemaField>
         </div>
-        <h2 style={{ marginTop: '20px' }}>
-          {lang.formatMessage({
-            id: 'model-design.settings.validateSettings',
-          })}
-        </h2>
-        <SchemaField>
-          <SchemaField.Object name="options">
-            <SchemaField.Void
-              name="lengthCard"
-              x-component="Card"
-              x-component-props={{
-                title: 'Length',
-                size: 'small',
-                className: styles.settingsCard,
-              }}
-              x-visible={false}
-            >
-              <SchemaField.String
-                name="length.min"
-                title="Min"
-                x-decorator="FormItem"
-                x-component="NumberPicker"
-                default={0}
-                x-component-props={{
-                  style: {
-                    width: 50,
-                  },
-                }}
-              />
-              <SchemaField.String
-                name="length.max"
-                title="Max"
-                x-decorator="FormItem"
-                x-component="NumberPicker"
-                default={32}
-                x-component-props={{
-                  style: {
-                    width: 50,
-                  },
-                }}
-              />
-            </SchemaField.Void>
-          </SchemaField.Object>
-        </SchemaField>
       </Form>
     </AntdDrawer>
   );
