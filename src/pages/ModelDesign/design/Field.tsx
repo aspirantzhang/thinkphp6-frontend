@@ -51,7 +51,8 @@ const Field = () => {
     values: {},
   });
   const [allowDrawerVisible, setAllowDrawerVisible] = useState(false);
-  const [allowDrawerData, setAllowDrawerData] = useSetState<{ fields?: Record<string, unknown> }>();
+  const [allowDrawerData, setAllowDrawerData] =
+    useSetState<{ options?: Record<string, unknown>; data?: Record<string, unknown>[] }>();
   const [spinLoading, setSpinLoading] = useState(true);
   const location = useLocation();
   const lang = useIntl();
@@ -60,12 +61,12 @@ const Field = () => {
     () =>
       createForm({
         effects: () => {
-          onFieldReact('handleFieldValidation', (field) => {
+          onFieldReact('options.handleFieldValidation', (field) => {
             if (isField(field)) {
               setHandleFieldValidation(field.value ?? true);
             }
           });
-          onFieldReact('handleAllowField', (field) => {
+          onFieldReact('options.handleAllowField', (field) => {
             if (isField(field)) {
               setHandleAllowField(field.value ?? true);
             }
@@ -75,7 +76,7 @@ const Field = () => {
               field.value = field.value?.replace('admins', field.query('tableName').get('value'));
             }
           });
-          onFieldReact('fields.*.data', (field) => {
+          onFieldReact('data.*.data', (field) => {
             if (isField(field)) {
               const typeValue = field.query('.type').get('value');
               const attrValue = typeValue === 'switch' || typeValue === 'radio';
@@ -83,7 +84,7 @@ const Field = () => {
               field.required = attrValue;
             }
           });
-          onFieldChange('fields.*.data', ['active'], (field) => {
+          onFieldChange('data.*.data', ['active'], (field) => {
             if (isField(field) && field.active === true) {
               setModalFieldPath(field.path.toString());
               setModalData({
@@ -94,7 +95,7 @@ const Field = () => {
               field.active = false;
             }
           });
-          onFieldChange('fields.*.settings', ['active'], (field) => {
+          onFieldChange('data.*.settings', ['active'], (field) => {
             if (isField(field) && field.active === true) {
               setSettingDrawerFieldPath(field.path.toString());
               setSettingDrawerData({
@@ -111,7 +112,7 @@ const Field = () => {
   );
 
   useEffect(() => {
-    if (allowDrawerData.fields && Object.keys(allowDrawerData.fields).length > 0) {
+    if (allowDrawerData.data && Object.keys(allowDrawerData.data).length > 0) {
       setAllowDrawerVisible(true);
     }
   }, [allowDrawerData]);
@@ -132,8 +133,9 @@ const Field = () => {
               }),
             );
             state.initialValues = initialFields;
+          } else {
+            state.values = res.data;
           }
-          state.initialValues = res.data;
         });
       },
       onError: () => {
@@ -193,7 +195,7 @@ const Field = () => {
               size="small"
             >
               <FormGrid maxColumns={4}>
-                <SchemaField>
+                <SchemaField name="options">
                   <SchemaField.Boolean
                     name="handleFieldValidation"
                     title={lang.formatMessage({
@@ -220,7 +222,7 @@ const Field = () => {
               size="small"
             >
               <SchemaField>
-                <SchemaField.Array x-component="ArrayTable" name="fields" x-decorator="FormItem">
+                <SchemaField.Array x-component="ArrayTable" name="data" x-decorator="FormItem">
                   <SchemaField.Object>
                     <SchemaField.Void
                       x-component="ArrayTable.Column"
@@ -398,7 +400,7 @@ const Field = () => {
       />
       <AllowDrawer
         hideAllowDrawer={useCallback(() => {
-          setAllowDrawerData({ fields: {} });
+          setAllowDrawerData({ data: [] });
           setAllowDrawerVisible(false);
         }, [])}
         allowDrawerVisible={allowDrawerVisible}

@@ -22,7 +22,7 @@ const AllowDrawer = ({
   handleAllowField,
 }: {
   allowDrawerVisible: boolean;
-  allowDrawerData: { fields?: Record<string, unknown> };
+  allowDrawerData: { options?: Record<string, unknown>; data?: Record<string, unknown>[] };
   hideAllowDrawer: () => void;
   handleAllowField: boolean;
 }) => {
@@ -52,7 +52,7 @@ const AllowDrawer = ({
           });
           onFieldChange('checkAll', (field) => {
             if (isField(field) && allowDrawerVisible) {
-              field.query('fields.*.*').forEach((checkbox) => {
+              field.query('data.*.*').forEach((checkbox) => {
                 if (
                   isField(checkbox) &&
                   // eslint-disable-next-line no-underscore-dangle
@@ -70,7 +70,7 @@ const AllowDrawer = ({
   );
 
   useEffect(() => {
-    if (allowDrawerData.fields && Object.keys(allowDrawerData.fields).length > 0) {
+    if (allowDrawerData.data && Object.keys(allowDrawerData.data).length > 0) {
       form.setState((state) => {
         state.values = allowDrawerData;
       });
@@ -167,7 +167,7 @@ const AllowDrawer = ({
               x-decorator="FormItem"
               x-component="Checkbox"
             />
-            <SchemaField.Array x-component="ArrayTable" name="fields" x-decorator="FormItem">
+            <SchemaField.Array x-component="ArrayTable" name="data" x-decorator="FormItem">
               <SchemaField.Object>
                 <SchemaField.Void
                   x-component="ArrayTable.Column"

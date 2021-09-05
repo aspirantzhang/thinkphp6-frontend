@@ -1,7 +1,9 @@
 export const initialFields = {
-  handleFieldValidation: true,
-  handleAllowField: true,
-  fields: [
+  options: {
+    handleFieldValidation: true,
+    handleAllowField: true,
+  },
+  data: [
     {
       name: 'nickname',
       title: 'Nick Name',
