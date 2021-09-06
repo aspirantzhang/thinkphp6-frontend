@@ -134,7 +134,7 @@ const Field = () => {
             );
             state.initialValues = initialFields;
           } else {
-            state.values = res.data;
+            state.values = res.data.fields;
           }
         });
       },
