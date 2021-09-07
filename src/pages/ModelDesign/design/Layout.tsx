@@ -62,8 +62,10 @@ const Field = () => {
               }),
             );
             state.initialValues = initialLayout;
+            state.initialValues = res.data.layout;
+          } else {
+            state.values = res.data.layout;
           }
-          state.initialValues = res.data.layout;
         });
       },
       onError: () => {
