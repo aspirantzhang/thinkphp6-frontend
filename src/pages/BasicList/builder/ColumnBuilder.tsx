@@ -20,7 +20,7 @@ const ColumnBuilder = (
         case 'switch':
           column.render = (value: any) => {
             const option = (column.data || []).find(
-              (item: any) => item.value.toString() === value.toString(),
+              (item: any) => item.value?.toString() === value?.toString(),
             );
             return <Tag color={value ? 'blue' : 'red'}>{option?.title}</Tag>;
           };
