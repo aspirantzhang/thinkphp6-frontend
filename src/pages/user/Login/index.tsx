@@ -9,7 +9,8 @@ import {
 import { Alert, Space, message, Tabs } from 'antd';
 import React, { useState } from 'react';
 import ProForm, { ProFormCaptcha, ProFormCheckbox, ProFormText } from '@ant-design/pro-form';
-import { useIntl, Link, history, FormattedMessage, SelectLang, useModel } from 'umi';
+import { useIntl, Link, history, FormattedMessage, SelectLang, useModel, setLocale } from 'umi';
+import { useCookieState } from 'ahooks';
 import Footer from '@/components/Footer';
 import { login, getFakeCaptcha } from '@/services/ant-design-pro/login';
 
@@ -40,6 +41,7 @@ const goto = () => {
 
 const Login: React.FC = () => {
   const [submitting, setSubmitting] = useState(false);
+  const [langCookie, setLangCookie] = useCookieState('octopus_lang');
   const [userLoginState, setUserLoginState] = useState<API.LoginResult>({});
   const [type, setType] = useState<string>('account');
   const { initialState, setInitialState } = useModel('@@initialState');
@@ -87,7 +89,16 @@ const Login: React.FC = () => {
   return (
     <div className={styles.container}>
       <div className={styles.lang} data-lang>
-        {SelectLang && <SelectLang />}
+        {SelectLang && (
+          <SelectLang
+            onItemClick={({ key }) => {
+              setLocale(key);
+              if (langCookie !== key.toLowerCase()) {
+                setLangCookie(key.toLowerCase());
+              }
+            }}
+          />
+        )}
       </div>
       <div className={styles.content}>
         <div className={styles.top}>
