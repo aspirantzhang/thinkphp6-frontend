@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
-import { Modal as AntdModal, Form, Input, message, Tag, Spin, Timeline } from 'antd';
+import { Modal as AntdModal, Form, Input, message, Tag, Spin, Button, List } from 'antd';
 import { useRequest, useIntl, useModel } from 'umi';
+import { StarTwoTone } from '@ant-design/icons';
 import moment from 'moment';
 import FormBuilder from '../builder/FormBuilder';
 import ActionBuilder from '../builder/ActionBuilder';
@@ -128,10 +129,23 @@ const RevisionModal = ({
     wrapperCol: { span: 16 },
   };
 
+  const loadMore = (
+    <div
+      style={{
+        textAlign: 'center',
+        marginTop: 12,
+        height: 32,
+        lineHeight: '32px',
+      }}
+    >
+      <Button>loading more</Button>
+    </div>
+  );
+
   return (
     <div>
       <AntdModal
-        // title={init?.data?.page?.title}
+        title="Revision"
         visible={modalVisible}
         onCancel={() => {
           hideModal();
@@ -140,13 +154,53 @@ const RevisionModal = ({
         forceRender
         className="basic-list-modal"
       >
-        <Timeline mode="left">
-          <Timeline.Item label="2015-09-01">Create a services</Timeline.Item>
-          <Timeline.Item label="2015-09-01">Create a services</Timeline.Item>
-          <Timeline.Item label="2015-09-01">Create a services</Timeline.Item>
-          <Timeline.Item label="2015-09-01">Create a services</Timeline.Item>
-          <Timeline.Item label="2015-09-01">Create a services</Timeline.Item>
-        </Timeline>
+        <List
+          className="demo-loadmore-list"
+          // loading={initLoading}
+          itemLayout="horizontal"
+          // loadMore={loadMore}
+          pagination={{
+            onChange: (page) => {
+              console.log(page);
+            },
+            pageSize: 5,
+            total: 50,
+          }}
+          dataSource={[
+            {
+              title: 'test1',
+              desc: '2010-10-10 10:10:10',
+            },
+            {
+              title: 'test2',
+              desc: '2010-10-10 10:10:10',
+            },
+            {
+              title: 'test3',
+              desc: '2010-10-10 10:10:10',
+            },
+            {
+              title: 'test4',
+              desc: '2010-10-10 10:10:10',
+            },
+            {
+              title: 'test5',
+              desc: '2010-10-10 10:10:10',
+            },
+          ]}
+          renderItem={(item) => (
+            <List.Item
+              actions={[
+                <a key="restore">Restore</a>,
+                <a key="view">View</a>,
+                <a key="compare">Compare</a>,
+              ]}
+            >
+              <List.Item.Meta avatar={<StarTwoTone />} title={item.title} description={item.desc} />
+            </List.Item>
+          )}
+        />
+
         {/* {init?.loading ? (
           <Spin className={styles.formSpin} tip="Loading..." />
         ) : (
