@@ -1,10 +1,12 @@
-import { useEffect } from 'react';
-import { Form, Input, message, Tag, Spin, Row, Col, Tabs, Card, Space } from 'antd';
+import { useEffect, useState } from 'react';
+import { Form, Input, message, Tag, Spin, Row, Col, Tabs, Card, Space, Tooltip } from 'antd';
 import { useRequest, useLocation, history, useIntl } from 'umi';
+import { ClockCircleTwoTone } from '@ant-design/icons';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import moment from 'moment';
 import FormBuilder from '../builder/FormBuilder';
 import ActionBuilder from '../builder/ActionBuilder';
+import RevisionModal from './RevisionModal';
 import { setFieldsAdaptor, submitFieldsAdaptor, getDefaultValue } from '../helper';
 import styles from '../index.less';
 
@@ -13,6 +15,7 @@ const Page = () => {
   const { TabPane } = Tabs;
   const location = useLocation();
   const lang = useIntl();
+  const [revisionVisible, setRevisionVisible] = useState(false);
 
   const init = useRequest<{ data: BasicListApi.PageData }>(
     `${location.pathname.replace('/basic-list', '')}`,
@@ -136,12 +139,21 @@ const Page = () => {
           </Row>
           <FooterToolbar
             extra={
-              <Tag>
-                {lang.formatMessage({
-                  id: `basic-list.page.updateTime`,
-                })}
-                :{moment(form.getFieldValue('update_time')).format('YYYY-MM-DD HH:mm:ss')}
-              </Tag>
+              <Space>
+                <Tooltip title="Revision">
+                  <ClockCircleTwoTone
+                    onClick={() => {
+                      setRevisionVisible(true);
+                    }}
+                  />
+                </Tooltip>
+                <Tag>
+                  {lang.formatMessage({
+                    id: `basic-list.page.updateTime`,
+                  })}
+                  :{moment(form.getFieldValue('update_time')).format('YYYY-MM-DD HH:mm:ss')}
+                </Tag>
+              </Space>
             }
           >
             {ActionBuilder(init?.data?.layout?.actions[0].data, actionHandler)}
@@ -152,6 +164,13 @@ const Page = () => {
           <Form.Item name="method" key="method" hidden>
             <Input />
           </Form.Item>
+          <RevisionModal
+            modalVisible={revisionVisible}
+            hideModal={() => {
+              setRevisionVisible(false);
+            }}
+            modalUri=""
+          />
         </Form>
       )}
     </PageContainer>
