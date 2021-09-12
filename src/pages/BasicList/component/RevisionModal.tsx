@@ -1,15 +1,13 @@
-import { useState, useEffect } from 'react';
-import { Modal as AntdModal, Form, Input, message, Tag, Spin, Space, Tooltip } from 'antd';
-import { ClockCircleTwoTone } from '@ant-design/icons';
+import { useEffect } from 'react';
+import { Modal as AntdModal, Form, Input, message, Tag, Spin, Timeline } from 'antd';
 import { useRequest, useIntl, useModel } from 'umi';
 import moment from 'moment';
 import FormBuilder from '../builder/FormBuilder';
 import ActionBuilder from '../builder/ActionBuilder';
-import RevisionModal from './RevisionModal';
 import { setFieldsAdaptor, submitFieldsAdaptor, getDefaultValue } from '../helper';
 import styles from '../index.less';
 
-const Modal = ({
+const RevisionModal = ({
   modalVisible,
   hideModal,
   modalUri,
@@ -19,7 +17,6 @@ const Modal = ({
   modalUri: string;
 }) => {
   const { initialState, setInitialState } = useModel('@@initialState');
-  const [revisionVisible, setRevisionVisible] = useState(false);
   const [form] = Form.useForm();
   const lang = useIntl();
 
@@ -70,18 +67,18 @@ const Modal = ({
     },
   );
 
-  useEffect(() => {
-    if (modalVisible) {
-      form.resetFields();
-      init.run();
-    }
-  }, [modalVisible]);
+  // useEffect(() => {
+  //   if (modalVisible) {
+  //     form.resetFields();
+  //     init.run();
+  //   }
+  // }, [modalVisible]);
 
-  useEffect(() => {
-    if (init.data) {
-      form.setFieldsValue(setFieldsAdaptor(init.data.layout.tabs, init.data.dataSource));
-    }
-  }, [init.data]);
+  // useEffect(() => {
+  //   if (init.data) {
+  //     form.setFieldsValue(setFieldsAdaptor(init.data.layout.tabs, init.data.dataSource));
+  //   }
+  // }, [init.data]);
 
   const reFetchMenu = async () => {
     setInitialState({
@@ -134,17 +131,23 @@ const Modal = ({
   return (
     <div>
       <AntdModal
-        title={init?.data?.page?.title}
+        // title={init?.data?.page?.title}
         visible={modalVisible}
         onCancel={() => {
           hideModal();
         }}
-        footer={ActionBuilder(init?.data?.layout?.actions[0]?.data, actionHandler, request.loading)}
-        maskClosable={false}
+        // footer={ActionBuilder(init?.data?.layout?.actions[0]?.data, actionHandler, request.loading)}
         forceRender
         className="basic-list-modal"
       >
-        {init?.loading ? (
+        <Timeline mode="left">
+          <Timeline.Item label="2015-09-01">Create a services</Timeline.Item>
+          <Timeline.Item label="2015-09-01">Create a services</Timeline.Item>
+          <Timeline.Item label="2015-09-01">Create a services</Timeline.Item>
+          <Timeline.Item label="2015-09-01">Create a services</Timeline.Item>
+          <Timeline.Item label="2015-09-01">Create a services</Timeline.Item>
+        </Timeline>
+        {/* {init?.loading ? (
           <Spin className={styles.formSpin} tip="Loading..." />
         ) : (
           <>
@@ -162,35 +165,17 @@ const Modal = ({
                 <Input />
               </Form.Item>
             </Form>
-            <div className={styles.formLeftCorner}>
-              <Space>
-                <Tooltip title="Revision">
-                  <ClockCircleTwoTone
-                    onClick={() => {
-                      setRevisionVisible(true);
-                    }}
-                  />
-                </Tooltip>
-                <Tag>
-                  {lang.formatMessage({
-                    id: `basic-list.page.updateTime`,
-                  })}
-                  : {moment(form.getFieldValue('update_time')).format('YYYY-MM-DD HH:mm:ss')}
-                </Tag>
-              </Space>
-            </div>
+            <Tag className={styles.formUpdateTime}>
+              {lang.formatMessage({
+                id: `basic-list.page.updateTime`,
+              })}
+              : {moment(form.getFieldValue('update_time')).format('YYYY-MM-DD HH:mm:ss')}
+            </Tag>
           </>
-        )}
+        )} */}
       </AntdModal>
-      <RevisionModal
-        modalVisible={revisionVisible}
-        hideModal={() => {
-          setRevisionVisible(false);
-        }}
-        modalUri=""
-      />
     </div>
   );
 };
 
-export default Modal;
+export default RevisionModal;
