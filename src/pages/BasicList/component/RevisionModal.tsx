@@ -8,23 +8,28 @@ import ActionBuilder from '../builder/ActionBuilder';
 import { setFieldsAdaptor, submitFieldsAdaptor, getDefaultValue } from '../helper';
 import styles from '../index.less';
 
+type RevisionRecord = {
+  id: number;
+  title: string;
+  create_time: string;
+};
 const RevisionModal = ({
-  modalVisible,
-  hideModal,
-  modalUri,
+  visible,
+  onHide,
+  uri,
 }: {
-  modalVisible: boolean;
-  hideModal: (reload?: boolean) => void;
-  modalUri: string;
+  visible: boolean;
+  onHide: (reload?: boolean) => void;
+  uri: string;
 }) => {
   const { initialState, setInitialState } = useModel('@@initialState');
   const [form] = Form.useForm();
   const lang = useIntl();
 
-  const init = useRequest<{ data: BasicListApi.PageData }>(`${modalUri}`, {
+  const init = useRequest<{ data: { dataSource: RevisionRecord[] } }>(`${uri}`, {
     manual: true,
     onError: () => {
-      hideModal();
+      onHide();
     },
   });
   const request = useRequest(
@@ -54,7 +59,7 @@ const RevisionModal = ({
           key: 'process',
           className: 'process-message',
         });
-        hideModal(true);
+        onHide(true);
         if (res.call && res.call.length > 0) {
           res.call.forEach((callName) => {
             actionHandler({ call: callName });
@@ -68,37 +73,18 @@ const RevisionModal = ({
     },
   );
 
-  // useEffect(() => {
-  //   if (modalVisible) {
-  //     form.resetFields();
-  //     init.run();
-  //   }
-  // }, [modalVisible]);
+  useEffect(() => {
+    if (visible) {
+      form.resetFields();
+      init.run();
+    }
+  }, [visible]);
 
   // useEffect(() => {
   //   if (init.data) {
   //     form.setFieldsValue(setFieldsAdaptor(init.data.layout.tabs, init.data.dataSource));
   //   }
   // }, [init.data]);
-
-  const reFetchMenu = async () => {
-    setInitialState({
-      ...initialState,
-      settings: {
-        menu: {
-          loading: true,
-        },
-      },
-    });
-
-    const userMenu = await initialState?.fetchMenu?.();
-    if (userMenu) {
-      setInitialState({
-        ...initialState,
-        currentMenu: userMenu,
-      });
-    }
-  };
 
   function actionHandler(action: Partial<BasicListApi.Action>) {
     switch (action.call) {
@@ -107,13 +93,10 @@ const RevisionModal = ({
         form.submit();
         break;
       case 'cancel':
-        hideModal();
+        onHide();
         break;
       case 'reset':
         form.resetFields();
-        break;
-      case 'fetchMenu':
-        reFetchMenu();
         break;
       default:
         break;
@@ -129,36 +112,21 @@ const RevisionModal = ({
     wrapperCol: { span: 16 },
   };
 
-  const loadMore = (
-    <div
-      style={{
-        textAlign: 'center',
-        marginTop: 12,
-        height: 32,
-        lineHeight: '32px',
-      }}
-    >
-      <Button>loading more</Button>
-    </div>
-  );
-
   return (
     <div>
       <AntdModal
         title="Revision"
-        visible={modalVisible}
+        visible={visible}
         onCancel={() => {
-          hideModal();
+          onHide();
         }}
-        // footer={ActionBuilder(init?.data?.layout?.actions[0]?.data, actionHandler, request.loading)}
         forceRender
         className="basic-list-modal"
       >
         <List
           className="demo-loadmore-list"
-          // loading={initLoading}
+          loading={init.loading}
           itemLayout="horizontal"
-          // loadMore={loadMore}
           pagination={{
             onChange: (page) => {
               console.log(page);
@@ -166,28 +134,7 @@ const RevisionModal = ({
             pageSize: 5,
             total: 50,
           }}
-          dataSource={[
-            {
-              title: 'test1',
-              desc: '2010-10-10 10:10:10',
-            },
-            {
-              title: 'test2',
-              desc: '2010-10-10 10:10:10',
-            },
-            {
-              title: 'test3',
-              desc: '2010-10-10 10:10:10',
-            },
-            {
-              title: 'test4',
-              desc: '2010-10-10 10:10:10',
-            },
-            {
-              title: 'test5',
-              desc: '2010-10-10 10:10:10',
-            },
-          ]}
+          dataSource={init.data?.dataSource || []}
           renderItem={(item) => (
             <List.Item
               actions={[
@@ -196,37 +143,14 @@ const RevisionModal = ({
                 <a key="compare">Compare</a>,
               ]}
             >
-              <List.Item.Meta avatar={<StarTwoTone />} title={item.title} description={item.desc} />
+              <List.Item.Meta
+                avatar={<StarTwoTone />}
+                title={item.title}
+                description={item.create_time}
+              />
             </List.Item>
           )}
         />
-
-        {/* {init?.loading ? (
-          <Spin className={styles.formSpin} tip="Loading..." />
-        ) : (
-          <>
-            <Form
-              form={form}
-              {...layout}
-              initialValues={init.data && getDefaultValue(init.data.layout.tabs)}
-              onFinish={onFinish}
-            >
-              {FormBuilder(init?.data?.layout?.tabs[0]?.data)}
-              <Form.Item name="uri" key="uri" hidden>
-                <Input />
-              </Form.Item>
-              <Form.Item name="method" key="method" hidden>
-                <Input />
-              </Form.Item>
-            </Form>
-            <Tag className={styles.formUpdateTime}>
-              {lang.formatMessage({
-                id: `basic-list.page.updateTime`,
-              })}
-              : {moment(form.getFieldValue('update_time')).format('YYYY-MM-DD HH:mm:ss')}
-            </Tag>
-          </>
-        )} */}
       </AntdModal>
     </div>
   );

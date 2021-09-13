@@ -130,7 +130,6 @@ const Modal = ({
     labelCol: { span: 8 },
     wrapperCol: { span: 16 },
   };
-
   return (
     <div>
       <AntdModal
@@ -183,11 +182,11 @@ const Modal = ({
         )}
       </AntdModal>
       <RevisionModal
-        modalVisible={revisionVisible}
-        hideModal={() => {
+        visible={revisionVisible}
+        onHide={() => {
           setRevisionVisible(false);
         }}
-        modalUri=""
+        uri={`${modalUri}/revision`}
       />
     </div>
   );
