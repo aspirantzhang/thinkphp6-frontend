@@ -1,6 +1,7 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Modal as AntdModal, Form, Input, message, Tag, Spin, Button, List } from 'antd';
 import { useRequest, useIntl, useModel } from 'umi';
+import { useUpdateEffect, useThrottleFn } from 'ahooks';
 import { StarTwoTone } from '@ant-design/icons';
 import moment from 'moment';
 import FormBuilder from '../builder/FormBuilder';
@@ -8,11 +9,15 @@ import ActionBuilder from '../builder/ActionBuilder';
 import { setFieldsAdaptor, submitFieldsAdaptor, getDefaultValue } from '../helper';
 import styles from '../index.less';
 
+type RevisionResponse = {
+  data: { dataSource: RevisionRecord[]; meta: { total: number; page: number } };
+};
 type RevisionRecord = {
   id: number;
   title: string;
   create_time: string;
 };
+
 const RevisionModal = ({
   visible,
   onHide,
@@ -22,11 +27,11 @@ const RevisionModal = ({
   onHide: (reload?: boolean) => void;
   uri: string;
 }) => {
-  const { initialState, setInitialState } = useModel('@@initialState');
+  const [pageQuery, setPageQuery] = useState('&page=1');
   const [form] = Form.useForm();
   const lang = useIntl();
 
-  const init = useRequest<{ data: { dataSource: RevisionRecord[] } }>(`${uri}`, {
+  const init = useRequest<RevisionResponse>(`${uri}?${pageQuery}`, {
     manual: true,
     onError: () => {
       onHide();
@@ -80,11 +85,9 @@ const RevisionModal = ({
     }
   }, [visible]);
 
-  // useEffect(() => {
-  //   if (init.data) {
-  //     form.setFieldsValue(setFieldsAdaptor(init.data.layout.tabs, init.data.dataSource));
-  //   }
-  // }, [init.data]);
+  useUpdateEffect(() => {
+    init.run();
+  }, [pageQuery]);
 
   function actionHandler(action: Partial<BasicListApi.Action>) {
     switch (action.call) {
@@ -103,15 +106,6 @@ const RevisionModal = ({
     }
   }
 
-  const onFinish = (values: any) => {
-    request.run(values);
-  };
-
-  const layout = {
-    labelCol: { span: 8 },
-    wrapperCol: { span: 16 },
-  };
-
   return (
     <div>
       <AntdModal
@@ -122,6 +116,9 @@ const RevisionModal = ({
         }}
         forceRender
         className="basic-list-modal"
+        afterClose={() => {
+          setPageQuery('&page=1');
+        }}
       >
         <List
           className="demo-loadmore-list"
@@ -129,10 +126,11 @@ const RevisionModal = ({
           itemLayout="horizontal"
           pagination={{
             onChange: (page) => {
-              console.log(page);
+              setPageQuery(`&page=${page}`);
             },
             pageSize: 5,
-            total: 50,
+            total: init.data?.meta.total || 0,
+            current: init.data?.meta.page || 1,
           }}
           dataSource={init.data?.dataSource || []}
           renderItem={(item) => (
