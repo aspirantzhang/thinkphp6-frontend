@@ -1,13 +1,8 @@
 import { useEffect, useState } from 'react';
-import { Modal as AntdModal, Form, Input, message, Tag, Spin, Button, List } from 'antd';
-import { useRequest, useIntl, useModel } from 'umi';
-import { useUpdateEffect, useThrottleFn } from 'ahooks';
+import { Modal as AntdModal, message, List, Popconfirm } from 'antd';
+import { useRequest, useIntl } from 'umi';
+import { useUpdateEffect } from 'ahooks';
 import { StarTwoTone } from '@ant-design/icons';
-import moment from 'moment';
-import FormBuilder from '../builder/FormBuilder';
-import ActionBuilder from '../builder/ActionBuilder';
-import { setFieldsAdaptor, submitFieldsAdaptor, getDefaultValue } from '../helper';
-import styles from '../index.less';
 
 type RevisionResponse = {
   data: { dataSource: RevisionRecord[]; meta: { total: number; page: number } };
@@ -28,7 +23,6 @@ const RevisionModal = ({
   uri: string;
 }) => {
   const [pageQuery, setPageQuery] = useState('&page=1');
-  const [form] = Form.useForm();
   const lang = useIntl();
 
   const init = useRequest<RevisionResponse>(`${uri}?${pageQuery}`, {
@@ -38,7 +32,7 @@ const RevisionModal = ({
     },
   });
   const request = useRequest(
-    (values: any) => {
+    (revisionId: number) => {
       message.loading({
         content: lang.formatMessage({
           id: 'basic-list.processing',
@@ -47,12 +41,11 @@ const RevisionModal = ({
         duration: 0,
         className: 'process-message',
       });
-      const { uri, method, ...formValues } = values;
       return {
         url: `${uri}`,
-        method,
+        method: 'post',
         data: {
-          ...submitFieldsAdaptor(formValues),
+          revisionId,
         },
       };
     },
@@ -65,11 +58,6 @@ const RevisionModal = ({
           className: 'process-message',
         });
         onHide(true);
-        if (res.call && res.call.length > 0) {
-          res.call.forEach((callName) => {
-            actionHandler({ call: callName });
-          });
-        }
       },
       formatResult: (res: any) => {
         return res;
@@ -80,7 +68,6 @@ const RevisionModal = ({
 
   useEffect(() => {
     if (visible) {
-      form.resetFields();
       init.run();
     }
   }, [visible]);
@@ -88,23 +75,6 @@ const RevisionModal = ({
   useUpdateEffect(() => {
     init.run();
   }, [pageQuery]);
-
-  function actionHandler(action: Partial<BasicListApi.Action>) {
-    switch (action.call) {
-      case 'submit':
-        form.setFieldsValue({ uri: action.uri, method: action.method });
-        form.submit();
-        break;
-      case 'cancel':
-        onHide();
-        break;
-      case 'reset':
-        form.resetFields();
-        break;
-      default:
-        break;
-    }
-  }
 
   return (
     <div>
@@ -136,9 +106,17 @@ const RevisionModal = ({
           renderItem={(item) => (
             <List.Item
               actions={[
-                <a key="restore">Restore</a>,
-                <a key="view">View</a>,
-                <a key="compare">Compare</a>,
+                <Popconfirm
+                  title="Are you sure?"
+                  onConfirm={() => {
+                    request.run(item.id);
+                  }}
+                >
+                  <a key="restore">Restore</a>
+                </Popconfirm>,
+                <Popconfirm title="Are you sure?" onConfirm={() => {}}>
+                  <a key="view">View</a>
+                </Popconfirm>,
               ]}
             >
               <List.Item.Meta

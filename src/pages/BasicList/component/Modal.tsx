@@ -185,6 +185,7 @@ const Modal = ({
         visible={revisionVisible}
         onHide={() => {
           setRevisionVisible(false);
+          hideModal(true);
         }}
         uri={`${modalUri}/revision`}
       />
