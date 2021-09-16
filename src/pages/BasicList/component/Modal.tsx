@@ -184,9 +184,11 @@ const Modal = ({
       </AntdModal>
       <RevisionModal
         visible={revisionVisible}
-        onHide={() => {
+        onHide={(reload) => {
           setRevisionVisible(false);
-          hideModal(true);
+          if (reload) {
+            hideModal(true);
+          }
         }}
         uri={`${modalUri}/revision`}
       />
