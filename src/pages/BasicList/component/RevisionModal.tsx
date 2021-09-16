@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import { Modal as AntdModal, message, List, Popconfirm } from 'antd';
+import { Modal as AntdModal, message, List, Popconfirm, Tooltip } from 'antd';
 import { useRequest, useIntl } from 'umi';
 import { useUpdateEffect } from 'ahooks';
-import { StarTwoTone } from '@ant-design/icons';
+import { InfoCircleTwoTone } from '@ant-design/icons';
 
 type RevisionResponse = {
   data: { dataSource: RevisionRecord[]; meta: { total: number; page: number } };
@@ -11,6 +11,7 @@ type RevisionRecord = {
   id: number;
   title: string;
   create_time: string;
+  update_time: string;
 };
 
 const RevisionModal = ({
@@ -120,9 +121,13 @@ const RevisionModal = ({
               ]}
             >
               <List.Item.Meta
-                avatar={<StarTwoTone />}
+                avatar={
+                  <Tooltip placement="right" title={item.update_time}>
+                    <InfoCircleTwoTone />
+                  </Tooltip>
+                }
                 title={item.title}
-                description={item.create_time}
+                description={<>{item.create_time}</>}
               />
             </List.Item>
           )}
