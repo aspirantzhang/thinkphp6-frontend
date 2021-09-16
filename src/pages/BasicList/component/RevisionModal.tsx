@@ -86,7 +86,7 @@ const RevisionModal = ({
           onHide();
         }}
         forceRender
-        className="basic-list-modal"
+        className="revision-modal"
         afterClose={() => {
           setPageQuery('&page=1');
         }}
