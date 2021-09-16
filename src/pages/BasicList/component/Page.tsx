@@ -165,11 +165,14 @@ const Page = () => {
             <Input />
           </Form.Item>
           <RevisionModal
-            modalVisible={revisionVisible}
-            hideModal={() => {
+            visible={revisionVisible}
+            onHide={(reload) => {
               setRevisionVisible(false);
+              if (reload) {
+                history.goBack();
+              }
             }}
-            modalUri=""
+            uri={`${location.pathname.replace('/basic-list', '')}/revision`}
           />
         </Form>
       )}
