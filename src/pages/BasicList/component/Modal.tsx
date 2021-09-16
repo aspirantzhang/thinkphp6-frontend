@@ -130,6 +130,7 @@ const Modal = ({
     labelCol: { span: 8 },
     wrapperCol: { span: 16 },
   };
+
   return (
     <div>
       <AntdModal
@@ -174,7 +175,7 @@ const Modal = ({
                   {lang.formatMessage({
                     id: `basic-list.page.updateTime`,
                   })}
-                  : {moment(form.getFieldValue('update_time')).format('YYYY-MM-DD HH:mm:ss')}
+                  : {moment(init.data?.dataSource?.update_time).format('YYYY-MM-DD HH:mm:ss')}
                 </Tag>
               </Space>
             </div>
