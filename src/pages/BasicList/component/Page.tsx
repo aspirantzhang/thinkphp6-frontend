@@ -151,7 +151,7 @@ const Page = () => {
                   {lang.formatMessage({
                     id: `basic-list.page.updateTime`,
                   })}
-                  :{moment(form.getFieldValue('update_time')).format('YYYY-MM-DD HH:mm:ss')}
+                  :{moment(init.data?.dataSource?.update_time).format('YYYY-MM-DD HH:mm:ss')}
                 </Tag>
               </Space>
             }
