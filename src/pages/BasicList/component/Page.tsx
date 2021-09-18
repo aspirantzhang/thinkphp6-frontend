@@ -140,7 +140,11 @@ const Page = () => {
           <FooterToolbar
             extra={
               <Space>
-                <Tooltip title="Revision">
+                <Tooltip
+                  title={lang.formatMessage({
+                    id: 'basic-list.revision',
+                  })}
+                >
                   <ClockCircleTwoTone
                     onClick={() => {
                       setRevisionVisible(true);
@@ -172,7 +176,7 @@ const Page = () => {
                 history.goBack();
               }
             }}
-            uri={`${location.pathname.replace('/basic-list', '')}/revision`}
+            uri={`${location.pathname.replace('/basic-list', '')}/revisions`}
           />
         </Form>
       )}
