@@ -80,7 +80,9 @@ const RevisionModal = ({
   return (
     <div>
       <AntdModal
-        title="Revision"
+        title={lang.formatMessage({
+          id: 'basic-list.revision',
+        })}
         visible={visible}
         onCancel={() => {
           onHide();
@@ -113,10 +115,18 @@ const RevisionModal = ({
                     request.run(item.id);
                   }}
                 >
-                  <a key="restore">Restore</a>
+                  <a key="restore">
+                    {lang.formatMessage({
+                      id: 'basic-list.revision.restore',
+                    })}
+                  </a>
                 </Popconfirm>,
                 <Popconfirm title="Are you sure?" onConfirm={() => {}}>
-                  <a key="view">View</a>
+                  <a key="view">
+                    {lang.formatMessage({
+                      id: 'basic-list.revision.view',
+                    })}
+                  </a>
                 </Popconfirm>,
               ]}
             >
