@@ -164,7 +164,11 @@ const Modal = ({
             </Form>
             <div className={styles.formLeftCorner}>
               <Space>
-                <Tooltip title="Revision">
+                <Tooltip
+                  title={lang.formatMessage({
+                    id: 'basic-list.revision',
+                  })}
+                >
                   <ClockCircleTwoTone
                     onClick={() => {
                       setRevisionVisible(true);
@@ -190,7 +194,7 @@ const Modal = ({
             hideModal(true);
           }
         }}
-        uri={`${modalUri}/revision`}
+        uri={`${modalUri}/revisions`}
       />
     </div>
   );
