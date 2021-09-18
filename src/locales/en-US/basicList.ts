@@ -18,4 +18,7 @@ export default {
   'basic-list.error.network': 'Network Error, please try again later.',
   'basic-list.model-design.allowFields.translateAttention':
     "Attention: When switching a field's 'Translate', the existing data in that field will be lost.",
+  'basic-list.revision': 'Revision',
+  'basic-list.revision.restore': 'Restore',
+  'basic-list.revision.view': 'Quick View',
 };

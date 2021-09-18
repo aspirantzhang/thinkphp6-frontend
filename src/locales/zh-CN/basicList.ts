@@ -16,4 +16,7 @@ export default {
   'basic-list.user.login.success': '登陆成功！',
   'basic-list.model-design.allowFields.translateAttention':
     "注意：切换字段的'翻译'状态时，该字段中的现有数据将丢失。",
+  'basic-list.revision': '版本修订',
+  'basic-list.revision.restore': '恢复',
+  'basic-list.revision.view': '快速查看',
 };
