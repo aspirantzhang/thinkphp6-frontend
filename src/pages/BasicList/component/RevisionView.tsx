@@ -128,6 +128,7 @@ const RevisionView = ({
         onClose={() => {
           onHide();
         }}
+        placement="right"
       >
         <Table
           dataSource={dataSource}

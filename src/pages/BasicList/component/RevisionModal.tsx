@@ -144,7 +144,7 @@ const RevisionModal = ({
                     <InfoCircleTwoTone />
                   </Tooltip>
                 }
-                title={item.title}
+                title={`[${item.id}] ${item.title}`}
                 description={<>{item.create_time}</>}
               />
             </List.Item>
