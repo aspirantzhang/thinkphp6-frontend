@@ -21,4 +21,8 @@ export default {
   'basic-list.revision': 'Revision',
   'basic-list.revision.restore': 'Restore',
   'basic-list.revision.view': 'Quick View',
+  'basic-list.revision.originalUpdateTime': 'Original Update Time',
+  'basic-list.revision.revisionCreateTime': 'Revision Create Time',
+  'basic-list.revision.mainTable': 'Main Table',
+  'basic-list.revision.i18nTable': 'I18n Table',
 };

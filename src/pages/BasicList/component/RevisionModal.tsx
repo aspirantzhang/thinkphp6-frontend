@@ -3,6 +3,7 @@ import { Modal as AntdModal, message, List, Popconfirm, Tooltip } from 'antd';
 import { useRequest, useIntl } from 'umi';
 import { useUpdateEffect } from 'ahooks';
 import { InfoCircleTwoTone } from '@ant-design/icons';
+import RevisionView from './RevisionView';
 
 type RevisionResponse = {
   data: { dataSource: RevisionRecord[]; meta: { total: number; page: number } };
@@ -24,6 +25,8 @@ const RevisionModal = ({
   uri: string;
 }) => {
   const [pageQuery, setPageQuery] = useState('&page=1');
+  const [viewVisible, setViewVisible] = useState(false);
+  const [viewUri, setViewUri] = useState('');
   const lang = useIntl();
 
   const init = useRequest<RevisionResponse>(`${uri}?${pageQuery}`, {
@@ -121,13 +124,18 @@ const RevisionModal = ({
                     })}
                   </a>
                 </Popconfirm>,
-                <Popconfirm title="Are you sure?" onConfirm={() => {}}>
-                  <a key="view">
-                    {lang.formatMessage({
-                      id: 'basic-list.revision.view',
-                    })}
-                  </a>
-                </Popconfirm>,
+                <a
+                  key="view"
+                  onClick={(event) => {
+                    event.preventDefault();
+                    setViewUri(`${uri}/${item.id}`);
+                    setViewVisible(true);
+                  }}
+                >
+                  {lang.formatMessage({
+                    id: 'basic-list.revision.view',
+                  })}
+                </a>,
               ]}
             >
               <List.Item.Meta
@@ -143,6 +151,13 @@ const RevisionModal = ({
           )}
         />
       </AntdModal>
+      <RevisionView
+        visible={viewVisible}
+        onHide={() => {
+          setViewVisible(false);
+        }}
+        uri={viewUri}
+      />
     </div>
   );
 };
