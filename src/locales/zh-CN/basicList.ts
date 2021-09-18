@@ -19,4 +19,8 @@ export default {
   'basic-list.revision': '版本修订',
   'basic-list.revision.restore': '恢复',
   'basic-list.revision.view': '快速查看',
+  'basic-list.revision.originalUpdateTime': '原始记录修改时间',
+  'basic-list.revision.revisionCreateTime': '修订记录创建时间',
+  'basic-list.revision.mainTable': '主表',
+  'basic-list.revision.i18nTable': '国际化表',
 };
