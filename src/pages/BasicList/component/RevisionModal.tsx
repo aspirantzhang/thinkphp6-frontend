@@ -118,7 +118,7 @@ const RevisionModal = ({
                     request.run(item.id);
                   }}
                 >
-                  <a key="restore">
+                  <a key="restore" className="restore-btn">
                     {lang.formatMessage({
                       id: 'basic-list.revision.restore',
                     })}
@@ -126,6 +126,7 @@ const RevisionModal = ({
                 </Popconfirm>,
                 <a
                   key="view"
+                  className="view-btn"
                   onClick={(event) => {
                     event.preventDefault();
                     setViewUri(`${uri}/${item.id}`);
