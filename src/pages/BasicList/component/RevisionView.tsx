@@ -88,6 +88,28 @@ const RevisionView = ({
     );
   };
 
+  const buildExtraTable = (extraData: Record<string, unknown>) => {
+    const extraDataSource = Object.keys(extraData).map((tableName) => {
+      return {
+        key: tableName,
+        name: tableName,
+        data: JSON.stringify(extraData[tableName]),
+      };
+    });
+    return (
+      <div style={{ padding: '5px 0px' }}>
+        <Table
+          dataSource={extraDataSource}
+          columns={columns}
+          showHeader={false}
+          pagination={false}
+          size="small"
+          bordered
+        />
+      </div>
+    );
+  };
+
   const dataSource = [
     {
       key: 'original_update_time',
@@ -116,6 +138,13 @@ const RevisionView = ({
         id: 'basic-list.revision.i18nTable',
       }),
       data: payload?.i18n_data && buildI18nTable(JSON.parse(payload?.i18n_data as string)),
+    },
+    {
+      key: 'extra_table_data',
+      name: lang.formatMessage({
+        id: 'basic-list.revision.extraTable',
+      }),
+      data: payload?.extra_data && buildExtraTable(JSON.parse(payload?.extra_data as string)),
     },
   ];
 
