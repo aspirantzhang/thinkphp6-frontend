@@ -818,4 +818,77 @@ export default {
       data: [],
     });
   },
+  'GET /api/tests/:id/revisions': async (req: Request, res: Response) => {
+    await waitTime(1000);
+    res.send({
+      success: true,
+      message: '',
+      data: {
+        dataSource: [
+          {
+            id: 1,
+            table_name: 'tests',
+            original_id: 1,
+            title: 'test revision',
+            main_data: '',
+            i18n_data: '',
+            extra_data: '',
+            create_time: '2021-06-28 15:03:26',
+            update_time: '2021-06-28 15:03:26',
+            delete_time: null,
+            status: 1,
+          },
+          {
+            id: 2,
+            table_name: 'tests 2',
+            original_id: 2,
+            title: 'test revision 2',
+            main_data: '',
+            i18n_data: '',
+            extra_data: '',
+            create_time: '2021-06-28 15:03:26',
+            update_time: '2021-06-28 15:03:26',
+            delete_time: null,
+            status: 1,
+          },
+        ],
+        meta: {
+          total: 2,
+          page: 1,
+        },
+      },
+    });
+  },
+  'GET /api/tests/:id/revisions/:id': async (req: Request, res: Response) => {
+    await waitTime(1000);
+    res.send({
+      success: true,
+      message: '',
+      data: {
+        dataSource: {
+          id: 1,
+          table_name: 'tests',
+          original_id: 1,
+          title: 'test revision',
+          main_data:
+            '{"admin_name":"test01","password":"$2y$10$kHVB\\/2q7WqkVnSX9s1bJ1uwgOUQt1LCoS9z6TePuHPVLyV8Vz\\/oAm","create_time":"2020-02-20 20:20:20","update_time":"2020-02-20 20:20:20","delete_time":null,"status":1}',
+          i18n_data:
+            '[{"original_id":2,"lang_code":"zh-cn","display_name":"\\u6d4b\\u8bd501","comment":"","translate_time":"2020-02-20 20:20:20"}]',
+          extra_data:
+            '{"auth_group_rule":[{"group_id":1,"rule_id":1},{"group_id":1,"rule_id":2},{"group_id":1,"rule_id":3},{"group_id":1,"rule_id":4},{"group_id":1,"rule_id":5},{"group_id":1,"rule_id":6},{"group_id":1,"rule_id":7},{"group_id":1,"rule_id":8},{"group_id":1,"rule_id":9},{"group_id":1,"rule_id":10},{"group_id":1,"rule_id":11},{"group_id":1,"rule_id":12},{"group_id":1,"rule_id":13},{"group_id":1,"rule_id":14},{"group_id":1,"rule_id":15},{"group_id":1,"rule_id":16},{"group_id":1,"rule_id":17},{"group_id":1,"rule_id":18},{"group_id":1,"rule_id":19},{"group_id":1,"rule_id":20},{"group_id":1,"rule_id":21},{"group_id":1,"rule_id":22},{"group_id":1,"rule_id":23},{"group_id":1,"rule_id":24},{"group_id":1,"rule_id":25},{"group_id":1,"rule_id":26},{"group_id":1,"rule_id":27},{"group_id":1,"rule_id":28},{"group_id":1,"rule_id":29},{"group_id":1,"rule_id":30},{"group_id":1,"rule_id":31},{"group_id":1,"rule_id":32},{"group_id":1,"rule_id":33},{"group_id":1,"rule_id":34},{"group_id":1,"rule_id":35},{"group_id":1,"rule_id":36},{"group_id":1,"rule_id":37},{"group_id":1,"rule_id":38},{"group_id":1,"rule_id":39},{"group_id":1,"rule_id":40},{"group_id":1,"rule_id":41},{"group_id":1,"rule_id":42},{"group_id":1,"rule_id":43},{"group_id":1,"rule_id":44},{"group_id":1,"rule_id":45},{"group_id":1,"rule_id":46},{"group_id":1,"rule_id":47},{"group_id":1,"rule_id":48},{"group_id":1,"rule_id":49},{"group_id":1,"rule_id":50},{"group_id":1,"rule_id":51},{"group_id":1,"rule_id":52},{"group_id":1,"rule_id":53},{"group_id":1,"rule_id":54},{"group_id":1,"rule_id":55},{"group_id":1,"rule_id":56},{"group_id":1,"rule_id":57},{"group_id":1,"rule_id":58},{"group_id":1,"rule_id":59},{"group_id":1,"rule_id":60},{"group_id":1,"rule_id":61},{"group_id":1,"rule_id":62},{"group_id":1,"rule_id":63},{"group_id":1,"rule_id":64},{"group_id":1,"rule_id":65},{"group_id":1,"rule_id":66},{"group_id":1,"rule_id":67}]}',
+          create_time: '2021-06-28 15:03:26',
+          update_time: '2021-06-28 15:03:26',
+          delete_time: null,
+          status: 1,
+        },
+      },
+    });
+  },
+  'POST /api/tests/:id/revisions': (req: Request, res: Response) => {
+    res.send({
+      success: true,
+      message: 'revision restore successfully',
+      data: [],
+    });
+  },
 };

@@ -110,6 +110,27 @@ test('BasicList', async () => {
   );
   await page.waitForTimeout(2000);
 
+  // revision modal
+  await page.waitForSelector('.basic-list-table .edit-btn');
+  await page.click('.basic-list-table .edit-btn');
+  await page.waitForSelector('.basic-list-modal .revision-icon');
+  await page.waitForTimeout(2000);
+  await page.click('.basic-list-modal .revision-icon');
+  await page.waitForSelector('.revision-modal .ant-modal-title');
+  expect(await page.$eval('.revision-modal .ant-modal-title', (el) => el.innerText)).toBe(
+    'Revision',
+  );
+  await page.waitForSelector('.revision-modal .view-btn');
+  await page.click('.revision-modal .view-btn');
+  await page.waitForTimeout(2000);
+  expect(
+    await page.$eval("tr[data-row-key='admin_name'] td:nth-child(2)", (el) => el.innerText),
+  ).toBe('test01');
+  await page.click("button[class='ant-drawer-close']");
+  await page.waitForTimeout(1000);
+  await page.click("button[class='ant-btn']");
+  await page.waitForTimeout(1000);
+
   // i18n
   await page.goto(`${BASE_URL}/basic-list/translate/api/tests/1`);
   await page.waitForSelector('.ant-page-header-heading-title');

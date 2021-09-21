@@ -170,6 +170,7 @@ const Modal = ({
                   })}
                 >
                   <ClockCircleTwoTone
+                    className="revision-icon"
                     onClick={() => {
                       setRevisionVisible(true);
                     }}
