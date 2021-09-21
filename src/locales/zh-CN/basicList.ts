@@ -23,4 +23,5 @@ export default {
   'basic-list.revision.revisionCreateTime': '修订记录创建时间',
   'basic-list.revision.mainTable': '主表',
   'basic-list.revision.i18nTable': '国际化表',
+  'basic-list.revision.extraTable': '附加表',
 };

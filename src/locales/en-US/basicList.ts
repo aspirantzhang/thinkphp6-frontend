@@ -25,4 +25,5 @@ export default {
   'basic-list.revision.revisionCreateTime': 'Revision Create Time',
   'basic-list.revision.mainTable': 'Main Table',
   'basic-list.revision.i18nTable': 'I18n Table',
+  'basic-list.revision.extraTable': 'Extra Table',
 };
