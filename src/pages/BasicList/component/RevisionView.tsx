@@ -1,8 +1,6 @@
-import { useEffect, useState } from 'react';
-import { Drawer, Table, List, Popconfirm, Tooltip } from 'antd';
+import { useEffect } from 'react';
+import { Drawer, Table } from 'antd';
 import { useRequest, useIntl } from 'umi';
-import { useUpdateEffect } from 'ahooks';
-import { InfoCircleTwoTone } from '@ant-design/icons';
 
 type RevisionViewResponse = {
   data: { dataSource: Record<string, unknown>; meta: { total: number; page: number } };
