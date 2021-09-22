@@ -61,8 +61,10 @@ const Field = () => {
                 id: 'model-design.initSampleValue',
               }),
             );
-            state.initialValues = initialLayout;
-            state.initialValues = res.data.layout;
+            state.initialValues = {
+              ...initialLayout,
+              ...res.data.layout,
+            };
           } else {
             state.values = res.data.layout;
           }
