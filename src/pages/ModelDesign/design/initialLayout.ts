@@ -94,10 +94,10 @@ export const initialLayout = {
       method: 'post',
     },
     {
-      name: 'disabled',
-      title: 'Disabled',
+      name: 'disable',
+      title: 'Disable',
       type: 'default',
-      call: 'disabled',
+      call: 'disable',
       uri: '/api/{%tableName%}/disable',
       method: 'post',
     },
