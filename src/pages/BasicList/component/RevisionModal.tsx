@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { Modal as AntdModal, message, List, Popconfirm, Tooltip } from 'antd';
 import { useRequest, useIntl } from 'umi';
 import { useUpdateEffect } from 'ahooks';
@@ -154,13 +154,13 @@ const RevisionModal = ({
       </AntdModal>
       <RevisionView
         visible={viewVisible}
-        onHide={() => {
+        onHide={useCallback(() => {
           setViewVisible(false);
-        }}
+        }, [])}
         uri={viewUri}
       />
     </div>
   );
 };
 
-export default RevisionModal;
+export default React.memo(RevisionModal);

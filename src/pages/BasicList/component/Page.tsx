@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Form, Input, message, Tag, Spin, Row, Col, Tabs, Card, Space, Tooltip } from 'antd';
 import { useRequest, useLocation, history, useIntl } from 'umi';
 import { ClockCircleTwoTone } from '@ant-design/icons';
@@ -99,6 +99,13 @@ const Page = () => {
     wrapperCol: { span: 20 },
   };
 
+  const onModelHide = useCallback((reload) => {
+    setRevisionVisible(false);
+    if (reload) {
+      history.goBack();
+    }
+  }, []);
+
   return (
     <PageContainer
       header={{
@@ -170,12 +177,7 @@ const Page = () => {
           </Form.Item>
           <RevisionModal
             visible={revisionVisible}
-            onHide={(reload) => {
-              setRevisionVisible(false);
-              if (reload) {
-                history.goBack();
-              }
-            }}
+            onHide={onModelHide}
             uri={`${location.pathname.replace('/basic-list', '')}/revisions`}
           />
         </Form>

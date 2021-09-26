@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import {
   Table,
   Row,
@@ -236,13 +236,15 @@ const Index = () => {
       setSortQuery(`&sort=${sorter.field}&order=${orderBy}`);
     }
   };
-  const hideModal = (reload = false) => {
+
+  const hideModal = useCallback((reload = false) => {
     setModalVisible(false);
     setModalUri('');
     if (reload) {
       init.run();
     }
-  };
+  }, []);
+
   const rowSelection = {
     selectedRowKeys,
     onChange: (_selectedRowKeys: any, _selectedRows: any) => {

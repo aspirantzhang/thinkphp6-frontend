@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Modal as AntdModal, Form, Input, message, Tag, Spin, Space, Tooltip } from 'antd';
 import { ClockCircleTwoTone } from '@ant-design/icons';
 import { useRequest, useIntl, useModel } from 'umi';
@@ -189,16 +189,16 @@ const Modal = ({
       </AntdModal>
       <RevisionModal
         visible={revisionVisible}
-        onHide={(reload) => {
+        onHide={useCallback((reload) => {
           setRevisionVisible(false);
           if (reload) {
             hideModal(true);
           }
-        }}
+        }, [])}
         uri={`${modalUri}/revisions`}
       />
     </div>
   );
 };
 
-export default Modal;
+export default React.memo(Modal);

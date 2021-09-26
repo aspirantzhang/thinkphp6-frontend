@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { Drawer, Table } from 'antd';
 import { useRequest, useIntl } from 'umi';
 
@@ -171,4 +171,4 @@ const RevisionView = ({
   );
 };
 
-export default RevisionView;
+export default React.memo(RevisionView);
