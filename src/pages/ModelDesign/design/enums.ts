@@ -5,9 +5,11 @@ export const fieldType = [
   { label: 'Number', value: 'number' },
   { label: 'Datetime', value: 'datetime' },
   { label: 'Switch', value: 'switch' },
+  { label: 'Select', value: 'select' },
   { label: 'Radio', value: 'radio' },
   { label: 'Tree', value: 'tree' },
   { label: 'Parent', value: 'parent' },
+  { label: 'Text Editor', value: 'textEditor' },
 ];
 
 export const buttonType = [
