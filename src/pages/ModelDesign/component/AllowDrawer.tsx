@@ -39,7 +39,8 @@ const AllowDrawer = ({
             if (isField(field)) {
               const typeValue = field.query('.type').get('value');
               if (typeValue) {
-                const isText = typeValue === 'input' || typeValue === 'textarea';
+                const isText =
+                  typeValue === 'input' || typeValue === 'textarea' || typeValue === 'textEditor';
                 if (isText) {
                   field.disabled = false;
                   field.visible = true;

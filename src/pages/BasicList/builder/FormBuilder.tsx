@@ -1,5 +1,6 @@
 import React from 'react';
 import { Input, Form, DatePicker, TreeSelect, Switch, InputNumber, Radio } from 'antd';
+import TinyMCE from '../form/TinyMCE';
 
 const FormBuilder = (data: BasicListApi.Field[] | undefined, prefix?: string) => {
   return (Array.isArray(data) ? data : []).map((field) => {
@@ -84,6 +85,13 @@ const FormBuilder = (data: BasicListApi.Field[] | undefined, prefix?: string) =>
               allowClear
               {...componentAttr}
             />
+          </Form.Item>
+        );
+      case 'textEditor':
+        return (
+          <Form.Item {...formItemAttr}>
+            {/* @ts-ignore */}
+            <TinyMCE />
           </Form.Item>
         );
       default:
