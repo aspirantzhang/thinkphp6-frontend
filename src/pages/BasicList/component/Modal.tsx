@@ -127,8 +127,8 @@ const Modal = ({
   };
 
   const layout = {
-    labelCol: { span: 8 },
-    wrapperCol: { span: 16 },
+    labelCol: { span: 6 },
+    wrapperCol: { span: 18 },
   };
 
   return (
