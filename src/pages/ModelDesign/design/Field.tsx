@@ -18,7 +18,7 @@ import { useSetState } from 'ahooks';
 import { useRequest, useLocation, history, useIntl } from 'umi';
 import Modal from '../component/Modal';
 import SettingDrawer from '../component/SettingDrawer';
-import AllowDrawer from '../component/AllowDrawer';
+import FilterDrawer from '../component/FilterDrawer';
 import styles from '../index.less';
 import { initialFields } from './initialFields';
 import * as enums from './enums';
@@ -50,8 +50,8 @@ const Field = () => {
     type: '',
     values: {},
   });
-  const [allowDrawerVisible, setAllowDrawerVisible] = useState(false);
-  const [allowDrawerData, setAllowDrawerData] =
+  const [allowDrawerVisible, setFilterDrawerVisible] = useState(false);
+  const [allowDrawerData, setFilterDrawerData] =
     useSetState<{ options?: Record<string, unknown>; data?: Record<string, unknown>[] }>();
   const [spinLoading, setSpinLoading] = useState(true);
   const location = useLocation();
@@ -113,7 +113,7 @@ const Field = () => {
 
   useEffect(() => {
     if (allowDrawerData.data && Object.keys(allowDrawerData.data).length > 0) {
-      setAllowDrawerVisible(true);
+      setFilterDrawerVisible(true);
     }
   }, [allowDrawerData]);
 
@@ -366,7 +366,7 @@ const Field = () => {
               <Button
                 type="primary"
                 onClick={() => {
-                  form.submit(setAllowDrawerData);
+                  form.submit(setFilterDrawerData);
                 }}
                 shape="round"
               >
@@ -398,10 +398,10 @@ const Field = () => {
         drawerSubmitHandler={drawerSubmitHandler}
         handleFieldValidation={handleFieldValidation}
       />
-      <AllowDrawer
-        hideAllowDrawer={useCallback(() => {
-          setAllowDrawerData({ data: [] });
-          setAllowDrawerVisible(false);
+      <FilterDrawer
+        hideFilterDrawer={useCallback(() => {
+          setFilterDrawerData({ data: [] });
+          setFilterDrawerVisible(false);
         }, [])}
         allowDrawerVisible={allowDrawerVisible}
         allowDrawerData={allowDrawerData}

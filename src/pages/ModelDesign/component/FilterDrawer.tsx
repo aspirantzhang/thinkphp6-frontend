@@ -15,15 +15,15 @@ const SchemaField = createSchemaField({
   },
 });
 
-const AllowDrawer = ({
+const FilterDrawer = ({
   allowDrawerVisible,
   allowDrawerData,
-  hideAllowDrawer,
+  hideFilterDrawer,
   handleAllowField,
 }: {
   allowDrawerVisible: boolean;
   allowDrawerData: { options?: Record<string, unknown>; data?: Record<string, unknown>[] };
-  hideAllowDrawer: () => void;
+  hideFilterDrawer: () => void;
   handleAllowField: boolean;
 }) => {
   const location = useLocation();
@@ -154,7 +154,7 @@ const AllowDrawer = ({
       placement="bottom"
       height={600}
       closable={true}
-      onClose={hideAllowDrawer}
+      onClose={hideFilterDrawer}
       visible={allowDrawerVisible}
     >
       <div style={{ display: handleAllowField ? 'block' : 'none' }}>
@@ -254,7 +254,7 @@ const AllowDrawer = ({
       <div style={{ textAlign: 'center' }}>
         <Button
           onClick={() => {
-            hideAllowDrawer();
+            hideFilterDrawer();
           }}
           style={{ marginRight: 8 }}
           loading={submitLoading}
@@ -279,4 +279,4 @@ const AllowDrawer = ({
   );
 };
 
-export default React.memo(AllowDrawer);
+export default React.memo(FilterDrawer);
