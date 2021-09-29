@@ -21,13 +21,13 @@ export default {
   'model-design.batchToolbar': '批量工具栏',
   'model-design.batchToolbarTrashed': '批量工具栏 - 回收站',
   'model-design.handleFieldValidation': '处理字段验证',
-  'model-design.handleAllowField': '处理允许字段',
+  'model-design.handleFieldFilter': '处理字段过滤',
   'model-design.settings.displaySettings': '显示设置',
   'model-design.settings.validateSettings': '验证设置',
   'model-design.settings.validateOptions': '验证选项',
-  'model-design.allowFieldSettings': '允许字段设置',
-  'model-design.allowField.checkAll': '全选',
+  'model-design.fieldFilterSettings': '字段过滤设置',
+  'model-design.fieldFilter.checkAll': '全选',
   'model-design.initSampleValue': '使用演示数据进行了填充',
-  'model-design.allowField.translateAttention':
-    '注意：如果改变一个字段的可翻译状态，它之前的数据将会丢失！',
+  'model-design.fieldFilter.translateAttention':
+    '注意：如果改变一个字段的可翻译状态，该字段以往数据将会丢失！',
 };

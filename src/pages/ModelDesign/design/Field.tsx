@@ -37,7 +37,7 @@ const SchemaField = createSchemaField({
 
 const Field = () => {
   const [handleFieldValidation, setHandleFieldValidation] = useState(true);
-  const [handleAllowField, setHandleAllowField] = useState(true);
+  const [handleFieldFilter, setHandleFilter] = useState(true);
   const [modalFieldPath, setModalFieldPath] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
   const [modalData, setModalData] = useSetState({
@@ -66,9 +66,9 @@ const Field = () => {
               setHandleFieldValidation(field.value ?? true);
             }
           });
-          onFieldReact('options.handleAllowField', (field) => {
+          onFieldReact('options.handleFieldFilter', (field) => {
             if (isField(field)) {
-              setHandleAllowField(field.value ?? true);
+              setHandleFilter(field.value ?? true);
             }
           });
           onFieldReact('*.*.uri', (field) => {
@@ -205,9 +205,9 @@ const Field = () => {
                     x-component="Switch"
                   />
                   <SchemaField.Boolean
-                    name="handleAllowField"
+                    name="handleFieldFilter"
                     title={lang.formatMessage({
-                      id: 'model-design.handleAllowField',
+                      id: 'model-design.handleFieldFilter',
                     })}
                     x-decorator="FormItem"
                     x-component="Switch"
@@ -405,7 +405,7 @@ const Field = () => {
         }, [])}
         allowDrawerVisible={allowDrawerVisible}
         allowDrawerData={allowDrawerData}
-        handleAllowField={handleAllowField}
+        handleFieldFilter={handleFieldFilter}
       />
     </PageContainer>
   );

@@ -4,7 +4,7 @@ export default {
   'model-design.next': 'Next',
   'model-design.cancel': 'Cancel',
   'model-design.fields': 'Fields',
-  'model-design.options': '选项',
+  'model-design.options': 'Options',
   'model-design.sort': 'Sort',
   'model-design.name': 'Name',
   'model-design.title': 'Title',
@@ -21,13 +21,13 @@ export default {
   'model-design.batchToolbar': 'Batch Toolbar',
   'model-design.batchToolbarTrashed': 'Batch Toolbar of Trashed',
   'model-design.handleFieldValidation': 'Handle field validation',
-  'model-design.handleAllowField': 'Handle allow field',
+  'model-design.handleFieldFilter': 'Handle field filter',
   'model-design.settings.displaySettings': 'Display Settings',
   'model-design.settings.validateSettings': 'Validate Settings',
   'model-design.settings.validateOptions': 'Validate Options',
-  'model-design.allowFieldSettings': 'Allow Field Settings',
-  'model-design.allowField.checkAll': 'Check All',
+  'model-design.fieldFilterSettings': 'Field Filter Settings',
+  'model-design.fieldFilter.checkAll': 'Check All',
   'model-design.initSampleValue': 'Initialized with sample values',
-  'model-design.allowField.translateAttention':
+  'model-design.fieldFilter.translateAttention':
     'Attention: When switching the translate status of a field, the existing data in that field will be lost.',
 };
