@@ -160,7 +160,7 @@ const SettingDrawer = ({
           </div>
           <h2 style={{ marginTop: '20px' }}>
             {lang.formatMessage({
-              id: 'model-design.settings.validateSettings',
+              id: 'model-design.settings.validateOptions',
             })}
           </h2>
           <SchemaField>
