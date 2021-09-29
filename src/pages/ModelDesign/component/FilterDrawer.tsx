@@ -188,6 +188,26 @@ const FilterDrawer = ({
                 </SchemaField.Void>
                 <SchemaField.Void
                   x-component="ArrayTable.Column"
+                  x-component-props={{ title: 'Unique Value', align: 'center' }}
+                >
+                  <SchemaField.String
+                    name="uniqueValue"
+                    x-component="Checkbox"
+                    x-decorator="FormItem"
+                  />
+                </SchemaField.Void>
+                <SchemaField.Void
+                  x-component="ArrayTable.Column"
+                  x-component-props={{ title: 'Ignore Filter', align: 'center' }}
+                >
+                  <SchemaField.String
+                    name="ignoreFilter"
+                    x-component="Checkbox"
+                    x-decorator="FormItem"
+                  />
+                </SchemaField.Void>
+                <SchemaField.Void
+                  x-component="ArrayTable.Column"
                   x-component-props={{ title: 'Home', align: 'center' }}
                 >
                   <SchemaField.String
