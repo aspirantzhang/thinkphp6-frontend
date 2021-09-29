@@ -19,12 +19,12 @@ const FilterDrawer = ({
   allowDrawerVisible,
   allowDrawerData,
   hideFilterDrawer,
-  handleAllowField,
+  handleFieldFilter,
 }: {
   allowDrawerVisible: boolean;
   allowDrawerData: { options?: Record<string, unknown>; data?: Record<string, unknown>[] };
   hideFilterDrawer: () => void;
-  handleAllowField: boolean;
+  handleFieldFilter: boolean;
 }) => {
   const location = useLocation();
   const lang = useIntl();
@@ -149,7 +149,7 @@ const FilterDrawer = ({
   return (
     <AntdDrawer
       title={lang.formatMessage({
-        id: 'model-design.allowFieldSettings',
+        id: 'model-design.fieldFilterSettings',
       })}
       placement="bottom"
       height={600}
@@ -157,13 +157,13 @@ const FilterDrawer = ({
       onClose={hideFilterDrawer}
       visible={allowDrawerVisible}
     >
-      <div style={{ display: handleAllowField ? 'block' : 'none' }}>
+      <div style={{ display: handleFieldFilter ? 'block' : 'none' }}>
         <Form form={form}>
           <SchemaField>
             <SchemaField.Boolean
               name="checkAll"
               title={lang.formatMessage({
-                id: 'model-design.allowField.checkAll',
+                id: 'model-design.fieldFilter.checkAll',
               })}
               x-decorator="FormItem"
               x-component="Checkbox"
@@ -243,7 +243,7 @@ const FilterDrawer = ({
         <div style={{ textAlign: 'center', marginBottom: '20px' }}>
           <Alert
             message={lang.formatMessage({
-              id: 'model-design.allowField.translateAttention',
+              id: 'model-design.fieldFilter.translateAttention',
             })}
             type="warning"
             showIcon

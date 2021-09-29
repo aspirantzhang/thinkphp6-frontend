@@ -1,7 +1,7 @@
 export const initialFields = {
   options: {
     handleFieldValidation: true,
-    handleAllowField: true,
+    handleFieldFilter: true,
   },
   data: [
     {
