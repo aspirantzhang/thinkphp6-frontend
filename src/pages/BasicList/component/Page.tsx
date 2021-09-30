@@ -1,12 +1,13 @@
 import { useEffect, useState, useCallback } from 'react';
 import { Form, Input, message, Tag, Spin, Row, Col, Tabs, Card, Space, Tooltip } from 'antd';
-import { useRequest, useLocation, history, useIntl } from 'umi';
+import { useRequest, useLocation, history, useIntl, getLocale } from 'umi';
 import { ClockCircleTwoTone } from '@ant-design/icons';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import moment from 'moment';
 import FormBuilder from '../builder/FormBuilder';
 import ActionBuilder from '../builder/ActionBuilder';
 import RevisionModal from './RevisionModal';
+import FlagIcon from '../builder/FlagIcon';
 import { setFieldsAdaptor, submitFieldsAdaptor, getDefaultValue } from '../helper';
 import styles from '../index.less';
 
@@ -16,6 +17,7 @@ const Page = () => {
   const location = useLocation();
   const lang = useIntl();
   const [revisionVisible, setRevisionVisible] = useState(false);
+  const currentLang = getLocale().toLowerCase();
 
   const init = useRequest<{ data: BasicListApi.PageData }>(
     `${location.pathname.replace('/basic-list', '')}`,
@@ -109,7 +111,12 @@ const Page = () => {
   return (
     <PageContainer
       header={{
-        title: init.data?.page?.title,
+        title: (
+          <>
+            <FlagIcon code={currentLang.substr(currentLang.indexOf('-') + 1)} />{' '}
+            {init?.data?.page?.title}
+          </>
+        ),
         breadcrumb: {},
       }}
     >
