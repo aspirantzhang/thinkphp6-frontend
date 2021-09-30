@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Modal as AntdModal, Form, Input, message, Tag, Spin, Space, Tooltip } from 'antd';
 import { ClockCircleTwoTone } from '@ant-design/icons';
-import { useRequest, useIntl, useModel } from 'umi';
+import { useRequest, useIntl, useModel, getLocale } from 'umi';
 import moment from 'moment';
 import FormBuilder from '../builder/FormBuilder';
 import ActionBuilder from '../builder/ActionBuilder';
 import RevisionModal from './RevisionModal';
+import FlagIcon from '../builder/FlagIcon';
 import { setFieldsAdaptor, submitFieldsAdaptor, getDefaultValue } from '../helper';
 import styles from '../index.less';
 
@@ -22,6 +23,7 @@ const Modal = ({
   const [revisionVisible, setRevisionVisible] = useState(false);
   const [form] = Form.useForm();
   const lang = useIntl();
+  const currentLang = getLocale().toLowerCase();
 
   const init = useRequest<{ data: BasicListApi.PageData }>(`${modalUri}`, {
     manual: true,
@@ -134,7 +136,12 @@ const Modal = ({
   return (
     <div>
       <AntdModal
-        title={init?.data?.page?.title}
+        title={
+          <>
+            <FlagIcon code={currentLang.substr(currentLang.indexOf('-') + 1)} />{' '}
+            {init?.data?.page?.title}
+          </>
+        }
         visible={modalVisible}
         onCancel={() => {
           hideModal();
