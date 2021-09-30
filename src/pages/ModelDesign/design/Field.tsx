@@ -15,10 +15,11 @@ import {
 import { Spin, Button, Card, Space, message } from 'antd';
 import { DoubleRightOutlined, DoubleLeftOutlined } from '@ant-design/icons';
 import { useSetState } from 'ahooks';
-import { useRequest, useLocation, history, useIntl } from 'umi';
+import { useRequest, useLocation, history, useIntl, getLocale } from 'umi';
 import Modal from '../component/Modal';
 import SettingDrawer from '../component/SettingDrawer';
 import FilterDrawer from '../component/FilterDrawer';
+import FlagIcon from '../../BasicList/builder/FlagIcon';
 import styles from '../index.less';
 import { initialFields } from './initialFields';
 import * as enums from './enums';
@@ -56,6 +57,7 @@ const Field = () => {
   const [spinLoading, setSpinLoading] = useState(true);
   const location = useLocation();
   const lang = useIntl();
+  const currentLang = getLocale().toLowerCase();
 
   const form = useMemo(
     () =>
@@ -254,9 +256,14 @@ const Field = () => {
                     <SchemaField.Void
                       x-component="ArrayTable.Column"
                       x-component-props={{
-                        title: lang.formatMessage({
-                          id: 'model-design.title',
-                        }),
+                        title: (
+                          <>
+                            {lang.formatMessage({
+                              id: 'model-design.title',
+                            })}{' '}
+                            <FlagIcon code={currentLang.substr(currentLang.indexOf('-') + 1)} />
+                          </>
+                        ),
                       }}
                     >
                       <SchemaField.String name="title" x-component="Input" x-decorator="FormItem" />
