@@ -4,8 +4,8 @@ declare module BasicListApi {
   type Page = {
     title: string;
     type: string;
-    searchBar?: boolean;
     trash?: boolean;
+    options?: Record<string, any>;
   };
 
   type Action = {
