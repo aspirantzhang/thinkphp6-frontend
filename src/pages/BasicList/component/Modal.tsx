@@ -171,18 +171,20 @@ const Modal = ({
             </Form>
             <div className={styles.formLeftCorner}>
               <Space>
-                <Tooltip
-                  title={lang.formatMessage({
-                    id: 'basic-list.revision',
-                  })}
-                >
-                  <ClockCircleTwoTone
-                    className="revision-icon"
-                    onClick={() => {
-                      setRevisionVisible(true);
-                    }}
-                  />
-                </Tooltip>
+                {!(init.data?.page?.options?.revision === false) && (
+                  <Tooltip
+                    title={lang.formatMessage({
+                      id: 'basic-list.revision',
+                    })}
+                  >
+                    <ClockCircleTwoTone
+                      className="revision-icon"
+                      onClick={() => {
+                        setRevisionVisible(true);
+                      }}
+                    />
+                  </Tooltip>
+                )}
                 <Tag>
                   {lang.formatMessage({
                     id: `basic-list.page.updateTime`,

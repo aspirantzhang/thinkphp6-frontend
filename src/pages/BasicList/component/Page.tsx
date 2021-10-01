@@ -154,17 +154,20 @@ const Page = () => {
           <FooterToolbar
             extra={
               <Space>
-                <Tooltip
-                  title={lang.formatMessage({
-                    id: 'basic-list.revision',
-                  })}
-                >
-                  <ClockCircleTwoTone
-                    onClick={() => {
-                      setRevisionVisible(true);
-                    }}
-                  />
-                </Tooltip>
+                {!(init.data?.page?.options?.revision === false) && (
+                  <Tooltip
+                    title={lang.formatMessage({
+                      id: 'basic-list.revision',
+                    })}
+                  >
+                    <ClockCircleTwoTone
+                      onClick={() => {
+                        setRevisionVisible(true);
+                      }}
+                    />
+                  </Tooltip>
+                )}
+
                 <Tag>
                   {lang.formatMessage({
                     id: `basic-list.page.updateTime`,
