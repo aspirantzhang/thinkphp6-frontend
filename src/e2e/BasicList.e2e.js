@@ -61,7 +61,7 @@ test('BasicList', async () => {
   await page.waitForSelector('.before-table-layout .add-btn');
   await page.click('.before-table-layout .add-btn');
   await page.waitForSelector('.basic-list-modal .ant-modal-title');
-  expect(await page.$eval('.basic-list-modal .ant-modal-title', (el) => el.innerText)).toBe(
+  expect(await page.$eval('.basic-list-modal .ant-modal-title', (el) => el.innerText)).toContain(
     'Test Add',
   );
 
