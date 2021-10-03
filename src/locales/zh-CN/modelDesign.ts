@@ -1,4 +1,5 @@
 export default {
+  'model-design.example': '案例',
   'model-design.back': '返回',
   'model-design.submit': '提交',
   'model-design.next': '继续',

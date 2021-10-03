@@ -1,4 +1,5 @@
 export default {
+  'model-design.example': 'Example',
   'model-design.back': 'Back',
   'model-design.submit': 'Submit',
   'model-design.next': 'Next',
