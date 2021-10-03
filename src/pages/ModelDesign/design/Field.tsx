@@ -12,8 +12,8 @@ import {
   Checkbox,
   FormGrid,
 } from '@formily/antd';
-import { Spin, Button, Card, Space, message } from 'antd';
-import { DoubleRightOutlined, DoubleLeftOutlined } from '@ant-design/icons';
+import { Spin, Button, Card, Space, Dropdown, Menu, message } from 'antd';
+import { DoubleRightOutlined, DoubleLeftOutlined, DownOutlined } from '@ant-design/icons';
 import { useSetState } from 'ahooks';
 import { useRequest, useLocation, history, useIntl, getLocale } from 'umi';
 import Modal from '../component/Modal';
@@ -21,7 +21,8 @@ import SettingDrawer from '../component/SettingDrawer';
 import FilterDrawer from '../component/FilterDrawer';
 import FlagIcon from '../../BasicList/builder/FlagIcon';
 import styles from '../index.less';
-import { initialFields } from './initialFields';
+import { fields as news } from './example/news/fields';
+import { fields as user } from './example/user/fields';
 import * as enums from './enums';
 
 const SchemaField = createSchemaField({
@@ -128,14 +129,7 @@ const Field = () => {
       onSuccess: (res) => {
         setSpinLoading(false);
         form.setState((state) => {
-          if (res.data?.fields === undefined || Object.keys(res.data.fields).length === 0) {
-            message.info(
-              lang.formatMessage({
-                id: 'model-design.initSampleValue',
-              }),
-            );
-            state.initialValues = initialFields;
-          } else {
+          if (res.data?.fields !== undefined && Object.keys(res.data.fields).length !== 0) {
             state.values = res.data.fields;
           }
         });
@@ -178,11 +172,61 @@ const Field = () => {
     [settingDrawerFieldPath],
   );
 
+  const handleMenuClick = (e: any) => {
+    switch (e.key as string) {
+      case 'news':
+        form.reset('*', {
+          forceClear: true,
+        });
+        form.setState((state) => {
+          state.initialValues = news;
+        });
+        message.info(
+          lang.formatMessage({
+            id: 'model-design.initSampleValue',
+          }),
+        );
+        break;
+      case 'user':
+        form.reset('*', {
+          forceClear: true,
+        });
+        form.setState((state) => {
+          state.initialValues = user;
+        });
+        message.info(
+          lang.formatMessage({
+            id: 'model-design.initSampleValue',
+          }),
+        );
+        break;
+      default:
+        break;
+    }
+  };
+
   return (
     <PageContainer
       header={{
         title: init.data?.page?.title,
         breadcrumb: {},
+        extra: [
+          <Dropdown
+            overlay={
+              <Menu onClick={handleMenuClick}>
+                <Menu.Item key="news">News</Menu.Item>
+                <Menu.Item key="user">User</Menu.Item>
+              </Menu>
+            }
+          >
+            <Button>
+              {lang.formatMessage({
+                id: 'model-design.example',
+              })}{' '}
+              <DownOutlined />
+            </Button>
+          </Dropdown>,
+        ],
       }}
     >
       {spinLoading ? (
@@ -356,36 +400,35 @@ const Field = () => {
       )}
       <FooterToolbar
         extra={
-          <div style={{ textAlign: 'center' }}>
-            <Space size={50}>
-              <Button
-                danger
-                shape="round"
-                onClick={() => {
-                  history.goBack();
-                }}
-              >
-                <DoubleLeftOutlined />{' '}
-                {lang.formatMessage({
-                  id: 'model-design.back',
-                })}
-              </Button>
-              <Button
-                type="primary"
-                onClick={() => {
-                  form.submit(setFilterDrawerData);
-                }}
-                shape="round"
-              >
-                {lang.formatMessage({
-                  id: 'model-design.next',
-                })}
-                <DoubleRightOutlined />
-              </Button>
-            </Space>
-          </div>
+          <Space>
+            <Button
+              danger
+              shape="round"
+              onClick={() => {
+                history.goBack();
+              }}
+            >
+              <DoubleLeftOutlined />{' '}
+              {lang.formatMessage({
+                id: 'model-design.back',
+              })}
+            </Button>
+          </Space>
         }
-      />
+      >
+        <Button
+          type="primary"
+          onClick={() => {
+            form.submit(setFilterDrawerData);
+          }}
+          shape="round"
+        >
+          {lang.formatMessage({
+            id: 'model-design.next',
+          })}
+          <DoubleRightOutlined />
+        </Button>
+      </FooterToolbar>
       <Modal
         modalVisible={modalVisible}
         hideModal={useCallback(() => {

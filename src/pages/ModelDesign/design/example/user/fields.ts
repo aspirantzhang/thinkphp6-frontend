@@ -1,4 +1,4 @@
-export const initialFields = {
+export const fields = {
   options: {
     handleFieldValidation: true,
     handleFieldFilter: true,
