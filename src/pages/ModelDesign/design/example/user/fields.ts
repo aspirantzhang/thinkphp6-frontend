@@ -11,6 +11,7 @@ export const fields = {
       settings: {
         validate: ['require', 'length'],
       },
+      titleField: 1,
       allowHome: 1,
       allowRead: 1,
       allowSave: 1,
