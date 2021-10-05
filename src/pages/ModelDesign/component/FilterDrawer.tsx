@@ -40,16 +40,15 @@ const FilterDrawer = ({
           onFieldReact('*.*.allowTranslate', (field) => {
             if (isField(field)) {
               const typeValue = field.query('.type').get('value');
-              if (typeValue) {
-                const isText =
-                  typeValue === 'input' || typeValue === 'textarea' || typeValue === 'textEditor';
-                if (isText) {
-                  field.disabled = false;
-                  field.visible = true;
-                } else {
-                  field.disabled = true;
-                  field.visible = false;
-                }
+              const fieldName = field.query('.name').get('value');
+              const typesCanBeTranslated = ['input', 'textarea', 'textEditor'].includes(typeValue);
+              const fieldsCanBeTranslated = !['_path'].includes(fieldName);
+              if (typesCanBeTranslated && fieldsCanBeTranslated) {
+                field.disabled = false;
+                field.visible = true;
+              } else {
+                field.disabled = true;
+                field.visible = false;
               }
             }
           });
