@@ -1,9 +1,11 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { Drawer as AntdDrawer, Button, message, Alert } from 'antd';
 import { useLocation, useRequest, history, useModel, useIntl } from 'umi';
+import type { IFieldState } from '@formily/core';
 import { createForm, onFieldChange, onFieldReact, isField } from '@formily/core';
 import { createSchemaField } from '@formily/react';
 import { PreviewText, Form, FormItem, Input, ArrayTable, Checkbox } from '@formily/antd';
+import _ from 'lodash';
 
 const SchemaField = createSchemaField({
   components: {
@@ -58,9 +60,24 @@ const FilterDrawer = ({
                   isField(checkbox) &&
                   // eslint-disable-next-line no-underscore-dangle
                   checkbox.componentType.__ANT_CHECKBOX === true &&
-                  checkbox.disabled !== true
+                  checkbox.disabled !== true &&
+                  !checkbox.path.toString().endsWith('titleField')
                 ) {
                   checkbox.value = field.value;
+                }
+              });
+            }
+          });
+          onFieldChange('data.*.titleField', (field) => {
+            if (isField(field)) {
+              const selfPath = field.path.toString();
+              field.query('data.*.titleField').forEach((otherCheckbox) => {
+                if (isField(otherCheckbox) && otherCheckbox.path.toString() !== selfPath) {
+                  if (field.value === true || field.value === 1 || field.value === '1') {
+                    otherCheckbox.disabled = true;
+                  } else if (field.value === false || field.value === 0 || field.value === '1') {
+                    otherCheckbox.disabled = false;
+                  }
                 }
               });
             }
@@ -72,8 +89,22 @@ const FilterDrawer = ({
 
   useEffect(() => {
     if (allowDrawerData.data && Object.keys(allowDrawerData.data).length > 0) {
-      form.setState((state) => {
-        state.values = allowDrawerData;
+      form.setState((formState) => {
+        formState.values = allowDrawerData;
+        // set title field editing status
+        const titleFieldIndex =
+          _.findIndex(allowDrawerData.data, ['titleField', 1]) !== -1
+            ? _.findIndex(allowDrawerData.data, ['titleField', 1])
+            : _.findIndex(allowDrawerData.data, ['titleField', '1']);
+        if (titleFieldIndex !== -1) {
+          form.setFieldState(`data.*.titleField`, (titleField: IFieldState) => {
+            if (isField(titleField)) {
+              if (titleField.path.toString() !== `data.${titleFieldIndex}.titleField`) {
+                titleField.editable = false;
+              }
+            }
+          });
+        }
       });
     }
   }, [allowDrawerData, form]);
@@ -184,6 +215,16 @@ const FilterDrawer = ({
                     x-component="Input"
                     x-decorator="FormItem"
                     x-display="hidden"
+                  />
+                </SchemaField.Void>
+                <SchemaField.Void
+                  x-component="ArrayTable.Column"
+                  x-component-props={{ title: 'Title Field', align: 'center' }}
+                >
+                  <SchemaField.String
+                    name="titleField"
+                    x-component="Checkbox"
+                    x-decorator="FormItem"
                   />
                 </SchemaField.Void>
                 <SchemaField.Void

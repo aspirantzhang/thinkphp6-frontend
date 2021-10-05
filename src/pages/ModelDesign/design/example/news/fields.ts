@@ -14,6 +14,7 @@ export const fields = {
           length: { min: '0', max: '255' },
         },
       },
+      titleField: 1,
       allowHome: 1,
       allowRead: 1,
       allowSave: 1,
