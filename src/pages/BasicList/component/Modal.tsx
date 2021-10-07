@@ -169,9 +169,9 @@ const Modal = ({
                 <Input />
               </Form.Item>
             </Form>
-            <div className={styles.formLeftCorner}>
-              <Space>
-                {!(init.data?.page?.options?.revision === false) && (
+            {!(init.data?.page?.options?.revision === false) && (
+              <div className={styles.formLeftCorner}>
+                <Space>
                   <Tooltip
                     title={lang.formatMessage({
                       id: 'basic-list.revision',
@@ -184,15 +184,15 @@ const Modal = ({
                       }}
                     />
                   </Tooltip>
-                )}
-                <Tag>
-                  {lang.formatMessage({
-                    id: `basic-list.page.updateTime`,
-                  })}
-                  : {moment(init.data?.dataSource?.update_time).format('YYYY-MM-DD HH:mm:ss')}
-                </Tag>
-              </Space>
-            </div>
+                  <Tag>
+                    {lang.formatMessage({
+                      id: `basic-list.page.updateTime`,
+                    })}
+                    : {moment(init.data?.dataSource?.update_time).format('YYYY-MM-DD HH:mm:ss')}
+                  </Tag>
+                </Space>
+              </div>
+            )}
           </>
         )}
       </AntdModal>

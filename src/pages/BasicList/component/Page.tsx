@@ -153,8 +153,8 @@ const Page = () => {
           </Row>
           <FooterToolbar
             extra={
-              <Space>
-                {!(init.data?.page?.options?.revision === false) && (
+              !(init.data?.page?.options?.revision === false) && (
+                <Space>
                   <Tooltip
                     title={lang.formatMessage({
                       id: 'basic-list.revision',
@@ -166,15 +166,14 @@ const Page = () => {
                       }}
                     />
                   </Tooltip>
-                )}
-
-                <Tag>
-                  {lang.formatMessage({
-                    id: `basic-list.page.updateTime`,
-                  })}
-                  :{moment(init.data?.dataSource?.update_time).format('YYYY-MM-DD HH:mm:ss')}
-                </Tag>
-              </Space>
+                  <Tag>
+                    {lang.formatMessage({
+                      id: `basic-list.page.updateTime`,
+                    })}
+                    :{moment(init.data?.dataSource?.update_time).format('YYYY-MM-DD HH:mm:ss')}
+                  </Tag>
+                </Space>
+              )
             }
           >
             {ActionBuilder(init?.data?.layout?.actions[0].data, actionHandler)}
