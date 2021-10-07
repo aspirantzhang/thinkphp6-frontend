@@ -1,9 +1,23 @@
 import { useEffect, useState, useCallback } from 'react';
-import { Form, Input, message, Tag, Spin, Row, Col, Tabs, Card, Space, Tooltip } from 'antd';
+import {
+  Form,
+  Input,
+  message,
+  Tag,
+  Spin,
+  Row,
+  Col,
+  Tabs,
+  Card,
+  Space,
+  Tooltip,
+  Button,
+} from 'antd';
 import { useRequest, useLocation, history, useIntl, getLocale } from 'umi';
 import { ClockCircleTwoTone } from '@ant-design/icons';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import moment from 'moment';
+import _ from 'lodash';
 import FormBuilder from '../builder/FormBuilder';
 import ActionBuilder from '../builder/ActionBuilder';
 import RevisionModal from './RevisionModal';
@@ -135,7 +149,32 @@ const Page = () => {
                 {(init?.data?.layout?.tabs || []).map((tab) => {
                   return (
                     <TabPane tab={tab.title} key={tab.title}>
-                      <Card>{FormBuilder(tab.data)}</Card>
+                      <Card>
+                        {_.findIndex(tab.data, ['name', '_path']) !== -1 && (
+                          <Form.Item label="Path">
+                            <Row gutter={8}>
+                              <Col span={12}>
+                                <Form.Item
+                                  name="path"
+                                  noStyle
+                                  rules={[
+                                    {
+                                      required: true,
+                                      message: 'Url path required',
+                                    },
+                                  ]}
+                                >
+                                  <Input />
+                                </Form.Item>
+                              </Col>
+                              <Col span={12}>
+                                <Button>Edit</Button>
+                              </Col>
+                            </Row>
+                          </Form.Item>
+                        )}
+                        {FormBuilder(tab.data)}
+                      </Card>
                     </TabPane>
                   );
                 })}

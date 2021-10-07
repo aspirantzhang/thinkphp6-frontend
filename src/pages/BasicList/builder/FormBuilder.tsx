@@ -4,6 +4,10 @@ import TinyMCEEditor from '../form/TinyMCEEditor';
 
 const FormBuilder = (data: BasicListApi.Field[] | undefined, prefix?: string) => {
   return (Array.isArray(data) ? data : []).map((field) => {
+    const ignore = ['update_time', '_path'];
+    if (ignore.includes(field.name)) {
+      return null;
+    }
     const formItemAttr = {
       label: field.title,
       name: prefix ? [prefix, field.name] : field.name,
@@ -38,14 +42,11 @@ const FormBuilder = (data: BasicListApi.Field[] | undefined, prefix?: string) =>
           </Form.Item>
         );
       case 'datetime':
-        if (field.name !== 'update_time') {
-          return (
-            <Form.Item {...formItemAttr}>
-              <DatePicker showTime {...componentAttr} />
-            </Form.Item>
-          );
-        }
-        return null;
+        return (
+          <Form.Item {...formItemAttr}>
+            <DatePicker showTime {...componentAttr} />
+          </Form.Item>
+        );
       case 'switch':
         return (
           <Form.Item {...formItemAttr} valuePropName="checked">
