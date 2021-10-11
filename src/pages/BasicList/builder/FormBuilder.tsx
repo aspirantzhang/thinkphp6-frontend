@@ -2,9 +2,13 @@ import React from 'react';
 import { Input, Form, DatePicker, TreeSelect, Switch, InputNumber, Radio } from 'antd';
 import TinyMCEEditor from '../form/TinyMCEEditor';
 
-const FormBuilder = (data: BasicListApi.Field[] | undefined, prefix?: string) => {
+const FormBuilder = (
+  data: BasicListApi.Field[] | undefined,
+  prefix?: string,
+  ignoreField: string[] = [],
+) => {
   return (Array.isArray(data) ? data : []).map((field) => {
-    const ignore = ['update_time', '_path'];
+    const ignore = ['update_time', 'pathname', ...ignoreField];
     if (ignore.includes(field.name)) {
       return null;
     }

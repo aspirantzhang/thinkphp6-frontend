@@ -122,6 +122,9 @@ const Page = () => {
     }
   }, []);
 
+  const titleField = _.find(init?.data?.layout?.tabs[0]?.data, ['titleField', true]);
+  const havePathField = _.findIndex(init?.data?.layout?.tabs[0]?.data, ['name', 'pathname']) !== -1;
+
   return (
     <PageContainer
       header={{
@@ -144,43 +147,37 @@ const Page = () => {
           onFinish={onFinish}
         >
           <Row gutter={24}>
-            <Col sm={16}>
+            <Col sm={18}>
+              {titleField && (
+                <Form.Item noStyle name={titleField.name} key={titleField.title}>
+                  <Input size="large" style={{ fontSize: '20px' }} />
+                </Form.Item>
+              )}
+              {havePathField && (
+                <Form.Item label="URL Path" labelCol={{ span: 2 }}>
+                  <Row>
+                    <Col span={16}>
+                      <Form.Item name="pathname" noStyle>
+                        <Input />
+                      </Form.Item>
+                    </Col>
+                    <Col span={8}>
+                      <Button>Edit</Button>
+                    </Col>
+                  </Row>
+                </Form.Item>
+              )}
               <Tabs type="card" className={styles.pageTabs}>
                 {(init?.data?.layout?.tabs || []).map((tab) => {
                   return (
                     <TabPane tab={tab.title} key={tab.title}>
-                      <Card>
-                        {_.findIndex(tab.data, ['name', '_path']) !== -1 && (
-                          <Form.Item label="Path">
-                            <Row gutter={8}>
-                              <Col span={12}>
-                                <Form.Item
-                                  name="path"
-                                  noStyle
-                                  rules={[
-                                    {
-                                      required: true,
-                                      message: 'Url path required',
-                                    },
-                                  ]}
-                                >
-                                  <Input />
-                                </Form.Item>
-                              </Col>
-                              <Col span={12}>
-                                <Button>Edit</Button>
-                              </Col>
-                            </Row>
-                          </Form.Item>
-                        )}
-                        {FormBuilder(tab.data)}
-                      </Card>
+                      <Card>{FormBuilder(tab.data, '', titleField && [titleField.name])}</Card>
                     </TabPane>
                   );
                 })}
               </Tabs>
             </Col>
-            <Col sm={8} className={styles.textAlignCenter}>
+            <Col sm={6} className={styles.textAlignCenter}>
               {(init?.data?.layout?.actions || []).map((action) => {
                 return (
                   <Card>
