@@ -1,41 +1,19 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import { createForm, onFieldChange, onFieldReact, isField } from '@formily/core';
-import { createSchemaField } from '@formily/react';
-import {
-  Form,
-  FormItem,
-  Input,
-  ArrayTable,
-  Switch,
-  Select,
-  Checkbox,
-  FormGrid,
-} from '@formily/antd';
-import { Spin, Button, Card, Space, Dropdown, Menu, message } from 'antd';
+import { Form } from '@formily/antd';
+import { Spin, Button, Space, Dropdown, Menu, message } from 'antd';
 import { DoubleRightOutlined, DoubleLeftOutlined, DownOutlined } from '@ant-design/icons';
 import { useSetState } from 'ahooks';
-import { useRequest, useLocation, history, useIntl, getLocale } from 'umi';
+import { useRequest, useLocation, history, useIntl } from 'umi';
 import Modal from '../component/Modal';
 import SettingDrawer from '../component/SettingDrawer';
 import FilterDrawer from '../component/FilterDrawer';
-import FlagIcon from '../../BasicList/builder/FlagIcon';
 import styles from '../index.less';
 import { fields as news } from './example/news/fields';
 import { fields as user } from './example/user/fields';
-import * as enums from './enums';
-
-const SchemaField = createSchemaField({
-  components: {
-    Input,
-    FormItem,
-    ArrayTable,
-    Switch,
-    Select,
-    Checkbox,
-    Button,
-  },
-});
+import MainTab from './field/MainTab';
+import ConfigBox from './field/ConfigBox';
 
 const Field = () => {
   const [handleFieldValidation, setHandleFieldValidation] = useState(true);
@@ -58,7 +36,6 @@ const Field = () => {
   const [spinLoading, setSpinLoading] = useState(true);
   const location = useLocation();
   const lang = useIntl();
-  const currentLang = getLocale().toLowerCase();
 
   const form = useMemo(
     () =>
@@ -234,167 +211,8 @@ const Field = () => {
       ) : (
         <Form form={form} className={styles.formilyForm}>
           <Space direction="vertical" style={{ width: '100%' }}>
-            <Card
-              title={lang.formatMessage({
-                id: 'model-design.options',
-              })}
-              size="small"
-            >
-              <FormGrid maxColumns={4}>
-                <SchemaField name="options">
-                  <SchemaField.Boolean
-                    name="handleFieldValidation"
-                    title={lang.formatMessage({
-                      id: 'model-design.handleFieldValidation',
-                    })}
-                    x-decorator="FormItem"
-                    x-component="Switch"
-                  />
-                  <SchemaField.Boolean
-                    name="handleFieldFilter"
-                    title={lang.formatMessage({
-                      id: 'model-design.handleFieldFilter',
-                    })}
-                    x-decorator="FormItem"
-                    x-component="Switch"
-                  />
-                </SchemaField>
-              </FormGrid>
-            </Card>
-            <Card
-              title={lang.formatMessage({
-                id: 'model-design.fields',
-              })}
-              size="small"
-            >
-              <SchemaField>
-                <SchemaField.Array x-component="ArrayTable" name="data" x-decorator="FormItem">
-                  <SchemaField.Object>
-                    <SchemaField.Void
-                      x-component="ArrayTable.Column"
-                      x-component-props={{
-                        title: lang.formatMessage({
-                          id: 'model-design.sort',
-                        }),
-                        width: 60,
-                        align: 'center',
-                      }}
-                    >
-                      <SchemaField.Void
-                        x-component="ArrayTable.SortHandle"
-                        x-decorator="FormItem"
-                      />
-                    </SchemaField.Void>
-
-                    <SchemaField.Void
-                      x-component="ArrayTable.Column"
-                      x-component-props={{
-                        title: lang.formatMessage({
-                          id: 'model-design.name',
-                        }),
-                      }}
-                    >
-                      <SchemaField.String name="name" x-component="Input" x-decorator="FormItem" />
-                    </SchemaField.Void>
-
-                    <SchemaField.Void
-                      x-component="ArrayTable.Column"
-                      x-component-props={{
-                        title: (
-                          <>
-                            {lang.formatMessage({
-                              id: 'model-design.title',
-                            })}{' '}
-                            <FlagIcon code={currentLang.substr(currentLang.indexOf('-') + 1)} />
-                          </>
-                        ),
-                      }}
-                    >
-                      <SchemaField.String name="title" x-component="Input" x-decorator="FormItem" />
-                    </SchemaField.Void>
-
-                    <SchemaField.Void
-                      x-component="ArrayTable.Column"
-                      x-component-props={{
-                        title: lang.formatMessage({
-                          id: 'model-design.type',
-                        }),
-                      }}
-                    >
-                      <SchemaField.String
-                        name="type"
-                        x-component="Select"
-                        x-decorator="FormItem"
-                        enum={enums.fieldType}
-                      />
-                    </SchemaField.Void>
-
-                    <SchemaField.Void
-                      x-component="ArrayTable.Column"
-                      x-component-props={{
-                        title: lang.formatMessage({
-                          id: 'model-design.data',
-                        }),
-                        width: 60,
-                        align: 'center',
-                      }}
-                    >
-                      <SchemaField.String
-                        name="data"
-                        x-component="Button"
-                        x-decorator="FormItem"
-                        x-content={lang.formatMessage({
-                          id: 'model-design.data',
-                        })}
-                      />
-                    </SchemaField.Void>
-
-                    <SchemaField.Void
-                      x-component="ArrayTable.Column"
-                      x-component-props={{
-                        title: lang.formatMessage({
-                          id: 'model-design.settings',
-                        }),
-                        width: 60,
-                        align: 'center',
-                      }}
-                    >
-                      <SchemaField.String
-                        name="settings"
-                        x-component="Button"
-                        x-decorator="FormItem"
-                        x-content={lang.formatMessage({
-                          id: 'model-design.settings',
-                        })}
-                      />
-                    </SchemaField.Void>
-
-                    <SchemaField.Void
-                      x-component="ArrayTable.Column"
-                      x-component-props={{
-                        title: lang.formatMessage({
-                          id: 'model-design.operations',
-                        }),
-                        width: 100,
-                        align: 'center',
-                      }}
-                    >
-                      <SchemaField.Void x-component="ArrayTable.Remove" />
-                      <SchemaField.Void x-component="ArrayTable.MoveUp" />
-                      <SchemaField.Void x-component="ArrayTable.MoveDown" />
-                    </SchemaField.Void>
-                  </SchemaField.Object>
-                  <SchemaField.Void
-                    x-component="ArrayTable.Addition"
-                    x-component-props={{
-                      title: lang.formatMessage({
-                        id: 'model-design.add',
-                      }),
-                    }}
-                  />
-                </SchemaField.Array>
-              </SchemaField>
-            </Card>
+            <ConfigBox />
+            <MainTab />
           </Space>
         </Form>
       )}
