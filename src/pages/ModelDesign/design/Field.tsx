@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo, useCallback } from 'react';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import { createForm, onFieldChange, onFieldReact, isField } from '@formily/core';
 import { Form } from '@formily/antd';
-import { Spin, Button, Space, Dropdown, Menu, message } from 'antd';
+import { Spin, Button, Space, Dropdown, Menu, message, Row, Col } from 'antd';
 import { DoubleRightOutlined, DoubleLeftOutlined, DownOutlined } from '@ant-design/icons';
 import { useSetState } from 'ahooks';
 import { useRequest, useLocation, history, useIntl } from 'umi';
@@ -12,8 +12,8 @@ import FilterDrawer from '../component/FilterDrawer';
 import styles from '../index.less';
 import { fields as news } from './example/news/fields';
 import { fields as user } from './example/user/fields';
-import MainTab from './field/MainTab';
-import ConfigBox from './field/ConfigBox';
+import FieldConfigBlock from './field/FieldConfigBlock';
+import OptionConfigBlock from './field/OptionConfigBlock';
 
 const Field = () => {
   const [handleFieldValidation, setHandleFieldValidation] = useState(true);
@@ -31,8 +31,11 @@ const Field = () => {
     values: {},
   });
   const [allowDrawerVisible, setFilterDrawerVisible] = useState(false);
-  const [allowDrawerData, setFilterDrawerData] =
-    useSetState<{ options?: Record<string, unknown>; data?: Record<string, unknown>[] }>();
+  const [filterDrawerData, setFilterDrawerData] = useSetState<{
+    options: Record<string, unknown>;
+    tabs: Record<string, unknown>;
+    sidebars: Record<string, unknown>;
+  }>();
   const [spinLoading, setSpinLoading] = useState(true);
   const location = useLocation();
   const lang = useIntl();
@@ -56,7 +59,7 @@ const Field = () => {
               field.value = field.value?.replace('admins', field.query('tableName').get('value'));
             }
           });
-          onFieldReact('data.*.data', (field) => {
+          onFieldReact('*.*.*.data', (field) => {
             if (isField(field)) {
               const typeValue = field.query('.type').get('value');
               const attrValue = typeValue === 'switch' || typeValue === 'radio';
@@ -64,7 +67,7 @@ const Field = () => {
               field.required = attrValue;
             }
           });
-          onFieldChange('data.*.data', ['active'], (field) => {
+          onFieldChange('*.*.*.data', ['active'], (field) => {
             if (isField(field) && field.active === true) {
               setModalFieldPath(field.path.toString());
               setModalData({
@@ -75,7 +78,7 @@ const Field = () => {
               field.active = false;
             }
           });
-          onFieldChange('data.*.settings', ['active'], (field) => {
+          onFieldChange('*.*.*.settings', ['active'], (field) => {
             if (isField(field) && field.active === true) {
               setSettingDrawerFieldPath(field.path.toString());
               setSettingDrawerData({
@@ -90,12 +93,6 @@ const Field = () => {
       }),
     [],
   );
-
-  useEffect(() => {
-    if (allowDrawerData.data && Object.keys(allowDrawerData.data).length > 0) {
-      setFilterDrawerVisible(true);
-    }
-  }, [allowDrawerData]);
 
   const init = useRequest(
     {
@@ -210,10 +207,27 @@ const Field = () => {
         <Spin className={styles.formSpin} tip="Loading..." />
       ) : (
         <Form form={form} className={styles.formilyForm}>
-          <Space direction="vertical" style={{ width: '100%' }}>
-            <ConfigBox />
-            <MainTab />
-          </Space>
+          <Row gutter={8}>
+            <Col span={14}>
+              <Space direction="vertical" style={{ width: '100%' }}>
+                <OptionConfigBlock />
+                <FieldConfigBlock
+                  name="tabs.basic"
+                  title={lang.formatMessage({
+                    id: 'model-design.tab-basic',
+                  })}
+                />
+              </Space>
+            </Col>
+            <Col span={10}>
+              <FieldConfigBlock
+                name="sidebars.basic"
+                title={lang.formatMessage({
+                  id: 'model-design.sidebar-basic',
+                })}
+              />
+            </Col>
+          </Row>
         </Form>
       )}
       <FooterToolbar
@@ -238,6 +252,7 @@ const Field = () => {
           type="primary"
           onClick={() => {
             form.submit(setFilterDrawerData);
+            setFilterDrawerVisible(true);
           }}
           shape="round"
         >
@@ -268,11 +283,15 @@ const Field = () => {
       />
       <FilterDrawer
         hideFilterDrawer={useCallback(() => {
-          setFilterDrawerData({ data: [] });
+          setFilterDrawerData({
+            options: {},
+            tabs: {},
+            sidebars: {},
+          });
           setFilterDrawerVisible(false);
         }, [])}
         allowDrawerVisible={allowDrawerVisible}
-        allowDrawerData={allowDrawerData}
+        allowDrawerData={filterDrawerData}
         handleFieldFilter={handleFieldFilter}
       />
     </PageContainer>

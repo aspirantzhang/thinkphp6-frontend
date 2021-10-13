@@ -6,6 +6,7 @@ import { createForm, onFieldChange, onFieldReact, isField } from '@formily/core'
 import { createSchemaField } from '@formily/react';
 import { PreviewText, Form, FormItem, Input, ArrayTable, Checkbox } from '@formily/antd';
 import _ from 'lodash';
+import FilterConfigBlock from '../design/field/FilterConfigBlock';
 
 const SchemaField = createSchemaField({
   components: {
@@ -17,17 +18,23 @@ const SchemaField = createSchemaField({
   },
 });
 
+type FilterDrawerType = {
+  allowDrawerVisible: boolean;
+  allowDrawerData: {
+    options: Record<string, unknown>;
+    tabs: Record<string, unknown>;
+    sidebars: Record<string, unknown>;
+  };
+  hideFilterDrawer: () => void;
+  handleFieldFilter: boolean;
+};
+
 const FilterDrawer = ({
   allowDrawerVisible,
   allowDrawerData,
   hideFilterDrawer,
   handleFieldFilter,
-}: {
-  allowDrawerVisible: boolean;
-  allowDrawerData: { options?: Record<string, unknown>; data?: Record<string, unknown>[] };
-  hideFilterDrawer: () => void;
-  handleFieldFilter: boolean;
-}) => {
+}: FilterDrawerType) => {
   const location = useLocation();
   const lang = useIntl();
   const [submitLoading, setSubmitLoading] = useState(false);
@@ -37,12 +44,12 @@ const FilterDrawer = ({
     () =>
       createForm({
         effects: () => {
-          onFieldReact('*.*.allowTranslate', (field) => {
+          onFieldReact('*.*.*.allowTranslate', (field) => {
             if (isField(field)) {
               const typeValue = field.query('.type').get('value');
               const fieldName = field.query('.name').get('value');
               const typesCanBeTranslated = ['input', 'textarea', 'textEditor'].includes(typeValue);
-              const fieldsCanBeTranslated = !['_path'].includes(fieldName);
+              const fieldsCanBeTranslated = !['pathname'].includes(fieldName);
               if (typesCanBeTranslated && fieldsCanBeTranslated) {
                 field.disabled = false;
                 field.visible = true;
@@ -54,7 +61,7 @@ const FilterDrawer = ({
           });
           onFieldChange('checkAll', (field) => {
             if (isField(field) && allowDrawerVisible) {
-              field.query('data.*.*').forEach((checkbox) => {
+              field.query('*.*.*.*').forEach((checkbox) => {
                 if (
                   isField(checkbox) &&
                   // eslint-disable-next-line no-underscore-dangle
@@ -67,10 +74,10 @@ const FilterDrawer = ({
               });
             }
           });
-          onFieldChange('data.*.titleField', (field) => {
+          onFieldChange('*.*.*.titleField', (field) => {
             if (isField(field)) {
               const selfPath = field.path.toString();
-              field.query('data.*.titleField').forEach((otherCheckbox) => {
+              field.query('*.*.*.titleField').forEach((otherCheckbox) => {
                 if (isField(otherCheckbox) && otherCheckbox.path.toString() !== selfPath) {
                   if (field.value === true || field.value === 1 || field.value === '1') {
                     otherCheckbox.disabled = true;
@@ -87,18 +94,25 @@ const FilterDrawer = ({
   );
 
   useEffect(() => {
-    if (allowDrawerData.data && Object.keys(allowDrawerData.data).length > 0) {
+    if (allowDrawerData.tabs && Object.keys(allowDrawerData.tabs).length > 0) {
       form.setState((formState) => {
         formState.values = allowDrawerData;
         // set title field editing status
-        const titleFieldIndex =
-          _.findIndex(allowDrawerData.data, ['titleField', 1]) !== -1
-            ? _.findIndex(allowDrawerData.data, ['titleField', 1])
-            : _.findIndex(allowDrawerData.data, ['titleField', '1']);
-        if (titleFieldIndex !== -1) {
-          form.setFieldState(`data.*.titleField`, (titleField: IFieldState) => {
+        // first step: find index of the title field from the tabs
+        let titleFieldPath = '';
+        Object.keys(allowDrawerData.tabs).forEach((tabName) => {
+          const titleFieldIndex = _.findIndex(allowDrawerData.tabs[tabName] as any[], (obj) => {
+            return obj.titleField === 1 || obj.titleField === '1';
+          });
+          if (titleFieldIndex !== -1) {
+            titleFieldPath = `tabs.${tabName}.${titleFieldIndex}.titleField`;
+          }
+        });
+        // second step: set editable = false except for the title field
+        if (titleFieldPath) {
+          form.setFieldState(`*.*.*.titleField`, (titleField: IFieldState) => {
             if (isField(titleField)) {
-              if (titleField.path.toString() !== `data.${titleFieldIndex}.titleField`) {
+              if (titleField.path.toString() !== titleFieldPath) {
                 titleField.editable = false;
               }
             }
@@ -198,107 +212,13 @@ const FilterDrawer = ({
               x-decorator="FormItem"
               x-component="Checkbox"
             />
-            <SchemaField.Array x-component="ArrayTable" name="data" x-decorator="FormItem">
-              <SchemaField.Object>
-                <SchemaField.Void
-                  x-component="ArrayTable.Column"
-                  x-component-props={{ title: 'Field Name', align: 'center' }}
-                >
-                  <SchemaField.String
-                    name="name"
-                    x-component="PreviewText.Input"
-                    x-decorator="FormItem"
-                  />
-                  <SchemaField.String
-                    name="type"
-                    x-component="Input"
-                    x-decorator="FormItem"
-                    x-display="hidden"
-                  />
-                </SchemaField.Void>
-                <SchemaField.Void
-                  x-component="ArrayTable.Column"
-                  x-component-props={{ title: 'Title Field', align: 'center' }}
-                >
-                  <SchemaField.String
-                    name="titleField"
-                    x-component="Checkbox"
-                    x-decorator="FormItem"
-                  />
-                </SchemaField.Void>
-                <SchemaField.Void
-                  x-component="ArrayTable.Column"
-                  x-component-props={{ title: 'Unique Value', align: 'center' }}
-                >
-                  <SchemaField.String
-                    name="uniqueValue"
-                    x-component="Checkbox"
-                    x-decorator="FormItem"
-                  />
-                </SchemaField.Void>
-                <SchemaField.Void
-                  x-component="ArrayTable.Column"
-                  x-component-props={{ title: 'Ignore Filter', align: 'center' }}
-                >
-                  <SchemaField.String
-                    name="ignoreFilter"
-                    x-component="Checkbox"
-                    x-decorator="FormItem"
-                  />
-                </SchemaField.Void>
-                <SchemaField.Void
-                  x-component="ArrayTable.Column"
-                  x-component-props={{ title: 'Home', align: 'center' }}
-                >
-                  <SchemaField.String
-                    name="allowHome"
-                    x-component="Checkbox"
-                    x-decorator="FormItem"
-                  />
-                </SchemaField.Void>
-                <SchemaField.Void
-                  x-component="ArrayTable.Column"
-                  x-component-props={{ title: 'Read', align: 'center' }}
-                >
-                  <SchemaField.String
-                    name="allowRead"
-                    x-component="Checkbox"
-                    x-decorator="FormItem"
-                  />
-                </SchemaField.Void>
-                <SchemaField.Void
-                  x-component="ArrayTable.Column"
-                  x-component-props={{ title: 'Save', align: 'center' }}
-                >
-                  <SchemaField.String
-                    name="allowSave"
-                    x-component="Checkbox"
-                    x-decorator="FormItem"
-                  />
-                </SchemaField.Void>
-                <SchemaField.Void
-                  x-component="ArrayTable.Column"
-                  x-component-props={{ title: 'Update', align: 'center' }}
-                >
-                  <SchemaField.String
-                    name="allowUpdate"
-                    x-component="Checkbox"
-                    x-decorator="FormItem"
-                  />
-                </SchemaField.Void>
-                <SchemaField.Void
-                  x-component="ArrayTable.Column"
-                  x-component-props={{ title: 'Translate', align: 'center' }}
-                >
-                  <SchemaField.String
-                    name="allowTranslate"
-                    x-component="Checkbox"
-                    x-decorator="FormItem"
-                  />
-                </SchemaField.Void>
-              </SchemaField.Object>
-            </SchemaField.Array>
           </SchemaField>
+          {Object.keys(allowDrawerData?.tabs || []).map((tabName) => {
+            return <FilterConfigBlock name={`tabs.${tabName}`} />;
+          })}
+          {Object.keys(allowDrawerData?.sidebars || []).map((sidebarName) => {
+            return <FilterConfigBlock name={`sidebars.${sidebarName}`} />;
+          })}
         </Form>
         <div style={{ textAlign: 'center', marginBottom: '20px' }}>
           <Alert

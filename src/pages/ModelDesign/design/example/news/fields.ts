@@ -3,66 +3,72 @@ export const fields = {
     handleFieldValidation: true,
     handleFieldFilter: true,
   },
-  data: [
-    {
-      name: 'news_title',
-      title: 'Title',
-      type: 'input',
-      settings: {
-        validate: ['require', 'length'],
-        options: {
-          length: { min: '0', max: '255' },
+  tabs: {
+    basic: [
+      {
+        name: 'title',
+        title: 'Title',
+        type: 'input',
+        settings: {
+          validate: ['require', 'length'],
+          options: {
+            length: { min: '0', max: '255' },
+          },
         },
+        titleField: 1,
+        allowHome: 1,
+        allowRead: 1,
+        allowSave: 1,
+        allowUpdate: 1,
+        allowTranslate: 1,
       },
-      titleField: 1,
-      allowHome: 1,
-      allowRead: 1,
-      allowSave: 1,
-      allowUpdate: 1,
-      allowTranslate: 1,
-    },
-    {
-      name: '_path',
-      title: 'Path',
-      type: 'input',
-      settings: {
-        validate: ['require', 'length'],
-        options: {
-          length: { min: '0', max: '255' },
+      {
+        name: 'pathname',
+        title: 'Path',
+        type: 'input',
+        settings: {
+          validate: ['require', 'length'],
+          options: {
+            length: { min: '0', max: '255' },
+          },
+          display: ['hideInColumn'],
         },
-        display: ['hideInColumn'],
+        allowHome: 1,
+        allowRead: 1,
+        allowSave: 1,
+        allowUpdate: 1,
       },
-      allowHome: 1,
-      allowRead: 1,
-      allowSave: 1,
-      allowUpdate: 1,
-    },
-    {
-      name: '_order',
-      title: 'Order',
-      type: 'number',
-      settings: {
-        display: ['listSorter'],
-        validate: ['number'],
+      {
+        name: 'content',
+        title: 'Content',
+        type: 'textEditor',
+        settings: {
+          display: ['hideInColumn'],
+        },
+        ignoreFilter: 1,
+        allowHome: 1,
+        allowRead: 1,
+        allowSave: 1,
+        allowUpdate: 1,
+        allowTranslate: 1,
       },
-      allowHome: 1,
-      allowRead: 1,
-      allowSave: 1,
-      allowUpdate: 1,
-    },
-    {
-      name: 'news_content',
-      title: 'Content',
-      type: 'textEditor',
-      settings: {
-        display: ['hideInColumn'],
+    ],
+  },
+  sidebars: {
+    basic: [
+      {
+        name: 'listOrder',
+        title: 'Order',
+        type: 'number',
+        settings: {
+          display: ['listSorter'],
+          validate: ['number'],
+        },
+        allowHome: 1,
+        allowRead: 1,
+        allowSave: 1,
+        allowUpdate: 1,
       },
-      ignoreFilter: 1,
-      allowHome: 1,
-      allowRead: 1,
-      allowSave: 1,
-      allowUpdate: 1,
-      allowTranslate: 1,
-    },
-  ],
+    ],
+  },
 };

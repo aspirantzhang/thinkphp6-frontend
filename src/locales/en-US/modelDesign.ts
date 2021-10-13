@@ -5,6 +5,8 @@ export default {
   'model-design.next': 'Next',
   'model-design.cancel': 'Cancel',
   'model-design.fields': 'Fields',
+  'model-design.tab-basic': 'Basic Tab',
+  'model-design.sidebar-basic': 'Basic Sidebar',
   'model-design.options': 'Options',
   'model-design.sort': 'Sort',
   'model-design.name': 'Name',
