@@ -17,20 +17,20 @@ const SchemaField = createSchemaField({
   },
 });
 
-const MainTab = () => {
+type FieldConfigBlockType = {
+  name: string;
+  title: string;
+};
+
+const FieldConfigBlock = ({ name = 'tabs.basic', title }: FieldConfigBlockType) => {
   const lang = useIntl();
   const currentLang = getLocale().toLowerCase();
 
   return (
     <>
-      <Card
-        title={lang.formatMessage({
-          id: 'model-design.fields',
-        })}
-        size="small"
-      >
+      <Card title={title} size="small">
         <SchemaField>
-          <SchemaField.Array x-component="ArrayTable" name="data" x-decorator="FormItem">
+          <SchemaField.Array x-component="ArrayTable" name={name} x-decorator="FormItem">
             <SchemaField.Object>
               <SchemaField.Void
                 x-component="ArrayTable.Column"
@@ -78,6 +78,7 @@ const MainTab = () => {
                   title: lang.formatMessage({
                     id: 'model-design.type',
                   }),
+                  width: 130,
                 }}
               >
                 <SchemaField.String
@@ -158,4 +159,4 @@ const MainTab = () => {
   );
 };
 
-export default MainTab;
+export default FieldConfigBlock;

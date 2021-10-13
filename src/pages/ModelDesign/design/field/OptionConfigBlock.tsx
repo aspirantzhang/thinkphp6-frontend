@@ -11,7 +11,7 @@ const SchemaField = createSchemaField({
   },
 });
 
-const ConfigBox = () => {
+const OptionConfigBlock = () => {
   const lang = useIntl();
 
   return (
@@ -47,4 +47,4 @@ const ConfigBox = () => {
   );
 };
 
-export default ConfigBox;
+export default OptionConfigBlock;
