@@ -84,7 +84,12 @@ const Page = () => {
 
   useEffect(() => {
     if (init.data) {
-      form.setFieldsValue(setFieldsAdaptor(init.data.layout.tabs, init.data.dataSource));
+      form.setFieldsValue(
+        setFieldsAdaptor(
+          [...init.data.layout.tabs, ...init.data.layout.sidebars],
+          init.data.dataSource,
+        ),
+      );
     }
   }, [init.data]);
 
@@ -143,7 +148,9 @@ const Page = () => {
         <Form
           form={form}
           {...layout}
-          initialValues={init.data && getDefaultValue(init.data.layout.tabs)}
+          initialValues={
+            init.data && getDefaultValue([...init.data.layout.tabs, ...init.data.layout.sidebars])
+          }
           onFinish={onFinish}
         >
           <Row gutter={24}>
@@ -177,13 +184,16 @@ const Page = () => {
                 })}
               </Tabs>
             </Col>
-            <Col sm={6} className={styles.textAlignCenter}>
+            <Col sm={6}>
               {(init?.data?.layout?.actions || []).map((action) => {
                 return (
-                  <Card>
+                  <Card className={styles.textAlignCenter}>
                     <Space>{ActionBuilder(action.data, actionHandler)}</Space>
                   </Card>
                 );
+              })}
+              {(init?.data?.layout?.sidebars || []).map((sidebar) => {
+                return <Card>{FormBuilder(sidebar.data, '')}</Card>;
               })}
             </Col>
           </Row>

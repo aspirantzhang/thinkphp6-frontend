@@ -1,7 +1,7 @@
 import moment from 'moment';
 
 export const setFieldsAdaptor = (
-  tabs: BasicListApi.Tabs[],
+  tabs: BasicListApi.FieldsBlock[],
   dataSource: BasicListApi.DataSource,
   nested = false,
 ) => {
@@ -106,7 +106,7 @@ export function searchTree(
   return result;
 }
 
-export const getDefaultValue = (tabs: BasicListApi.Tabs[]) => {
+export const getDefaultValue = (tabs: BasicListApi.FieldsBlock[]) => {
   if (Array.isArray(tabs)) {
     const result = {};
     tabs.forEach((tab) => {
