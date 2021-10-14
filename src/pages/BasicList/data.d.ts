@@ -32,7 +32,7 @@ declare module BasicListApi {
     page: number;
   };
 
-  type Tabs = {
+  type FieldsBlock = {
     name?: string;
     title?: string;
     data: Field[];
@@ -51,7 +51,8 @@ declare module BasicListApi {
   };
 
   type PageLayout = {
-    tabs: Tabs[];
+    tabs: FieldsBlock[];
+    sidebars: FieldsBlock[];
     actions: Actions[];
   };
 
