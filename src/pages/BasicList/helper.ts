@@ -112,6 +112,9 @@ export const getDefaultValue = (tabs: BasicListApi.FieldsBlock[]) => {
     tabs.forEach((tab) => {
       tab.data.forEach((field) => {
         switch (field.type) {
+          case 'number':
+            result[field.name] = 0;
+            break;
           case 'datetime':
             result[field.name] = moment();
             break;
