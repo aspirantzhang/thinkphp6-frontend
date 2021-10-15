@@ -229,6 +229,14 @@ const FilterDrawer = ({
             showIcon
             style={{ width: '650px', margin: '0 auto', marginBottom: '10px' }}
           />
+          <Alert
+            message={lang.formatMessage({
+              id: 'model-design.fieldFilter.indexAttention',
+            })}
+            type="warning"
+            showIcon
+            style={{ width: '650px', margin: '0 auto', marginBottom: '10px' }}
+          />
         </div>
       </div>
       <div style={{ textAlign: 'center' }}>

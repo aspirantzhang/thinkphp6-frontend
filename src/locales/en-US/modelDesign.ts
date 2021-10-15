@@ -33,4 +33,6 @@ export default {
   'model-design.initSampleValue': 'Initialized with sample values',
   'model-design.fieldFilter.translateAttention':
     'Attention: When switching the translate status of a field, the existing data in that field will be lost.',
+  'model-design.fieldFilter.indexAttention':
+    'Attention: The system will not add/drop any INDEX/UNIQUE of MySQL columns. You should do it by yourself.',
 };

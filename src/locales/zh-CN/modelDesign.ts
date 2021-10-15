@@ -32,5 +32,7 @@ export default {
   'model-design.fieldFilter.checkAll': '全选',
   'model-design.initSampleValue': '使用演示数据进行了填充',
   'model-design.fieldFilter.translateAttention':
-    '注意：如果改变一个字段的可翻译状态，该字段以往数据将会丢失！',
+    '注意：如果改变一个字段的可翻译状态(Translate)，该字段以往数据将会丢失！',
+  'model-design.fieldFilter.indexAttention':
+    '注意：本系统不会添加/删除MySQL列的索引(Index)/唯一(Unique)，你需要自行操作。',
 };
