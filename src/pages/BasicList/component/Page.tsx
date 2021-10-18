@@ -86,7 +86,7 @@ const Page = () => {
     if (init.data) {
       form.setFieldsValue(
         setFieldsAdaptor(
-          [...init.data.layout.tabs, ...init.data.layout.sidebars],
+          [...(init.data.layout.tabs || []), ...(init.data.layout.sidebars || [])],
           init.data.dataSource,
         ),
       );
@@ -149,7 +149,11 @@ const Page = () => {
           form={form}
           {...layout}
           initialValues={
-            init.data && getDefaultValue([...init.data.layout.tabs, ...init.data.layout.sidebars])
+            init.data &&
+            getDefaultValue([
+              ...(init.data.layout.tabs || []),
+              ...(init.data.layout.sidebars || []),
+            ])
           }
           onFinish={onFinish}
         >
