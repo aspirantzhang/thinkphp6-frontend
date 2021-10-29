@@ -21,6 +21,7 @@ declare module BasicListApi {
   type Field = {
     name: string;
     title: string;
+    reactions?: any;
     [key: string]: any;
   };
 
