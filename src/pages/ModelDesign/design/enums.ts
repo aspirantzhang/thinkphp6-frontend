@@ -8,8 +8,9 @@ export const fieldType = [
   { label: 'Select', value: 'select' },
   { label: 'Radio', value: 'radio' },
   { label: 'Tree', value: 'tree' },
-  { label: 'Parent', value: 'checkParentId' },
+  { label: 'Parent', value: 'parent' },
   { label: 'Text Editor', value: 'textEditor' },
+  { label: 'Category', value: 'category' },
 ];
 
 export const buttonType = [

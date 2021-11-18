@@ -81,7 +81,7 @@ const SettingDrawer = ({
     { label: 'Length', value: 'length' },
     { label: 'Number', value: 'number' },
     { label: 'Number Array', value: 'numberArray' },
-    { label: 'Parent Id', value: 'parentId' },
+    { label: 'Parent Id', value: 'checkParentId' },
     { label: 'Number Tag', value: 'numberTag' },
     { label: 'DateTime Range', value: 'dateTimeRange' },
   ];
