@@ -80,6 +80,7 @@ const FormBuilder = (
           </Form.Item>
         );
         break;
+      case 'category':
       case 'tree':
         result = (
           <Form.Item {...formItemAttr}>
