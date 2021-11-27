@@ -31,6 +31,7 @@ const ColumnBuilder = (
             return <Tag>{option?.title}</Tag>;
           };
           break;
+        case 'category':
         case 'parent':
           column.render = (value: any) => {
             const option = searchTree(column.data, value, 'id');
