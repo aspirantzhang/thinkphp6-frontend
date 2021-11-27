@@ -221,6 +221,12 @@ const Field = () => {
             </Col>
             <Col span={10}>
               <FieldConfigBlock
+                name="sidebars.parent"
+                title={lang.formatMessage({
+                  id: 'model-design.sidebar-parent',
+                })}
+              />
+              <FieldConfigBlock
                 name="sidebars.basic"
                 title={lang.formatMessage({
                   id: 'model-design.sidebar-basic',

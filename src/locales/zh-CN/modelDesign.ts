@@ -7,6 +7,7 @@ export default {
   'model-design.fields': '字段',
   'model-design.tab-basic': '基础选项卡',
   'model-design.sidebar-basic': '基础侧边栏',
+  'model-design.sidebar-parent': '父级侧边栏',
   'model-design.options': '选项',
   'model-design.sort': '排序',
   'model-design.name': '名称',
