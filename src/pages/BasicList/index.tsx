@@ -270,8 +270,8 @@ const Index = () => {
 
   const searchLayout = () => {
     return (
-      searchVisible && (
-        <QueueAnim type="top">
+      <QueueAnim type="top">
+        {searchVisible ? (
           <div key="searchLayout">
             <SearchLayout
               onFinish={onSearchSubmit}
@@ -280,8 +280,8 @@ const Index = () => {
               clearButtonCallback={clearButtonCallback}
             />
           </div>
-        </QueueAnim>
-      )
+        ) : null}
+      </QueueAnim>
     );
   };
 
