@@ -72,7 +72,7 @@
     "react": "^17.0.0",
     "react-dev-inspector": "^1.6.0",
     "react-dom": "^17.0.0",
-    "react-flag-icon-css": "^1.0.25",
+    "react-flag-icon-css": "git+https://github.com/ryanskidmore/react-flag-icon-css",
     "react-helmet-async": "^1.1.2",
     "swagger-ui-react": "^4.0.0-beta.4",
     "umi": "^3.5.17",
