@@ -138,8 +138,7 @@ const Modal = ({
       <AntdModal
         title={
           <>
-            <FlagIcon code={currentLang.substr(currentLang.indexOf('-') + 1)} />{' '}
-            {init?.data?.page?.title}
+            <FlagIcon code={currentLang} /> {init?.data?.page?.title}
           </>
         }
         visible={modalVisible}

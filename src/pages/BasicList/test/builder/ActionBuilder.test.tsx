@@ -26,17 +26,6 @@ const validActions = [
     uri: '/api/admins/delete',
   },
 ];
-const invalidActions = [
-  {
-    component: 'invalidComponent',
-    type: 'primary',
-    name: 'edit',
-    title: 'Edit',
-    call: 'modal',
-    method: null,
-    uri: '/api/admins/:id',
-  },
-];
 
 describe('ActionBuilder', () => {
   test('snapshot test', () => {
@@ -60,6 +49,5 @@ describe('ActionBuilder', () => {
     expect(ActionBuilder(true as any, () => {})).toEqual([]);
     expect(ActionBuilder(false as any, () => {})).toEqual([]);
     expect(ActionBuilder('' as any, () => {})).toEqual([]);
-    expect(ActionBuilder(invalidActions as any, () => {})).toEqual([null]);
   });
 });

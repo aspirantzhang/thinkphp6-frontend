@@ -431,7 +431,6 @@ exports[`SearchBuilder snapshot test 1`] = `
                         style="width: 0px;"
                       >
                         <input
-                          aria-activedescendant="tree_list_0"
                           aria-autocomplete="list"
                           aria-controls="tree_list"
                           aria-haspopup="listbox"
@@ -502,7 +501,6 @@ exports[`SearchBuilder snapshot test 1`] = `
                     class="ant-select-selection-search"
                   >
                     <input
-                      aria-activedescendant="parent_list_0"
                       aria-autocomplete="list"
                       aria-controls="parent_list"
                       aria-haspopup="listbox"

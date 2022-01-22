@@ -135,8 +135,7 @@ const Page = () => {
       header={{
         title: (
           <>
-            <FlagIcon code={currentLang.substr(currentLang.indexOf('-') + 1)} />{' '}
-            {init?.data?.page?.title}
+            <FlagIcon code={currentLang} /> {init?.data?.page?.title}
           </>
         ),
         breadcrumb: {},

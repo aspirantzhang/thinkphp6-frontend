@@ -12,7 +12,7 @@ Array [
     </span>
   </button>,
   <button
-    className="ant-btn ant-btn-default delete-btn"
+    className="ant-btn delete-btn"
     onClick={[Function]}
     type="button"
   >

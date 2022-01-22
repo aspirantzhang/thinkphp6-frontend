@@ -9,7 +9,7 @@ const I18nFlagBuilder = (
   record: BasicListApi.Field,
   actionHandler: BasicListApi.ActionHandler,
 ) => {
-  const currentLang = getLocale().toLowerCase();
+  const currentLang: string = getLocale().toLowerCase();
   const currentLangTime = value[currentLang];
   return (
     <Space>
@@ -18,10 +18,10 @@ const I18nFlagBuilder = (
         if (itemLang !== currentLang) {
           const popContent = (
             <>
-              <FlagIcon code={currentLang.substr(currentLang.indexOf('-') + 1)} />{' '}
+              <FlagIcon code={currentLang} />{' '}
               {moment(currentLangTime).format('YYYY-MM-DD HH:mm:ss')}
               <br />
-              <FlagIcon code={itemLang.substr(itemLang.indexOf('-') + 1)} />{' '}
+              <FlagIcon code={itemLang} />{' '}
               {itemLangTime ? moment(itemLangTime).format('YYYY-MM-DD HH:mm:ss') : 'Not exist'}
             </>
           );
@@ -38,9 +38,9 @@ const I18nFlagBuilder = (
                   count={itemLangTime === null || currentLangTime === itemLangTime ? 0 : 1}
                 >
                   <FlagIcon
-                    code={itemLang.substr(itemLang.indexOf('-') + 1)}
+                    code={itemLang}
                     className={itemLangTime === null ? 'i18nNoValue' : undefined}
-                  />
+                  />{' '}
                 </Badge>
               </Popover>
             </span>

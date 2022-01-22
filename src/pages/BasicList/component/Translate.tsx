@@ -100,12 +100,7 @@ const Translate = () => {
                 <Col {...colAttr[init.data.layout.length - 2]}>
                   <Card
                     type="inner"
-                    title={
-                      <FlagIcon
-                        code={langForm.name.substr(langForm.name.indexOf('-') + 1)}
-                        size="2x"
-                      />
-                    }
+                    title={<FlagIcon code={langForm.name} width={38} />}
                     extra={
                       init.data.dataSource[langForm.name]?.translate_time
                         ? moment(init.data.dataSource[langForm.name].translate_time).format(
