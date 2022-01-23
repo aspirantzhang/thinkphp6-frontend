@@ -6,6 +6,7 @@ import { history, formatMessage } from 'umi';
 import RightContent from '@/components/RightContent';
 import Footer from '@/components/Footer';
 import type { ResponseError } from 'umi-request';
+import defaultSettings from '../config/defaultSettings';
 import {
   currentUser as queryCurrentUser,
   currentMenu as queryCurrentMenu,
@@ -59,18 +60,18 @@ export async function getInitialState(): Promise<{
       fetchMenu,
       currentUser,
       currentMenu,
-      settings: {},
+      settings: defaultSettings,
     };
   }
   return {
     fetchUserInfo,
     fetchMenu,
-    settings: {},
+    settings: defaultSettings,
   };
 }
 
 // https://umijs.org/zh-CN/plugins/plugin-layout
-export const layout: RunTimeLayoutConfig = ({ initialState }) => {
+export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) => {
   return {
     rightContentRender: () => <RightContent />,
     disableContentMargin: false,
@@ -92,6 +93,27 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
     },
     // 自定义 403 页面
     // unAccessible: <div>unAccessible</div>,
+    // childrenRender: (children, props) => {
+    //   // if (initialState?.loading) return <PageLoading />;
+    //   return (
+    //     <>
+    //       {children}
+    //       {!props.location?.pathname?.includes('/login') && (
+    //         <SettingDrawer
+    //           disableUrlParams
+    //           enableDarkTheme
+    //           settings={initialState?.settings}
+    //           onSettingChange={(settings) => {
+    //             setInitialState((preInitialState) => ({
+    //               ...preInitialState,
+    //               settings,
+    //             }));
+    //           }}
+    //         />
+    //       )}
+    //     </>
+    //   );
+    // },
     ...initialState?.settings,
   };
 };

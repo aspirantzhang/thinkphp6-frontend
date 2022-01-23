@@ -229,6 +229,7 @@ const Index = () => {
     setPageQuery(`&page=${page}&per_page=${per_page}`);
   };
   const tableChangeHandler = (_: any, __: any, sorter: any) => {
+    console.log(sorter.order);
     if (sorter.order === undefined) {
       setSortQuery('');
     } else {
@@ -383,7 +384,6 @@ const Index = () => {
                 })}: ${total}`
               }
               onChange={paginationChangeHandler}
-              onShowSizeChange={paginationChangeHandler}
             />
           )}
         </Col>
