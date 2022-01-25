@@ -33,7 +33,7 @@ const NoticeList: React.FC<NoticeIconTabProps> = ({
 }) => {
   if (!list || list.length === 0) {
     return (
-      <div className={styles.notFound}>
+      <div className={styles['not-found']}>
         <img
           src="https://gw.alipayobjects.com/zos/rmsportal/sAuJeJzSKbUmHfBQRzmZ.svg"
           alt="not found"
@@ -56,7 +56,7 @@ const NoticeList: React.FC<NoticeIconTabProps> = ({
             typeof item.avatar === 'string' ? (
               <Avatar className={styles.avatar} src={item.avatar} />
             ) : (
-              <span className={styles.iconElement}>{item.avatar}</span>
+              <span className={styles['icon-element']}>{item.avatar}</span>
             )
           ) : null;
 
@@ -88,7 +88,7 @@ const NoticeList: React.FC<NoticeIconTabProps> = ({
           );
         }}
       />
-      <div className={styles.bottomBar}>
+      <div className={styles['bottom-bar']}>
         {showClear ? (
           <div onClick={onClear}>
             {clearText} {title}

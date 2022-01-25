@@ -151,7 +151,7 @@ const Modal = ({
         className="basic-list-modal"
       >
         {init?.loading ? (
-          <Spin className={styles.formSpin} tip="Loading..." />
+          <Spin className={styles['form-spin']} tip="Loading..." />
         ) : (
           <>
             <Form
@@ -169,7 +169,7 @@ const Modal = ({
               </Form.Item>
             </Form>
             {!(init.data?.page?.options?.revision === false) && (
-              <div className={styles.formLeftCorner}>
+              <div className={styles['form-left-corner']}>
                 <Space>
                   <Tooltip
                     title={lang.formatMessage({

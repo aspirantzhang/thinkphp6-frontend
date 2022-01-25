@@ -200,7 +200,6 @@ const Index = () => {
               ids: record && Object.keys(record).length ? [record.id] : selectedRowKeys,
             });
           },
-          onCancel() {},
           className: 'batch-confirm-modal',
         });
         break;
@@ -313,7 +312,7 @@ const Index = () => {
   const beforeTableLayout = () => {
     return (
       <Row className="before-table-layout">
-        <Col xs={24} sm={12} className={styles.tableToolbarLeft}>
+        <Col xs={24} sm={12} className={styles['table-toolbar-left']}>
           {searchQuery && (
             <>
               <Tag
@@ -331,7 +330,7 @@ const Index = () => {
             </>
           )}
         </Col>
-        <Col xs={24} sm={12} className={styles.tableToolbarRight}>
+        <Col xs={24} sm={12} className={styles['table-toolbar-right']}>
           <Space>
             {ActionBuilder(init?.data?.layout?.tableToolBar, actionHandler)}
             <Tooltip
@@ -370,7 +369,7 @@ const Index = () => {
         <Col xs={24} sm={12}>
           ...
         </Col>
-        <Col xs={24} sm={12} className={styles.tableToolbarRight}>
+        <Col xs={24} sm={12} className={styles['table-toolbar-right']}>
           {!!init?.data?.meta?.total && (
             <Pagination
               total={init?.data?.meta?.total || 0}

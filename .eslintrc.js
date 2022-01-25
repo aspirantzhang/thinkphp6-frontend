@@ -65,6 +65,7 @@ module.exports = {
       parser: '@typescript-eslint/parser',
       extends: ['plugin:@typescript-eslint/recommended'],
       rules: {
+        'no-param-reassign': ['error', { props: false }],
         '@typescript-eslint/consistent-type-definitions': 'off',
         '@typescript-eslint/ban-ts-ignore': 'off',
         '@typescript-eslint/ban-ts-comment': 'off',
@@ -74,6 +75,7 @@ module.exports = {
       files: ['*.test.js', '*.test.ts', '*.test.tsx'],
       rules: {
         '@typescript-eslint/no-unused-expressions': 'off',
+        '@typescript-eslint/no-empty-function': 'off',
       },
     },
   ],

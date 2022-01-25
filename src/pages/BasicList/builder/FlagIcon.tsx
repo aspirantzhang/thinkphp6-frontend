@@ -9,14 +9,15 @@ type FlagIconType = {
 };
 
 const FlagIcon = ({ code, className = '', width }: FlagIconType) => {
+  let countryCode = code;
   // to ISO-3166-1
-  if (code.includes('-')) {
-    code = code.substring(code.indexOf('-') + 1);
+  if (countryCode.includes('-')) {
+    countryCode = countryCode.substring(countryCode.indexOf('-') + 1);
   }
 
-  code = code.toUpperCase();
+  countryCode = countryCode.toUpperCase();
 
-  if (hasFlag(code) === false) {
+  if (hasFlag(countryCode) === false) {
     return <>invalid flag code</>;
   }
 
@@ -25,7 +26,7 @@ const FlagIcon = ({ code, className = '', width }: FlagIconType) => {
     styles['width'] = width + 'px';
   }
 
-  const FlagComponent = Flags[code];
+  const FlagComponent = Flags[countryCode];
   return <FlagComponent className={`flag-icon ${className}`} style={{ ...styles }} />;
 };
 

@@ -39,7 +39,7 @@ const I18nFlagBuilder = (
                 >
                   <FlagIcon
                     code={itemLang}
-                    className={itemLangTime === null ? 'i18nNoValue' : undefined}
+                    className={itemLangTime === null ? 'i18n-no-value' : undefined}
                   />{' '}
                 </Badge>
               </Popover>

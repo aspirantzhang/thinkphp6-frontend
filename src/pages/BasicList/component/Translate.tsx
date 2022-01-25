@@ -91,7 +91,7 @@ const Translate = () => {
       className="translate-page"
     >
       {init?.loading ? (
-        <Spin className={styles.formSpin} tip="Loading..." />
+        <Spin className={styles['form-spin']} tip="Loading..." />
       ) : (
         <Form {...layoutAttr[init.data?.layout.length - 2]} form={form} onFinish={onFinish}>
           <Row gutter={16}>

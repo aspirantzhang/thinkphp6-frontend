@@ -93,7 +93,7 @@ const Modal = ({
         forceRender
         focusTriggerAfterClose={false}
       >
-        <Form className={styles.formilyForm} form={form}>
+        <Form className={styles['formily-form']} form={form}>
           <SchemaField>
             <SchemaField.Array x-component="ArrayTable" name="data" x-decorator="FormItem">
               <SchemaField.Object>

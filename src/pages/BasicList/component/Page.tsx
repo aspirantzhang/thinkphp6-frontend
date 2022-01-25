@@ -142,7 +142,7 @@ const Page = () => {
       }}
     >
       {init?.loading ? (
-        <Spin className={styles.formSpin} tip="Loading..." />
+        <Spin className={styles['form-spin']} tip="Loading..." />
       ) : (
         <Form
           form={form}
@@ -177,7 +177,7 @@ const Page = () => {
                   </Row>
                 </Form.Item>
               )}
-              <Tabs type="card" className={styles.pageTabs}>
+              <Tabs type="card" className={styles['page-tabs']}>
                 {(init?.data?.layout?.tabs || []).map((tab) => {
                   return (
                     <TabPane tab={tab.title} key={tab.title}>
@@ -190,7 +190,7 @@ const Page = () => {
             <Col sm={6}>
               {(init?.data?.layout?.actions || []).map((action) => {
                 return (
-                  <Card className={styles.textAlignCenter}>
+                  <Card className={styles['text-align-center']}>
                     <Space>{ActionBuilder(action.data, actionHandler)}</Space>
                   </Card>
                 );

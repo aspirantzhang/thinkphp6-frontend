@@ -204,9 +204,9 @@ const Field = () => {
       }}
     >
       {spinLoading ? (
-        <Spin className={styles.formSpin} tip="Loading..." />
+        <Spin className={styles['form-spin']} tip="Loading..." />
       ) : (
-        <Form form={form} className={styles.formilyForm}>
+        <Form form={form} className={styles['formily-form']}>
           <Row gutter={8}>
             <Col span={14}>
               <Space direction="vertical" style={{ width: '100%' }}>

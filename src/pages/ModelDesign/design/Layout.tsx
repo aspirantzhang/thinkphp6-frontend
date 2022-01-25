@@ -147,7 +147,7 @@ const Field = () => {
       }}
     >
       {spinLoading ? (
-        <Spin className={styles.formSpin} tip="Loading..." />
+        <Spin className={styles['form-spin']} tip="Loading..." />
       ) : (
         <Form form={form}>
           <Card title="Basic" size="small" hidden>

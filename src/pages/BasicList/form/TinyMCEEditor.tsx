@@ -72,6 +72,7 @@ const TinyMCEEditor = ({
               : 'Powered by the excellent open source editor:'}{' '}
             <a
               href="https://www.tiny.cloud/"
+              rel="noopener noreferrer"
               target="_blank"
               style={{ color: 'rgba(0, 0, 0, 0.45)' }}
             >
