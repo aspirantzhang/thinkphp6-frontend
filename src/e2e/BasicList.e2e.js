@@ -15,7 +15,7 @@ if (CI === 'true') {
 test('BasicList', async () => {
   const browser = await puppeteer.launch(puppeteerOption);
   const page = await browser.newPage();
-  await page.setDefaultNavigationTimeout(10);
+  await page.setDefaultNavigationTimeout(10000);
   console.log('browser created.');
 
   // Enable both JavaScript and CSS coverage
