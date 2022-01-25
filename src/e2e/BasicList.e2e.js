@@ -1,5 +1,4 @@
 import puppeteer from 'puppeteer';
-// import * as pti from 'puppeteer-to-istanbul';
 
 const BASE_URL = `http://localhost:${process.env.PORT || 8000}`;
 
@@ -18,12 +17,13 @@ test('BasicList', async () => {
   await page.setDefaultNavigationTimeout(10000);
   console.log('browser created.');
 
-  // Enable both JavaScript and CSS coverage
-  // await Promise.all([page.coverage.startJSCoverage(), page.coverage.startCSSCoverage()]);
-
   // login
+
   await page.goto(`${BASE_URL}/user/login`);
   console.log('navigate to /user/login successfully.');
+  await page.waitForTimeout(3000);
+  await page.reload();
+  await page.waitForTimeout(3000);
   // switch to zh-cn
   await page.waitForSelector('.ant-dropdown-trigger');
   console.log('successfully found css element on /user/login.');
@@ -31,6 +31,7 @@ test('BasicList', async () => {
   await page.waitForTimeout(1000);
   await page.waitForSelector('.ant-dropdown-menu');
   await page.click('.ant-dropdown-menu li:nth-child(1)');
+  await page.waitForTimeout(2000);
 
   await page.waitForSelector('#username');
   await page.type('#username', 'admin');
@@ -241,16 +242,6 @@ test('BasicList', async () => {
   await page.click('.before-table-layout .search-btn');
   await page.waitForTimeout(1000);
   expect((await page.$('.basic-list .search-layout')) === null).toBeTruthy();
-
-  // Disable both JavaScript and CSS coverage
-  // const [jsCoverage, cssCoverage] = await Promise.all([
-  //   page.coverage.stopJSCoverage(),
-  //   page.coverage.stopCSSCoverage(),
-  // ]);
-  // pti.write([...jsCoverage, ...cssCoverage], {
-  //   includeHostname: true,
-  //   storagePath: './.nyc_output',
-  // });
 
   await page.close();
   await browser.close();
