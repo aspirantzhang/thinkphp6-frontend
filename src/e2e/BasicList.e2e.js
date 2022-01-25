@@ -15,14 +15,18 @@ if (CI === 'true') {
 test('BasicList', async () => {
   const browser = await puppeteer.launch(puppeteerOption);
   const page = await browser.newPage();
+  await page.setDefaultNavigationTimeout(10);
+  console.log('browser created.');
 
   // Enable both JavaScript and CSS coverage
-  await Promise.all([page.coverage.startJSCoverage(), page.coverage.startCSSCoverage()]);
+  // await Promise.all([page.coverage.startJSCoverage(), page.coverage.startCSSCoverage()]);
 
   // login
   await page.goto(`${BASE_URL}/user/login`);
+  console.log('navigate to /user/login successfully.');
   // switch to zh-cn
   await page.waitForSelector('.ant-dropdown-trigger');
+  console.log('successfully found css element on /user/login.');
   await page.click('.ant-dropdown-trigger');
   await page.waitForTimeout(1000);
   await page.waitForSelector('.ant-dropdown-menu');
@@ -239,14 +243,14 @@ test('BasicList', async () => {
   expect((await page.$('.basic-list .search-layout')) === null).toBeTruthy();
 
   // Disable both JavaScript and CSS coverage
-  const [jsCoverage, cssCoverage] = await Promise.all([
-    page.coverage.stopJSCoverage(),
-    page.coverage.stopCSSCoverage(),
-  ]);
-  pti.write([...jsCoverage, ...cssCoverage], {
-    includeHostname: true,
-    storagePath: './.nyc_output',
-  });
+  // const [jsCoverage, cssCoverage] = await Promise.all([
+  //   page.coverage.stopJSCoverage(),
+  //   page.coverage.stopCSSCoverage(),
+  // ]);
+  // pti.write([...jsCoverage, ...cssCoverage], {
+  //   includeHostname: true,
+  //   storagePath: './.nyc_output',
+  // });
 
   await page.close();
   await browser.close();
