@@ -21,6 +21,7 @@
     "openapi": "umi openapi",
     "precommit": "lint-staged",
     "prettier": "prettier -c --write \"src/**/*\"",
+    "serve": "umi-serve",
     "start": "cross-env UMI_ENV=dev umi dev",
     "start:dev": "cross-env REACT_APP_ENV=dev MOCK=none UMI_ENV=dev umi dev",
     "start:no-mock": "cross-env MOCK=none UMI_ENV=dev umi dev",
@@ -29,8 +30,8 @@
     "start:test": "cross-env REACT_APP_ENV=test MOCK=none UMI_ENV=dev umi dev",
     "pretest": "node ./tests/beforeTest",
     "test": "umi test",
-    "test:all": "node ./tests/run-tests.js",
     "test:component": "umi test ./src/components",
+    "test:e2e": "node ./tests/run-tests.js",
     "tsc": "tsc --noEmit",
     "e2e:html": "nyc report --reporter=html",
     "e2e:cov": "nyc report --reporter=text-lcov > coverage.lcov",
@@ -140,7 +141,8 @@
     "stylelint-config-prettier": "^9.0.3",
     "stylelint-config-standard": "^24.0.0",
     "stylelint-declaration-block-no-ignored-properties": "^2.5.0",
-    "typescript": "^4.5.4"
+    "typescript": "^4.5.4",
+    "umi-serve": "^1.9.10"
   },
   "engines": {
     "node": ">=10.0.0"

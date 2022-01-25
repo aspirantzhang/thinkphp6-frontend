@@ -53,8 +53,12 @@ jobs:
           path: node_modules
           key: node_modules-${{ hashFiles('**/package-temp-dir/package-lock.json') }}
 
-      - run: npm run lint
-      - run: npm run test:all
+      - name: Lint
+        run: |
+          npm run lint
+      - name: E2E Testing
+        run: |
+          npm run test:e2e
         env:
           CI: true
           PROGRESS: none
