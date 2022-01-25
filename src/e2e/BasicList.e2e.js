@@ -1,5 +1,5 @@
 import puppeteer from 'puppeteer';
-import * as pti from 'puppeteer-to-istanbul';
+// import * as pti from 'puppeteer-to-istanbul';
 
 const BASE_URL = `http://localhost:${process.env.PORT || 8000}`;
 

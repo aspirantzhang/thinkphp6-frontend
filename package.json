@@ -133,7 +133,6 @@
     "postcss-less": "^6.0.0",
     "prettier": "^2.5.1",
     "puppeteer": "^13.1.2",
-    "puppeteer-to-istanbul": "^1.4.0",
     "react-test-renderer": "^17.0.2",
     "standard": "^16.0.4",
     "stylelint": "^14.2.0",
