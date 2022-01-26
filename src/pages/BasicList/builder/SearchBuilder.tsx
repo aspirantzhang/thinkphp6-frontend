@@ -86,6 +86,7 @@ const SearchBuilder = (data: BasicListApi.Field[] | undefined) => {
             </Form.Item>
           </Col>
         );
+      case 'category':
       case 'tree':
         return (
           <Col sm={6} key={field.name}>

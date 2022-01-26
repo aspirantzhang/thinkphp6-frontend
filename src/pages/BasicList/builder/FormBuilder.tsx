@@ -20,45 +20,53 @@ const FormBuilder = (
     const componentAttr = {
       disabled: field.editDisabled,
     };
+
+    let result: JSX.Element | null = null;
     switch (field.type) {
       case 'input':
-        return (
+        result = (
           <Form.Item {...formItemAttr}>
             <Input {...componentAttr} />
           </Form.Item>
         );
+        break;
       case 'password':
-        return (
+        result = (
           <Form.Item {...formItemAttr}>
             <Input.Password {...componentAttr} />
           </Form.Item>
         );
+        break;
       case 'textarea':
-        return (
+        result = (
           <Form.Item {...formItemAttr}>
             <Input.TextArea {...componentAttr} />
           </Form.Item>
         );
+        break;
       case 'number':
-        return (
+        result = (
           <Form.Item {...formItemAttr}>
             <InputNumber {...componentAttr} />
           </Form.Item>
         );
+        break;
       case 'datetime':
-        return (
+        result = (
           <Form.Item {...formItemAttr}>
             <DatePicker showTime {...componentAttr} />
           </Form.Item>
         );
+        break;
       case 'switch':
-        return (
+        result = (
           <Form.Item {...formItemAttr} valuePropName="checked">
             <Switch {...componentAttr} />
           </Form.Item>
         );
+        break;
       case 'radio':
-        return (
+        result = (
           <Form.Item {...formItemAttr}>
             <Radio.Group buttonStyle="solid" {...componentAttr}>
               {(field.data || []).map((item: any) => {
@@ -71,14 +79,17 @@ const FormBuilder = (
             </Radio.Group>
           </Form.Item>
         );
+        break;
+      case 'category':
       case 'tree':
-        return (
+        result = (
           <Form.Item {...formItemAttr}>
             <TreeSelect treeData={field.data} {...componentAttr} treeCheckable />
           </Form.Item>
         );
+        break;
       case 'parent':
-        return (
+        result = (
           <Form.Item {...formItemAttr}>
             <TreeSelect
               showSearch
@@ -92,16 +103,36 @@ const FormBuilder = (
             />
           </Form.Item>
         );
+        break;
       case 'textEditor':
-        return (
+        result = (
           <Form.Item {...formItemAttr}>
             {/* @ts-ignore */}
             <TinyMCEEditor />
           </Form.Item>
         );
+        break;
       default:
-        return null;
+      // return null;
     }
+
+    if (field.reactions && field.reactions[0].type === 'passive') {
+      const dependencyField = field.reactions[0].conditions[0].dependency;
+      const dependencyValue = field.reactions[0].conditions[0].when;
+      return (
+        <Form.Item
+          noStyle
+          shouldUpdate={(prevValues, currentValues) =>
+            prevValues[dependencyField] !== currentValues[dependencyField]
+          }
+        >
+          {({ getFieldValue }) =>
+            getFieldValue(dependencyField) === dependencyValue ? result : null
+          }
+        </Form.Item>
+      );
+    }
+    return result;
   });
 };
 

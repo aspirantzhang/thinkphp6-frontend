@@ -86,7 +86,7 @@ const Page = () => {
     if (init.data) {
       form.setFieldsValue(
         setFieldsAdaptor(
-          [...init.data.layout.tabs, ...init.data.layout.sidebars],
+          [...(init.data.layout.tabs || []), ...(init.data.layout.sidebars || [])],
           init.data.dataSource,
         ),
       );
@@ -135,21 +135,24 @@ const Page = () => {
       header={{
         title: (
           <>
-            <FlagIcon code={currentLang.substr(currentLang.indexOf('-') + 1)} />{' '}
-            {init?.data?.page?.title}
+            <FlagIcon code={currentLang} /> {init?.data?.page?.title}
           </>
         ),
         breadcrumb: {},
       }}
     >
       {init?.loading ? (
-        <Spin className={styles.formSpin} tip="Loading..." />
+        <Spin className={styles['form-spin']} tip="Loading..." />
       ) : (
         <Form
           form={form}
           {...layout}
           initialValues={
-            init.data && getDefaultValue([...init.data.layout.tabs, ...init.data.layout.sidebars])
+            init.data &&
+            getDefaultValue([
+              ...(init.data.layout.tabs || []),
+              ...(init.data.layout.sidebars || []),
+            ])
           }
           onFinish={onFinish}
         >
@@ -174,7 +177,7 @@ const Page = () => {
                   </Row>
                 </Form.Item>
               )}
-              <Tabs type="card" className={styles.pageTabs}>
+              <Tabs type="card" className={styles['page-tabs']}>
                 {(init?.data?.layout?.tabs || []).map((tab) => {
                   return (
                     <TabPane tab={tab.title} key={tab.title}>
@@ -187,7 +190,7 @@ const Page = () => {
             <Col sm={6}>
               {(init?.data?.layout?.actions || []).map((action) => {
                 return (
-                  <Card className={styles.textAlignCenter}>
+                  <Card className={styles['text-align-center']}>
                     <Space>{ActionBuilder(action.data, actionHandler)}</Space>
                   </Card>
                 );

@@ -16,14 +16,14 @@ export type GlobalHeaderRightProps = {
  */
 const loginOut = async () => {
   await outLogin();
-  const { query = {}, pathname } = history.location;
+  const { query = {}, search, pathname } = history.location;
   const { redirect } = query;
   // Note: There may be security issues, please note
   if (window.location.pathname !== '/user/login' && !redirect) {
     history.replace({
       pathname: '/user/login',
       search: stringify({
-        redirect: pathname,
+        redirect: pathname + search,
       }),
     });
   }
@@ -41,14 +41,14 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
       domEvent: React.MouseEvent<HTMLElement>;
     }) => {
       const { key } = event;
-      if (key === 'logout' && initialState) {
-        setInitialState({ ...initialState, currentUser: undefined });
+      if (key === 'logout') {
+        setInitialState((s) => ({ ...s, currentUser: undefined }));
         loginOut();
         return;
       }
       history.push(`/account/${key}`);
     },
-    [initialState, setInitialState],
+    [setInitialState],
   );
 
   const loading = (

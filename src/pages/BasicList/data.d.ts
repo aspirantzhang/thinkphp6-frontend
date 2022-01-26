@@ -1,4 +1,4 @@
-declare module BasicListApi {
+declare namespace BasicListApi {
   type ActionHandler = (action: Partial<BasicListApi.Action>, record?: BasicListApi.Field) => void;
 
   type Page = {
@@ -21,6 +21,7 @@ declare module BasicListApi {
   type Field = {
     name: string;
     title: string;
+    reactions?: any;
     [key: string]: any;
   };
 

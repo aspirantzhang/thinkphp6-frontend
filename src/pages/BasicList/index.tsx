@@ -200,7 +200,6 @@ const Index = () => {
               ids: record && Object.keys(record).length ? [record.id] : selectedRowKeys,
             });
           },
-          onCancel() {},
           className: 'batch-confirm-modal',
         });
         break;
@@ -229,6 +228,7 @@ const Index = () => {
     setPageQuery(`&page=${page}&per_page=${per_page}`);
   };
   const tableChangeHandler = (_: any, __: any, sorter: any) => {
+    console.log(sorter.order);
     if (sorter.order === undefined) {
       setSortQuery('');
     } else {
@@ -270,8 +270,8 @@ const Index = () => {
 
   const searchLayout = () => {
     return (
-      searchVisible && (
-        <QueueAnim type="top">
+      <QueueAnim type="top">
+        {searchVisible ? (
           <div key="searchLayout">
             <SearchLayout
               onFinish={onSearchSubmit}
@@ -280,8 +280,8 @@ const Index = () => {
               clearButtonCallback={clearButtonCallback}
             />
           </div>
-        </QueueAnim>
-      )
+        ) : null}
+      </QueueAnim>
     );
   };
 
@@ -312,7 +312,7 @@ const Index = () => {
   const beforeTableLayout = () => {
     return (
       <Row className="before-table-layout">
-        <Col xs={24} sm={12} className={styles.tableToolbarLeft}>
+        <Col xs={24} sm={12} className={styles['table-toolbar-left']}>
           {searchQuery && (
             <>
               <Tag
@@ -330,7 +330,7 @@ const Index = () => {
             </>
           )}
         </Col>
-        <Col xs={24} sm={12} className={styles.tableToolbarRight}>
+        <Col xs={24} sm={12} className={styles['table-toolbar-right']}>
           <Space>
             {ActionBuilder(init?.data?.layout?.tableToolBar, actionHandler)}
             <Tooltip
@@ -369,7 +369,7 @@ const Index = () => {
         <Col xs={24} sm={12}>
           ...
         </Col>
-        <Col xs={24} sm={12} className={styles.tableToolbarRight}>
+        <Col xs={24} sm={12} className={styles['table-toolbar-right']}>
           {!!init?.data?.meta?.total && (
             <Pagination
               total={init?.data?.meta?.total || 0}
@@ -383,7 +383,6 @@ const Index = () => {
                 })}: ${total}`
               }
               onChange={paginationChangeHandler}
-              onShowSizeChange={paginationChangeHandler}
             />
           )}
         </Col>

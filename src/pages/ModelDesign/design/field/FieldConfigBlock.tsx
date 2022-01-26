@@ -64,7 +64,7 @@ const FieldConfigBlock = ({ name = 'tabs.basic', title }: FieldConfigBlockType) 
                       {lang.formatMessage({
                         id: 'model-design.title',
                       })}{' '}
-                      <FlagIcon code={currentLang.substr(currentLang.indexOf('-') + 1)} />
+                      <FlagIcon code={currentLang} />
                     </>
                   ),
                 }}

@@ -35,6 +35,7 @@ export default defineConfig({
   // Theme for antd: https://ant.design/docs/react/customize-theme-cn
   theme: {
     'primary-color': defaultSettings.primaryColor,
+    'root-entry-name': 'variable',
   },
   // esbuild is father build tools
   // https://umijs.org/plugins/plugin-esbuild

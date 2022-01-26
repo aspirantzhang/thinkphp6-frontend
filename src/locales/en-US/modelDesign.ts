@@ -7,6 +7,7 @@ export default {
   'model-design.fields': 'Fields',
   'model-design.tab-basic': 'Basic Tab',
   'model-design.sidebar-basic': 'Basic Sidebar',
+  'model-design.sidebar-parent': 'Parent Sidebar',
   'model-design.options': 'Options',
   'model-design.sort': 'Sort',
   'model-design.name': 'Name',

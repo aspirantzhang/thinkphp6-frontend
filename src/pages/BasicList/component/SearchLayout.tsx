@@ -17,7 +17,7 @@ const SearchLayout = (props: SearchLayoutProps) => {
 
   return (
     <div key="searchForm" className="search-layout">
-      <Card className={styles.searchForm} key="searchFormCard">
+      <Card className={styles['search-form']} key="searchFormCard">
         <Form onFinish={onFinish} form={searchForm}>
           <Row gutter={24}>
             <Col sm={6} key="id">
@@ -28,7 +28,7 @@ const SearchLayout = (props: SearchLayoutProps) => {
             {SearchBuilder(tableColumn)}
           </Row>
           <Row>
-            <Col sm={24} className={styles.textAlignRight}>
+            <Col sm={24} className={styles['text-align-right']}>
               <Space>
                 <Button type="primary" htmlType="submit" className="submit-btn">
                   {lang.formatMessage({

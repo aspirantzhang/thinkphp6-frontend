@@ -1,9 +1,9 @@
 import { GithubOutlined } from '@ant-design/icons';
 import { DefaultFooter } from '@ant-design/pro-layout';
 
-export default () => (
+const Footer: React.FC = () => (
   <DefaultFooter
-    copyright="2020 蚂蚁集团体验技术部出品"
+    copyright={`${new Date().getFullYear()}`}
     links={[
       {
         key: 'Ant Design Pro',
@@ -26,3 +26,5 @@ export default () => (
     ]}
   />
 );
+
+export default Footer;

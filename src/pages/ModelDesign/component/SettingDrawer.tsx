@@ -81,8 +81,7 @@ const SettingDrawer = ({
     { label: 'Length', value: 'length' },
     { label: 'Number', value: 'number' },
     { label: 'Number Array', value: 'numberArray' },
-    { label: 'Parent Id', value: 'parentId' },
-    { label: 'Number Tag', value: 'numberTag' },
+    { label: 'Parent Id', value: 'checkParentId' },
     { label: 'DateTime Range', value: 'dateTimeRange' },
   ];
 
@@ -146,7 +145,7 @@ const SettingDrawer = ({
               id: 'model-design.settings.validateSettings',
             })}
           </h2>
-          <div className={styles.validateSettings}>
+          <div className={styles['validate-settings']}>
             <SchemaField>
               <Space direction="vertical" style={{ width: '100%' }} size="middle">
                 <SchemaField.String
@@ -171,7 +170,7 @@ const SettingDrawer = ({
                 x-component-props={{
                   title: 'Length',
                   size: 'small',
-                  className: styles.settingsCard,
+                  className: styles['settings-card'],
                 }}
                 x-visible={false}
               >

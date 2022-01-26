@@ -204,9 +204,9 @@ const Field = () => {
       }}
     >
       {spinLoading ? (
-        <Spin className={styles.formSpin} tip="Loading..." />
+        <Spin className={styles['form-spin']} tip="Loading..." />
       ) : (
-        <Form form={form} className={styles.formilyForm}>
+        <Form form={form} className={styles['formily-form']}>
           <Row gutter={8}>
             <Col span={14}>
               <Space direction="vertical" style={{ width: '100%' }}>
@@ -220,6 +220,12 @@ const Field = () => {
               </Space>
             </Col>
             <Col span={10}>
+              <FieldConfigBlock
+                name="sidebars.parent"
+                title={lang.formatMessage({
+                  id: 'model-design.sidebar-parent',
+                })}
+              />
               <FieldConfigBlock
                 name="sidebars.basic"
                 title={lang.formatMessage({

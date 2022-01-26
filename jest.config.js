@@ -1,6 +1,7 @@
 module.exports = {
   testURL: 'http://localhost:8000',
-  testEnvironment: './tests/PuppeteerEnvironment',
+  // testEnvironment: './tests/PuppeteerEnvironment',
+  preset: 'jest-puppeteer',
   verbose: false,
   setupFilesAfterEnv: ['./tests/setupTests.js'],
   testTimeout: 6000000,

@@ -91,7 +91,7 @@ const Translate = () => {
       className="translate-page"
     >
       {init?.loading ? (
-        <Spin className={styles.formSpin} tip="Loading..." />
+        <Spin className={styles['form-spin']} tip="Loading..." />
       ) : (
         <Form {...layoutAttr[init.data?.layout.length - 2]} form={form} onFinish={onFinish}>
           <Row gutter={16}>
@@ -100,12 +100,7 @@ const Translate = () => {
                 <Col {...colAttr[init.data.layout.length - 2]}>
                   <Card
                     type="inner"
-                    title={
-                      <FlagIcon
-                        code={langForm.name.substr(langForm.name.indexOf('-') + 1)}
-                        size="2x"
-                      />
-                    }
+                    title={<FlagIcon code={langForm.name} width={38} />}
                     extra={
                       init.data.dataSource[langForm.name]?.translate_time
                         ? moment(init.data.dataSource[langForm.name].translate_time).format(

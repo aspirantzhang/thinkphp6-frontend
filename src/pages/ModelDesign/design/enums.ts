@@ -10,6 +10,7 @@ export const fieldType = [
   { label: 'Tree', value: 'tree' },
   { label: 'Parent', value: 'parent' },
   { label: 'Text Editor', value: 'textEditor' },
+  { label: 'Category', value: 'category' },
 ];
 
 export const buttonType = [
