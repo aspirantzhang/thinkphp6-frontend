@@ -34,7 +34,6 @@ export default defineConfig({
   routes,
   // Theme for antd: https://ant.design/docs/react/customize-theme-cn
   theme: {
-    'primary-color': defaultSettings.primaryColor,
     'root-entry-name': 'variable',
   },
   // esbuild is father build tools
@@ -55,4 +54,6 @@ export default defineConfig({
   },
   base: '/admin/',
   publicPath: '/admin/',
+  nodeModulesTransform: { type: 'none' },
+  webpack5: {},
 });
