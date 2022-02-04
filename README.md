@@ -9,4 +9,6 @@ Octopus Frontend
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/aspirantzhang/octopus-frontend/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/aspirantzhang/octopus-frontend/?branch=master)
 
 
+Demo: [octopus-demo.aspirantzhang.com](https://octopus-demo.aspirantzhang.com)
+
 The project is currently under development.
