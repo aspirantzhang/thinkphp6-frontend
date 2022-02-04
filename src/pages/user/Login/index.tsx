@@ -1,11 +1,4 @@
-import {
-  AlipayCircleOutlined,
-  LockOutlined,
-  MobileOutlined,
-  TaobaoCircleOutlined,
-  UserOutlined,
-  WeiboCircleOutlined,
-} from '@ant-design/icons';
+import { LockOutlined, MobileOutlined, UserOutlined } from '@ant-design/icons';
 import { Alert, message, Tabs } from 'antd';
 import React, { useState } from 'react';
 import { ProFormCaptcha, ProFormCheckbox, ProFormText, LoginForm } from '@ant-design/pro-form';
@@ -66,7 +59,7 @@ const Login: React.FC = () => {
         if (!history) return;
         const { query } = history.location;
         const { redirect } = query as { redirect: string };
-        history.push(redirect ? `/admin/${redirect}` : '/');
+        history.push(redirect ? `${redirect}` : '/');
         return;
       }
       // 如果失败去设置用户错误信息
@@ -93,7 +86,7 @@ const Login: React.FC = () => {
       </div>
       <div className={styles.content}>
         <LoginForm
-          logo={<img alt="logo" src="/logo.svg" />}
+          logo={<img alt="logo" src="/admin/logo.svg" />}
           title="Octopus"
           subTitle="Octopus 演示版，账号/密码：admin/admin"
           initialValues={{
