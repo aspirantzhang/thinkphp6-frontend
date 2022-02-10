@@ -64,8 +64,7 @@ const FilterDrawer = ({
               field.query('*.*.*.*').forEach((checkbox) => {
                 if (
                   isField(checkbox) &&
-                  // eslint-disable-next-line no-underscore-dangle
-                  checkbox.componentType.__ANT_CHECKBOX === true &&
+                  checkbox.componentType === 'Checkbox' &&
                   checkbox.disabled !== true &&
                   !checkbox.path.toString().endsWith('titleField')
                 ) {
