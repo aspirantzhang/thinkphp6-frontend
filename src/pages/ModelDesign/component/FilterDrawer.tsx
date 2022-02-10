@@ -94,7 +94,7 @@ const FilterDrawer = ({
   );
 
   useEffect(() => {
-    if (allowDrawerData.tabs && Object.keys(allowDrawerData.tabs).length > 0) {
+    if (allowDrawerData?.tabs && Object.keys(allowDrawerData.tabs).length > 0) {
       form.setState((formState) => {
         formState.values = allowDrawerData;
         // set title field editing status
